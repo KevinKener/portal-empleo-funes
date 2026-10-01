@@ -8,48 +8,70 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 <!-- END:nextjs-agent-rules -->
 
-# Reglas para agentes — Portal Municipal de Empleo
+# Agent Rules — Municipal Job Portal
 
-> Este archivo aplica a **cualquier agente de IA** que trabaje en el repo (Claude Code, Codex, Cursor, Copilot…).
-> Lo específico de Claude Code está en `CLAUDE.md`. El plan de trabajo está en `docs/ROADMAP.md`.
-> Si algo de este archivo choca con un pedido puntual, **preguntá antes de romper la regla**.
-
----
-
-## 1. Contexto en 30 segundos
-
-Portal web para la **Oficina de Empleo de la Municipalidad de Funes** (Santa Fe, Argentina), desarrollado en el marco del programa **Funes Tech Lab**. Reemplaza el proceso manual actual (CVs en papel o por mail, cargados a mano en Excel) por un sistema digital.
-
-Tres roles:
-
-| Rol | Qué hace |
-|-----|----------|
-| **Postulante** | Se registra, arma su perfil/CV, verifica domicilio en Funes, se postula a ofertas y sigue el estado. |
-| **Empresa** | Se registra (queda pendiente de aprobación), carga ofertas, recibe candidatos **ya preseleccionados** y registra contrataciones. |
-| **Admin** (Oficina de Empleo) | Intermediario obligado: aprueba empresas, ofertas y domicilios; preselecciona postulantes; mide indicadores; hace seguimiento; deriva a cursos. |
-
-MVP de ~3 meses. Deploy en Vercel. Tiene que ser **responsive** (celular, tablet, PC): muchos postulantes van a usarlo desde el celular.
+> This file applies to **any AI agent** working in this repo (Claude Code, Codex, Cursor, Copilot…).
+> Claude Code specifics live in `CLAUDE.md`. The work plan lives in `docs/ROADMAP.md`.
+> If anything in this file conflicts with a specific request, **ask before breaking the rule**.
 
 ---
 
-## 2. Reglas de negocio (no negociables)
+## 0. User Communication
 
-Estas reglas salen del relevamiento con la Oficina de Empleo. Todo el código tiene que respetarlas, **y se validan en el servidor / base de datos, nunca solo en el frontend**.
+The user communicates in Spanish.
 
-1. **El Admin está siempre en el medio.** Postulante y Empresa nunca se comunican de forma directa dentro del sistema. La empresa no ve postulantes que el Admin no haya preseleccionado.
-2. **Nada se publica sin aprobación.** Una oferta solo es visible en el portal público si su estado es `publicada`.
-3. **Empresas nuevas quedan `pendiente`** hasta que el Admin las verifique. Una empresa pendiente puede loguearse, pero **no puede cargar ofertas**.
-4. **Domicilio de postulantes:** el postulante sube un comprobante; el Admin lo revisa a mano y marca `verificado`. No hay integración con padrones oficiales (fuera de alcance del MVP). Un domicilio no verificado **no bloquea** postularse, pero el Admin puede filtrar y priorizar por verificados.
-5. **Multi-categoría:** un postulante puede elegir varias categorías/rubros. Nunca modelar "una sola categoría por postulante".
-6. **CV flexible:** el postulante puede armar el CV en la plataforma **o** subir un PDF (pensado para quien no maneja tanto lo digital). Ambos caminos son válidos.
-7. **No hay registro público de Admin.** Las cuentas de Admin se crean a mano desde Supabase.
-8. Un postulante **no puede postularse dos veces** a la misma oferta.
+All explanations, implementation plans, progress updates, questions, summaries, and final reports must be written in Rioplatense Spanish.
 
-### Máquinas de estado
+Do not translate source code, technical identifiers, file paths, commands, library names, API names, or established software terminology unless necessary for clarity.
 
-Las transiciones se validan en **un único lugar** (`src/lib/estados.ts`) y se reutilizan en la API. No hardcodear strings de estado sueltos por el código.
+### Language by artifact
 
-**Empresa / Domicilio del postulante**
+| Artifact | Language |
+|----------|----------|
+| Chat with the user (explanations, plans, questions, reports) | Rioplatense Spanish |
+| Agent instructions (`AGENTS.md`, `CLAUDE.md`) | English |
+| Technical plans written to files (`docs/ROADMAP.md`, `docs/research/*`) | English |
+| Code comments and JSDoc | English |
+| Text visible in the application (UI, error messages returned to the client, emails) | Spanish (Argentina) |
+| Domain identifiers (tables, columns, variables, routes) | Spanish, see §4 |
+| Team-facing docs (`README.md`, `docs/guia-nextjs.md`) and commit messages | Spanish |
+
+---
+
+## 1. Context in 30 seconds
+
+Web portal for the **Employment Office of the Municipality of Funes** (Santa Fe, Argentina), built as part of the **Funes Tech Lab** program. It replaces the current manual process (CVs on paper or by email, typed into Excel by hand) with a digital system.
+
+Three roles:
+
+| Role | What it does |
+|------|--------------|
+| **Postulante** (job seeker) | Signs up, builds a profile/CV, verifies residence in Funes, applies to job offers and tracks their status. |
+| **Empresa** (company) | Signs up (stays pending approval), posts job offers, receives **pre-selected** candidates and records hires. |
+| **Admin** (Employment Office) | Mandatory intermediary: approves companies, offers and addresses; pre-selects candidates; tracks metrics; follows up on hires; refers people to training courses; creates other Admin accounts. |
+
+~3-month MVP. Deployed on Vercel. Must be **responsive** (phone, tablet, desktop): many job seekers will use it from their phones.
+
+---
+
+## 2. Business rules (non-negotiable)
+
+These rules come from the requirements gathering with the Employment Office. All code must honor them, **and they are enforced on the server / database, never only in the frontend**.
+
+1. **The Admin is always in the middle.** Postulante and Empresa never communicate directly inside the system. A company never sees candidates the Admin has not pre-selected.
+2. **Nothing is published without approval.** An offer is visible on the public portal only if its status is `publicada`.
+3. **New companies start as `pendiente`** until the Admin verifies them. A pending company can log in, but **cannot post offers**.
+4. **Job seeker address:** the job seeker uploads a proof of address; the Admin reviews it manually and marks it `verificado`. There is no integration with official registries (out of MVP scope). An unverified address **does not block** applying, but the Admin can filter and prioritize verified ones.
+5. **Multi-category:** a job seeker can pick several categories/fields. Never model "one category per job seeker".
+6. **Flexible CV:** the job seeker can build the CV on the platform **or** upload a PDF (meant for people less comfortable with digital tools). Both paths are valid.
+7. **No public Admin sign-up.** The first (seed) Admin account is created manually in Supabase. After that, **any Admin can create other Admin accounts** from the admin area (flat model: all Admins are equal). **No Admin can delete Admin accounts from the app**; deactivating one is done manually in Supabase.
+8. A job seeker **cannot apply twice** to the same offer.
+
+### State machines
+
+Transitions are validated in **a single place** (`src/lib/estados.ts`) and reused by the API. Do not hardcode loose status strings across the code.
+
+**Empresa / Postulante address**
 ```
 pendiente ──(admin)──► verificado
 pendiente ──(admin)──► rechazado
@@ -57,149 +79,150 @@ pendiente ──(admin)──► rechazado
 
 **Oferta**
 ```
-pendiente ──(admin)──► publicada ──(empresa o admin)──► cerrada
-pendiente ──(admin)──► rechazada   (con motivo)
+pendiente ──(admin)──► publicada ──(empresa or admin)──► cerrada
+pendiente ──(admin)──► rechazada   (with reason)
 ```
 
-**Postulación**
+**Postulacion**
 ```
-pendiente ──(admin)──────► preseleccionado ──(empresa acepta)──► entrevista ──(empresa)──► contratado
-    │                            │                                   │
-    └──(admin)──► rechazado ◄────┴──(empresa rechaza)────────────────┘
+pendiente ──(admin)──────► preseleccionado ──(empresa accepts)──► entrevista ──(empresa)──► contratado
+    │                            │                                    │
+    └──(admin)──► rechazado ◄────┴──(empresa rejects)─────────────────┘
 ```
-- Un postulante `rechazado` puede ser **derivado a cursos** por el Admin.
-- Un `contratado` entra al **seguimiento cada 2 meses**.
+- A `rechazado` job seeker can be **referred to courses** by the Admin.
+- A `contratado` job seeker enters **follow-up every 2 months**.
 
 ---
 
-## 3. Seguridad y datos personales
+## 3. Security and personal data
 
-Se manejan datos sensibles de vecinos (DNI, dirección, teléfono, comprobantes de domicilio, CUIT). Tratar todo con cuidado:
+The system handles sensitive data of residents (DNI, address, phone, proof of address, CUIT). Treat all of it carefully:
 
-- **Nunca** commitear `.env`, `.env.local` ni credenciales. Solo `.env.example` (sin valores) va al repo.
-- Solo pueden tener prefijo `NEXT_PUBLIC_` la URL de Supabase y la **publishable key**. Cualquier clave secreta (`SUPABASE_SECRET_KEY` / service role) vive **solo en el servidor**, en archivos que importen `"server-only"`, y nunca se usa para saltear reglas de negocio por comodidad.
-- **RLS (Row Level Security) activado en todas las tablas.** La autorización real está en las policies de Postgres; los chequeos en la UI son solo de experiencia de usuario.
-- Buckets de Storage (CVs, comprobantes, constancias ARCA) son **privados**. Se accede con URLs firmadas de corta duración.
-- Las rutas públicas (landing, listado de ofertas) **nunca** devuelven datos personales: ni DNI, ni dirección, ni email/teléfono de postulantes, ni CUIT.
-- Login con DNI o CUIT: se resuelve el email **del lado del servidor**. No exponer ningún endpoint que devuelva "el email de este DNI".
-- No loguear datos personales en `console.log` ni en mensajes de error que lleguen al cliente.
-- Validar **todo** input que entra por la API (tipos, largo, formato de DNI/CUIT) antes de tocar la base.
+- **Never** commit `.env`, `.env.local` or credentials. Only `.env.example` (without values) goes into the repo.
+- Only the Supabase URL and the **publishable key** may use the `NEXT_PUBLIC_` prefix. Any secret (`SUPABASE_SECRET_KEY` / service role, SMTP credentials) lives **only on the server**, in files that import `"server-only"`, and is never used to bypass business rules for convenience. Creating Admin accounts (rule 7) is a legitimate use of the secret key, always after verifying the caller is an Admin.
+- **RLS (Row Level Security) enabled on every table.** Real authorization lives in Postgres policies; UI checks are only for user experience.
+- Storage buckets (CVs, proofs of address, ARCA certificates) are **private**. Access goes through short-lived signed URLs.
+- Public routes (landing, offer listing) **never** return personal data: no DNI, address, job seeker email/phone, or CUIT.
+- Login with DNI or CUIT: the email is resolved **on the server**. Never expose an endpoint that returns "the email for this DNI".
+- Do not log personal data with `console.log` nor include it in error messages that reach the client.
+- Validate **every** input entering through the API (types, length, DNI/CUIT format) before touching the database.
 
 ---
 
-## 4. Convenciones de código
+## 4. Code conventions
 
 ### General
-- **TypeScript estricto.** Prohibido `any`; si no sabés el tipo, usá `unknown` y validalo.
-- **Server Components por defecto.** `"use client"` solo cuando haga falta estado, efectos o eventos.
-- Funciones y componentes **chicos y con una sola responsabilidad**. Si un archivo pasa ~200 líneas, probablemente haya que partirlo.
-- Sin código muerto, sin `console.log` olvidados, sin TODOs sin contexto (`// TODO(fase-4): ...` está bien).
-- No duplicar lógica: si algo se repite dos veces, va a `src/lib/` o a un hook.
+- **Strict TypeScript.** `any` is forbidden; if you do not know the type, use `unknown` and validate it.
+- **Server Components by default.** `"use client"` only when state, effects or events are needed.
+- **Small functions and components with a single responsibility.** If a file goes past ~200 lines, it probably needs splitting.
+- No dead code, no forgotten `console.log`, no TODOs without context (`// TODO(phase-4): ...` is fine).
+- Do not duplicate logic: if something repeats twice, move it to `src/lib/` or a hook.
 
-### Idioma y nombres
-- **Dominio en español:** `oferta`, `postulante`, `empresa`, `postulacion`, `categoria`, `estado`.
-- **Convenciones técnicas en inglés** donde es estándar: `use*` para hooks, `page.tsx`, `route.ts`, `GET/POST`, `props`.
-- Componentes: `PascalCase` (`TarjetaOferta.tsx`). Hooks: `useOfertas.ts`. Utilidades: `kebab-case.ts` o `camelCase.ts`, pero consistente dentro de la carpeta.
-- Tablas y columnas de la base: `snake_case` en español (`ofertas`, `fecha_publicacion`).
-- Sin tildes ni ñ en identificadores (`postulacion`, `anio`). En textos de UI, sí.
+### Language and naming
+- **Domain in Spanish:** `oferta`, `postulante`, `empresa`, `postulacion`, `categoria`, `estado`. Do not translate domain identifiers to English.
+- **Technical conventions in English** where standard: `use*` for hooks, `page.tsx`, `route.ts`, `GET/POST`, `props`.
+- Components: `PascalCase` (`TarjetaOferta.tsx`). Hooks: `useOfertas.ts`. Utilities: `kebab-case.ts` or `camelCase.ts`, but consistent within the folder.
+- Database tables and columns: `snake_case` in Spanish (`ofertas`, `fecha_publicacion`).
+- No accents or `ñ` in identifiers (`postulacion`, `anio`). In UI text, yes.
 
-### Comentarios
-- **Siempre en español.**
-- Explican **por qué**, no qué. `// El admin preselecciona antes para no perder el nexo con la empresa` ✅ — `// incrementa i` ❌.
-- Toda función exportada de `src/lib/` y todo Route Handler lleva un comentario JSDoc corto: qué hace, quién puede llamarlo, qué devuelve.
-- Reglas de negocio no obvias → comentario citando la regla (ej: `// Regla 2: solo ofertas publicadas`).
+### Comments
+- **Always in English** (see §0). UI strings stay in Spanish.
+- Explain **why**, not what. `// Admin pre-selects first so the office keeps the link with the company` ✅ — `// increment i` ❌.
+- Every exported function in `src/lib/` and every Route Handler gets a short JSDoc: what it does, who may call it, what it returns.
+- Non-obvious business rules → comment citing the rule (e.g. `// Rule 2: only published offers`).
 
-### Estilos y UI
-- Tailwind v4 + variables de marca de `globals.css` (`--teal`, `--ink`, `--paper`, `--muted`, `--line`). No inventar colores nuevos sin necesidad.
-- Componentes base con shadcn (`npx shadcn add <componente>`), estilo `base-nova` sobre **Base UI** (no Radix).
-- Mobile-first: diseñar para celular y escalar.
-- Accesibilidad mínima: labels en todos los inputs, textos alternativos, contraste suficiente, navegable con teclado.
-- Todo lo que carga datos tiene estado de **carga**, **vacío** y **error**.
+### Styles and UI
+- Tailwind v4. Design tokens live in `src/app/globals.css` inside `@theme` and are consumed as Tailwind utilities (`bg-primary`, `text-muted-foreground`, `border-border`…). Token table in `CLAUDE.md`.
+- Use **semantic tokens**. Do not use raw hex values or Tailwind palette colors (`bg-gray-50`, `text-green-700`) in new code. If a new color is really needed, add it as a token in `@theme`.
+- Base components via shadcn (`npx shadcn add <component>`), `base-nova` style on **Base UI** (not Radix). shadcn components consume the same semantic tokens.
+- Mobile-first: design for phones and scale up.
+- Minimum accessibility: labels on every input, alt text, sufficient contrast, keyboard navigable.
+- Everything that loads data has **loading**, **empty** and **error** states.
 
 ---
 
-## 5. Estructura de carpetas
+## 5. Folder structure
 
 ```
 src/
-├── app/                    # Rutas (App Router)
-│   ├── (publico)/          # Landing, ofertas públicas, login, registro
-│   ├── postulante/         # Área privada del postulante
-│   ├── empresa/            # Área privada de la empresa
-│   ├── admin/              # Área privada del admin
+├── app/                    # Routes (App Router)
+│   ├── (publico)/          # Landing, public offers, login, sign-up
+│   ├── postulante/         # Job seeker private area
+│   ├── empresa/            # Company private area
+│   ├── admin/              # Admin private area
 │   └── api/                # Route Handlers
 ├── components/
-│   ├── ui/                 # Generados por shadcn (se pueden tocar, con criterio)
-│   └── <dominio>/          # Componentes propios agrupados por dominio (ofertas/, postulantes/…)
-├── hooks/                  # Custom hooks de cliente
+│   ├── ui/                 # Generated by shadcn (may be edited, with care)
+│   └── <dominio>/          # Own components grouped by domain (ofertas/, postulantes/…)
+├── hooks/                  # Client custom hooks
 ├── lib/
-│   ├── supabase/           # client.ts (browser) y server.ts (servidor)
-│   ├── validaciones/       # Esquemas de validación de inputs
-│   ├── estados.ts          # Enums y transiciones de estado (fuente única)
-│   └── utils.ts            # cn() y utilidades generales
+│   ├── supabase/           # client.ts (browser) and server.ts (server)
+│   ├── validaciones/       # Input validation schemas
+│   ├── estados.ts          # Status enums and transitions (single source of truth)
+│   └── utils.ts            # cn() and general utilities
 └── types/
-    └── database.ts         # Tipos generados desde Supabase (no editar a mano)
+    └── database.ts         # Types generated from Supabase (do not edit by hand)
 
 supabase/
-├── migrations/             # Cambios de esquema versionados (SQL)
-└── seed.sql                # Datos de prueba / demo
-docs/                       # Roadmap, guía de Next.js, diagramas
+├── migrations/             # Versioned schema changes (SQL)
+└── seed.sql                # Test / demo data
+docs/                       # Roadmap, Next.js guide, research, diagrams
 ```
 
-> La estructura se va creando a medida que avanzan las fases. No crear carpetas vacías "por las dudas".
+> The structure is created as phases progress. Do not create empty folders "just in case".
 
 ---
 
-## 6. Base de datos (Supabase / PostgreSQL)
+## 6. Database (Supabase / PostgreSQL)
 
-- **Todo cambio de esquema es una migración** en `supabase/migrations/`. Si se toca algo desde el dashboard de Supabase, se refleja en una migración ese mismo día.
-- Cada tabla nueva: `id uuid` como PK, `created_at` y `updated_at`, RLS activado y sus policies **en la misma migración**.
-- Los estados son **enums de Postgres**, alineados con `src/lib/estados.ts`.
-- Después de migrar, regenerar tipos en `src/types/database.ts`.
-- Nunca borrar datos de producción en una migración sin confirmación explícita.
+- **Every schema change is a migration** in `supabase/migrations/`. If something is changed from the Supabase dashboard, it is reflected in a migration the same day.
+- Every new table: `id uuid` as PK, `created_at` and `updated_at`, RLS enabled and its policies **in the same migration**.
+- Statuses are **Postgres enums**, aligned with `src/lib/estados.ts`.
+- After migrating, regenerate types in `src/types/database.ts`.
+- Never delete production data in a migration without explicit confirmation.
 
 ---
 
 ## 7. API (Route Handlers)
 
-- Rutas en plural y en español: `/api/ofertas`, `/api/ofertas/[id]`, `/api/postulaciones`.
-- Lecturas: preferir hacerlas directo en Server Components con el cliente de servidor. La API se usa para lo que consume el cliente y para las mutaciones.
-- Orden dentro de cada handler: **1) autenticación → 2) autorización (rol) → 3) validación del input → 4) lógica → 5) respuesta**.
-- Respuestas:
-  - Éxito: el recurso directo (`Response.json(oferta)`), con `201` al crear y `204` al borrar.
-  - Error: siempre `{ error: string }` con el código correcto (`400`, `401`, `403`, `404`, `409`, `500`). Mensajes en español, sin detalles internos.
-- En Next.js 16, `params` es una **Promise**: `const { id } = await params`.
+- Plural routes in Spanish: `/api/ofertas`, `/api/ofertas/[id]`, `/api/postulaciones`.
+- Reads: prefer doing them directly in Server Components with the server client. The API is for what the client consumes and for mutations.
+- Order inside every handler: **1) authentication → 2) authorization (role) → 3) input validation → 4) logic → 5) response**.
+- Responses:
+  - Success: the resource itself (`Response.json(oferta)`), with `201` on create and `204` on delete.
+  - Error: always `{ error: string }` with the correct status code (`400`, `401`, `403`, `404`, `409`, `500`). Messages in Spanish (they reach the user), without internal details.
+- In Next.js 16, `params` is a **Promise**: `const { id } = await params`.
 
 ---
 
 ## 8. Git
 
-- `main` siempre funciona. Nadie trabaja directo sobre `main`.
-- Una rama por tarea: `feature/<tarea>`, `fix/<bug>`, `docs/<tema>`, `chore/<tema>`.
-- Commits chicos, en español, con [Conventional Commits](https://www.conventionalcommits.org/es/): `feat:`, `fix:`, `refactor:`, `style:`, `docs:`, `chore:`.
-- Integración por Pull Request, revisado por el compañero.
+- `main` always works. Nobody works directly on `main`.
+- One branch per task: `feature/<task>`, `fix/<bug>`, `docs/<topic>`, `chore/<topic>`.
+- Small commits, in Spanish, with [Conventional Commits](https://www.conventionalcommits.org/es/): `feat:`, `fix:`, `refactor:`, `style:`, `docs:`, `chore:`.
+- Integration via Pull Request, reviewed by the teammate.
 
 ---
 
-## 9. Qué NO hacer sin preguntar antes
+## 9. Do NOT do without asking first
 
-- Instalar, actualizar o sacar dependencias.
-- Crear o modificar migraciones / esquema de la base / policies de RLS.
-- Hacer `commit`, `push`, `merge` o reescribir historia de Git.
-- Tocar archivos de configuración (`next.config.*`, `tsconfig.json`, `components.json`, `eslint.config.*`).
-- Cambiar una regla de negocio de la sección 2.
-- Inventar nombres de tablas, columnas o decisiones de negocio que no estén documentadas: **si falta el dato, se pregunta**.
+- Install, update or remove dependencies.
+- Create or modify migrations / database schema / RLS policies.
+- `commit`, `push`, `merge` or rewrite Git history.
+- Touch configuration files (`next.config.*`, `tsconfig.json`, `components.json`, `eslint.config.*`).
+- Change a business rule from section 2.
+- Invent table names, columns or business decisions that are not documented: **if data is missing, ask**.
 
 ---
 
-## 10. Definición de "terminado"
+## 10. Definition of "done"
 
-Una tarea está terminada cuando:
+A task is done when:
 
-- [ ] `npm run lint` y `npm run build` pasan sin errores.
-- [ ] Funciona en celular y en escritorio.
-- [ ] Tiene estados de carga, vacío y error donde corresponde.
-- [ ] Respeta las reglas de negocio y de seguridad de este archivo.
-- [ ] Comentarios en español donde aportan.
-- [ ] Si cambió rutas, variables de entorno o setup → se actualizó el `README.md`.
-- [ ] Se tildó la tarea en `docs/ROADMAP.md`.
+- [ ] `npm run lint` and `npm run build` pass without errors.
+- [ ] It works on phone and desktop.
+- [ ] It has loading, empty and error states where relevant.
+- [ ] It honors the business and security rules in this file.
+- [ ] Comments in English where they add value.
+- [ ] If routes, environment variables or setup changed → `README.md` was updated.
+- [ ] The task was checked off in `docs/ROADMAP.md`.

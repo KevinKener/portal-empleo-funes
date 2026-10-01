@@ -1,169 +1,186 @@
-# Roadmap — Portal Municipal de Empleo
+# Roadmap — Municipal Job Portal
 
-Plan de trabajo del MVP (~3 meses) dividido en fases. Cada fase termina en algo **demostrable**, para poder mostrar avances concretos en cada revisión.
+MVP work plan (~3 months) split into phases. Each phase ends in something **demoable**, so concrete progress can be shown at every review.
 
-Leyenda: `[x]` hecho · `[ ]` pendiente · `[~]` en curso
-
----
-
-## Estado actual
-
-- **Fase en curso:** Fase 1 — Supabase y modelo de datos
-- **Último avance:** integración de Supabase commiteada en `feature/supabase-setup` (clientes, dependencias, `.env.example`); documentación del proyecto en `docs/documentacion-proyecto`. Sin push.
-- **Próximo paso:** validar con el equipo el esquema de datos propuesto antes de escribir la migración inicial.
-
-> Actualizar esta sección al cerrar cada sesión de trabajo.
+Legend: `[x]` done · `[ ]` pending · `[~]` in progress
 
 ---
 
-## Fase 0 — Base del proyecto ✅
+## Current status
 
-**Objetivo:** proyecto andando con el stack del curso y convenciones claras.
+- **Current phase:** Phase 1 — Supabase and data model.
+- **Latest progress:** tutor review applied on `docs/correcciones-tutor`: agent instructions in English, design tokens migrated to `@theme`, flat Admin model, email notifications research. Previous branches `feature/supabase-setup` and `docs/documentacion-proyecto` are pushed but not yet merged into `main`.
+- **Next step:** validate the proposed schema with the team, then write the initial migration.
+
+> Update this section at the end of every work session.
+
+---
+
+## Tutor review — 2026-10-01
+
+- [x] `AGENTS.md` / `CLAUDE.md` in English + explicit "User Communication" section (chat in Spanish)
+- [x] Technical plans written to files and code comments in English; Spanish reserved for app-visible text
+- [x] Migrate `:root` variables to semantic tokens in `@theme` (shadcn-compatible)
+- [x] Admin accounts: flat model chosen (any Admin creates Admins, nobody deletes from the app) — business rule 7
+- [x] Research: status email notifications in v1 → [`docs/research/email-notifications.md`](research/email-notifications.md)
+- [x] Email provider decided: **Gmail SMTP**
+- [x] Status email notifications approved for v1, sent from a demo Gmail account of the Employment Office
+- [ ] Approve installing `nodemailer` when the email task starts
+
+---
+
+## Phase 0 — Project base ✅
+
+**Goal:** project running with the course stack and clear conventions.
 
 - [x] Next.js 16 + React 19 + TypeScript
-- [x] Tailwind CSS v4 + variables de marca en `globals.css`
-- [x] shadcn/ui (`base-nova` sobre Base UI)
-- [x] Rutas esqueleto: `/`, `/ofertas`, `/ofertas/[id]`, `/empresa`, `/admin`
-- [x] Ejemplo Client Component + Route Handler (`/saludo`, `/api/saludo`) y hook `useOferta`
-- [x] Documentación: `README.md`, `AGENTS.md`, `CLAUDE.md`, guía de Next.js
+- [x] Tailwind CSS v4 + design tokens in `globals.css`
+- [x] shadcn/ui (`base-nova` on Base UI)
+- [x] Skeleton routes: `/`, `/ofertas`, `/ofertas/[id]`, `/empresa`, `/admin`
+- [x] Client Component + Route Handler example (`/saludo`, `/api/saludo`) and `useOferta` hook
+- [x] Documentation: `README.md`, `AGENTS.md`, `CLAUDE.md`, Next.js guide
 
-**Demo:** el proyecto levanta, navega entre páginas y consume una API propia.
-
----
-
-## Fase 1 — Supabase y modelo de datos `[~]`
-
-**Objetivo:** base de datos real, segura y versionada.
-
-- [x] Clientes de Supabase (`src/lib/supabase/client.ts` y `server.ts`)
-- [x] Dependencias instaladas
-- [x] `.env.example` + `.gitignore` actualizados
-- [x] Commit de la integración
-- [ ] Validar con el equipo el esquema propuesto (ver abajo)
-- [ ] Migración inicial: tablas + enums de estado
-- [ ] Policies de RLS por rol en la misma migración
-- [ ] Buckets de Storage privados: `cvs`, `comprobantes-domicilio`, `constancias-arca`
-- [ ] Tipos generados en `src/types/database.ts`
-- [ ] `src/lib/estados.ts` con enums y transiciones
-- [ ] `supabase/seed.sql` con categorías y ofertas de demo
-
-**Demo:** tablas creadas en Supabase con datos de ejemplo y RLS activo.
-
-### Esquema propuesto (a validar antes de migrar)
-
-| Tabla | Campos principales | Notas |
-|-------|-------------------|-------|
-| `perfiles` | `id` (= `auth.users.id`), `rol` | `rol`: `postulante` \| `empresa` \| `admin` |
-| `postulantes` | `perfil_id`, `dni` (único), `nombre`, `apellido`, `localidad`, `direccion`, `telefono`, `descripcion`, `cv_url`, `comprobante_url`, `estado_domicilio` | CV armado en plataforma o PDF |
-| `empresas` | `perfil_id`, `razon_social`, `cuit` (único), `nombre_comercial`, `telefono`, `direccion`, `constancia_arca_url`, `estado` | Arranca `pendiente` |
-| `categorias` | `id`, `nombre` | Rubros |
-| `postulante_categorias` | `postulante_id`, `categoria_id` | N:M (multi-categoría) |
-| `ofertas` | `empresa_id`, `titulo`, `descripcion`, `categoria_id`, `requisitos`, `modalidad`, `estado`, `motivo_rechazo`, `fecha_publicacion` | Solo `publicada` es pública |
-| `postulaciones` | `oferta_id`, `postulante_id`, `estado`, `notas_admin` | Único (`oferta_id`, `postulante_id`) |
-| `seguimientos` | `postulacion_id`, `fecha`, `notas` | Contratados, cada 2 meses |
-| `cursos` | `nombre`, `descripcion`, `enlace` | Capacitaciones |
-| `derivaciones` | `postulante_id`, `curso_id`, `fecha` | Rechazados → cursos |
+**Demo:** the project starts, navigates between pages and consumes its own API.
 
 ---
 
-## Fase 2 — Portal público
+## Phase 1 — Supabase and data model `[~]`
 
-**Objetivo:** cualquier vecino puede ver ofertas sin loguearse.
+**Goal:** real, secure and versioned database.
 
-- [ ] `GET /api/ofertas` (solo `publicada`, filtro por categoría, paginado)
-- [ ] `GET /api/ofertas/[id]` (404 si no existe o no está publicada)
-- [ ] Extender la interfaz `Oferta` en `useOferta` con los campos reales
-- [ ] Landing con presentación del portal y últimas ofertas
-- [ ] Listado `/ofertas` con filtro por categoría
-- [ ] Detalle `/ofertas/[id]` con botón "Postularme" (lleva a login si no hay sesión)
-- [ ] Layout general: header, navegación, footer, responsive
+- [x] Supabase clients (`src/lib/supabase/client.ts` and `server.ts`)
+- [x] Dependencies installed
+- [x] `.env.example` + `.gitignore` updated
+- [x] Integration committed
+- [ ] Validate the proposed schema with the team (see below)
+- [ ] Initial migration: tables + status enums
+- [ ] RLS policies per role in the same migration
+- [ ] Private Storage buckets: `cvs`, `comprobantes-domicilio`, `constancias-arca`
+- [ ] Generated types in `src/types/database.ts`
+- [ ] `src/lib/estados.ts` with enums and transitions
+- [ ] `supabase/seed.sql` with demo categories and offers
 
-**Demo:** portal público navegable desde el celular con ofertas reales de la base.
+**Demo:** tables created in Supabase with sample data and RLS active.
 
----
+### Proposed schema (to validate before migrating)
 
-## Fase 3 — Autenticación y roles
-
-**Objetivo:** cada rol entra a su área y no puede ver la de los demás.
-
-- [ ] Registro de postulante (DNI, nombre, apellido, localidad, dirección, teléfono, email, contraseña)
-- [ ] Registro de empresa (razón social, CUIT, nombre comercial, teléfono, dirección, constancia ARCA, email, contraseña)
-- [ ] Login con DNI/CUIT o email + contraseña (resolución de email del lado del servidor)
-- [ ] Recuperación de contraseña por código al email
-- [ ] Protección de rutas por rol (`proxy.ts`, ver doc de Next 16)
-- [ ] Creación manual de cuenta Admin documentada en el README
-- [ ] Cerrar sesión
-
-**Demo:** registrarse como postulante y como empresa, y comprobar que cada uno solo accede a su área.
-
----
-
-## Fase 4 — Postulante
-
-**Objetivo:** el postulante puede completar su perfil y postularse.
-
-- [ ] Completar/editar perfil y datos personales
-- [ ] CV armado en la plataforma **o** subida de PDF
-- [ ] Selección de varias categorías
-- [ ] Subida de comprobante de domicilio (estado `pendiente`)
-- [ ] Postularse a una oferta (sin duplicados)
-- [ ] "Mis postulaciones" con estado de cada una
-
-**Demo:** un vecino arma su perfil desde el celular y se postula.
+| Table | Main fields | Notes |
+|-------|-------------|-------|
+| `perfiles` | `id` (= `auth.users.id`), `rol` | `rol`: `postulante` \| `empresa` \| `admin`. Flat Admin model: no extra role needed |
+| `postulantes` | `perfil_id`, `dni` (unique), `nombre`, `apellido`, `localidad`, `direccion`, `telefono`, `descripcion`, `cv_url`, `comprobante_url`, `estado_domicilio` | CV built on the platform or PDF |
+| `empresas` | `perfil_id`, `razon_social`, `cuit` (unique), `nombre_comercial`, `telefono`, `direccion`, `constancia_arca_url`, `estado` | Starts `pendiente` |
+| `categorias` | `id`, `nombre` | Fields/industries |
+| `postulante_categorias` | `postulante_id`, `categoria_id` | N:M (multi-category) |
+| `ofertas` | `empresa_id`, `titulo`, `descripcion`, `categoria_id`, `requisitos`, `modalidad`, `estado`, `motivo_rechazo`, `fecha_publicacion` | Only `publicada` is public |
+| `postulaciones` | `oferta_id`, `postulante_id`, `estado`, `notas_admin` | Unique (`oferta_id`, `postulante_id`) |
+| `seguimientos` | `postulacion_id`, `fecha`, `notas` | Hired people, every 2 months |
+| `cursos` | `nombre`, `descripcion`, `enlace` | Training courses |
+| `derivaciones` | `postulante_id`, `curso_id`, `fecha` | Rejected → courses |
 
 ---
 
-## Fase 5 — Empresa
+## Phase 2 — Public portal
 
-**Objetivo:** la empresa publica ofertas y recibe candidatos preseleccionados.
+**Goal:** any resident can see offers without logging in.
 
-- [ ] Aviso de cuenta pendiente de verificación (sin carga de ofertas)
-- [ ] ABM de ofertas (quedan `pendiente` al crearse)
-- [ ] Ver estado de mis ofertas (pendiente / publicada / rechazada + motivo)
-- [ ] Ver candidatos **preseleccionados** y aceptar/rechazar
-- [ ] Registrar contratación
-- [ ] Editar datos de la empresa
+- [ ] `GET /api/ofertas` (only `publicada`, category filter, paginated)
+- [ ] `GET /api/ofertas/[id]` (404 if missing or not published)
+- [ ] Extend the `Oferta` interface in `useOferta` with the real fields
+- [ ] Landing with portal presentation and latest offers
+- [ ] `/ofertas` listing with category filter
+- [ ] `/ofertas/[id]` detail with "Postularme" button (goes to login if there is no session)
+- [ ] General layout: header, navigation, footer, responsive
 
-**Demo:** una empresa carga una oferta y ve el flujo hasta la contratación.
-
----
-
-## Fase 6 — Administrador (Oficina de Empleo)
-
-**Objetivo:** la oficina controla todo el circuito.
-
-- [ ] Aprobar/rechazar registro de empresas
-- [ ] Verificar domicilio de postulantes (ver comprobante)
-- [ ] Aprobar/rechazar ofertas (con motivo)
-- [ ] Preselección de postulantes por oferta
-- [ ] Buscador de postulantes por categoría, nombre o localidad (filtro "domicilio verificado")
-- [ ] Dashboard de indicadores: postulantes, contratados, tasa de empleabilidad
-- [ ] Seguimiento de contratados (recordatorio cada 2 meses)
-- [ ] Derivar postulantes no seleccionados a cursos
-
-**Demo:** circuito completo de punta a punta: empresa → admin → postulante → contratación.
+**Demo:** public portal navigable from a phone with real offers from the database.
 
 ---
 
-## Fase 7 — Calidad y entrega
+## Phase 3 — Authentication and roles
 
-**Objetivo:** MVP prolijo y listo para presentar.
+**Goal:** each role enters its own area and cannot see the others.
 
-- [ ] Revisión responsive en celular, tablet y PC
-- [ ] Accesibilidad básica y estados de carga/vacío/error en todas las pantallas
-- [ ] Revisión de policies de RLS y de datos expuestos en rutas públicas
-- [ ] Datos de demo realistas en el seed
-- [ ] Tests de las reglas críticas (transiciones de estado, permisos) — a definir herramienta
-- [ ] Deploy en Vercel con variables de entorno configuradas
-- [ ] README final + guion de la demo
+- [ ] Create the demo Gmail account for the Employment Office (2FA + App Password)
+- [ ] Custom SMTP (Gmail) in Supabase Auth + auth email templates in Spanish (required: the default provider only emails project team members)
+- [ ] Job seeker sign-up (DNI, first name, last name, city, address, phone, email, password)
+- [ ] Company sign-up (legal name, CUIT, trade name, phone, address, ARCA certificate, email, password)
+- [ ] Login with DNI/CUIT or email + password (email resolved on the server)
+- [ ] Password recovery via code sent by email
+- [ ] Route protection per role (`proxy.ts`, see Next 16 docs)
+- [ ] Manual creation of the seed Admin account documented in the README
+- [ ] Log out
 
-**Demo:** presentación final en producción.
+**Demo:** sign up as a job seeker and as a company, and check each one only reaches its own area.
 
 ---
 
-## v2 (fuera del MVP)
+## Phase 4 — Job seeker
 
-- Notificaciones automáticas de cursos a postulantes no seleccionados
-- Emails de aviso por cambio de estado
-- Exportación de indicadores para provincia (Excel/PDF)
-- Integración con padrón oficial para verificar domicilio
+**Goal:** the job seeker can complete their profile and apply.
+
+- [ ] Complete/edit profile and personal data
+- [ ] CV built on the platform **or** PDF upload
+- [ ] Select several categories
+- [ ] Upload proof of address (status `pendiente`)
+- [ ] Apply to an offer (no duplicates)
+- [ ] "Mis postulaciones" with the status of each one
+
+**Demo:** a resident builds their profile from a phone and applies.
+
+---
+
+## Phase 5 — Company
+
+**Goal:** the company posts offers and receives pre-selected candidates.
+
+- [ ] Pending-verification notice (no offer posting)
+- [ ] Offer CRUD (created as `pendiente`)
+- [ ] See the status of my offers (pending / published / rejected + reason)
+- [ ] See **pre-selected** candidates and accept/reject
+- [ ] Record a hire
+- [ ] Edit company data
+
+**Demo:** a company posts an offer and sees the flow through to the hire.
+
+---
+
+## Phase 6 — Administrator (Employment Office)
+
+**Goal:** the office controls the whole flow.
+
+- [ ] Approve/reject company sign-ups
+- [ ] Verify job seeker addresses (view proof)
+- [ ] Approve/reject offers (with reason)
+- [ ] Pre-select job seekers per offer
+- [ ] Job seeker search by category, name or city ("verified address" filter)
+- [ ] Metrics dashboard: job seekers, hires, employability rate
+- [ ] Follow-up of hires (reminder every 2 months)
+- [ ] Refer non-selected job seekers to courses
+- [ ] Create other Admin accounts (flat model, rule 7; server-only, uses the secret key after checking the caller is Admin)
+- [ ] Status-change email notifications via Gmail SMTP ([research](research/email-notifications.md))
+
+**Demo:** full end-to-end flow: company → admin → job seeker → hire.
+
+---
+
+## Phase 7 — Quality and delivery
+
+**Goal:** polished MVP ready to present.
+
+- [ ] Responsive review on phone, tablet and desktop
+- [ ] Basic accessibility and loading/empty/error states on every screen
+- [ ] Review of RLS policies and data exposed on public routes
+- [ ] Realistic demo data in the seed
+- [ ] Tests for critical rules (status transitions, permissions) — tool to be defined
+- [ ] Deploy to Vercel with environment variables configured
+- [ ] Final README + demo script
+
+**Demo:** final presentation in production.
+
+---
+
+## v2 (outside the MVP)
+
+- Automatic course notifications to non-selected job seekers
+- Metrics export for the province (Excel/PDF)
+- Integration with the official registry to verify addresses
+- Super-admin role (create **and delete** Admins), if the flat model falls short

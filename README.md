@@ -20,7 +20,7 @@ Un portal digital con tres roles, donde **cada uno tiene una función clara** y 
 |-----|-------|
 | 👤 **Postulante** | Registrarse, armar su CV (en la plataforma o subiendo un PDF), elegir varios rubros, verificar su domicilio en Funes, postularse y seguir el estado de sus postulaciones. |
 | 🏢 **Empresa** | Registrarse (queda pendiente de verificación), cargar ofertas, recibir candidatos preseleccionados y registrar contrataciones. |
-| 🏛️ **Admin** (Oficina de Empleo) | Aprobar empresas, ofertas y domicilios; preseleccionar postulantes; buscar perfiles; ver indicadores; hacer seguimiento y derivar a cursos. |
+| 🏛️ **Admin** (Oficina de Empleo) | Aprobar empresas, ofertas y domicilios; preseleccionar postulantes; buscar perfiles; ver indicadores; hacer seguimiento, derivar a cursos y dar de alta otros admins. |
 
 ## Flujo de negocio
 
@@ -140,7 +140,8 @@ docs/             # Roadmap, guía de Next.js y material del proyecto
 |-----------|----------|
 | [`docs/ROADMAP.md`](docs/ROADMAP.md) | Fases, tareas y estado actual |
 | [`docs/guia-nextjs.md`](docs/guia-nextjs.md) | Guía práctica de Next.js 16 para el equipo (rutas, componentes, API, Git) |
-| [`AGENTS.md`](AGENTS.md) | Reglas de negocio, seguridad y convenciones |
+| [`AGENTS.md`](AGENTS.md) | Reglas de negocio, seguridad y convenciones (en inglés, para agentes de IA) |
+| [`docs/research/`](docs/research/) | Investigaciones técnicas (ej.: notificaciones por email) |
 
 ---
 

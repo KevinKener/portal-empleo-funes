@@ -1,91 +1,121 @@
 # CLAUDE.md
 
-Guía para Claude Code cuando trabaja en este repositorio.
-Las reglas generales (negocio, seguridad, convenciones) están en `AGENTS.md` y el plan en `docs/ROADMAP.md`; ambos se cargan acá:
+Guide for Claude Code when working in this repository.
+General rules (business, security, conventions, user communication) live in `AGENTS.md` and the plan in `docs/ROADMAP.md`; both are loaded here:
 
 @AGENTS.md
 @docs/ROADMAP.md
 
 ---
 
-## Comandos
+## User Communication
+
+The user communicates in Spanish.
+
+All explanations, implementation plans, progress updates, questions, summaries, and final reports must be written in Rioplatense Spanish.
+
+Do not translate source code, technical identifiers, file paths, commands, library names, API names, or established software terminology unless necessary for clarity.
+
+Files follow the language table in `AGENTS.md` §0 (instructions, technical plans and code comments in English; UI text in Spanish).
+
+---
+
+## Commands
 
 ```bash
-npm run dev      # servidor de desarrollo (http://localhost:3000)
-npm run build    # build de producción — correrlo antes de dar algo por terminado
+npm run dev      # dev server (http://localhost:3000)
+npm run build    # production build — run it before calling anything done
 npm run lint     # ESLint (eslint-config-next)
 ```
 
-No hay test runner configurado todavía (ver Fase 7 del roadmap).
+There is no test runner yet (see Phase 7 in the roadmap).
 
 ---
 
-## Arquitectura actual
+## Current architecture
 
-**Portal Municipal de Empleo** — Next.js 16 (App Router) + React 19 + TypeScript, en español.
-Todo el código vive en `src/`. El alias `@/*` apunta a `src/*`.
+**Municipal Job Portal** — Next.js 16 (App Router) + React 19 + TypeScript. UI in Spanish.
+All code lives in `src/`. The `@/*` alias points to `src/*`.
 
-| Ruta | Archivo | Estado |
-|------|---------|--------|
-| `/` | `src/app/page.tsx` | Home (esqueleto) |
-| `/ofertas` | `src/app/ofertas/page.tsx` | Listado (esqueleto) |
-| `/ofertas/[id]` | `src/app/ofertas/[id]/page.tsx` | Detalle dinámico (esqueleto) |
-| `/empresa` | `src/app/empresa/page.tsx` | Dashboard empresa (esqueleto) |
-| `/admin` | `src/app/admin/page.tsx` | Dashboard admin (esqueleto) |
-| `/saludo` | `src/app/saludo/page.tsx` | Ejemplo de Client Component + fetch |
-| `/api/saludo` | `src/app/api/saludo/route.ts` | Endpoint de ejemplo |
+| Route | File | Status |
+|-------|------|--------|
+| `/` | `src/app/page.tsx` | Home (skeleton) |
+| `/ofertas` | `src/app/ofertas/page.tsx` | Listing (skeleton) |
+| `/ofertas/[id]` | `src/app/ofertas/[id]/page.tsx` | Dynamic detail (skeleton) |
+| `/empresa` | `src/app/empresa/page.tsx` | Company dashboard (skeleton) |
+| `/admin` | `src/app/admin/page.tsx` | Admin dashboard (skeleton) |
+| `/saludo` | `src/app/saludo/page.tsx` | Client Component + fetch example |
+| `/api/saludo` | `src/app/api/saludo/route.ts` | Example endpoint |
 
-Otros archivos clave:
+Other key files:
 
-- `src/lib/supabase/client.ts` → cliente de Supabase para el **navegador** (Client Components).
-- `src/lib/supabase/server.ts` → cliente de Supabase para el **servidor** (Server Components, Route Handlers).
-- `src/hooks/useOferta.ts` → consume `/api/ofertas/[id]` (la ruta todavía **no existe**, ver Fase 2).
-- `src/app/globals.css` → Tailwind v4 (`@import "tailwindcss"`, sin `tailwind.config.*`) + variables de marca en `:root`.
-- `src/app/empresa/empresa.styles.css` → estilos específicos de esa ruta.
-- `components.json` → config de shadcn (`base-nova` sobre **Base UI**, `@base-ui/react`, no Radix).
-- `cn()` se reexporta desde `@/lib/utils`.
+- `src/lib/supabase/client.ts` → Supabase client for the **browser** (Client Components).
+- `src/lib/supabase/server.ts` → Supabase client for the **server** (Server Components, Route Handlers).
+- `src/hooks/useOferta.ts` → consumes `/api/ofertas/[id]` (the route does **not exist yet**, see Phase 2).
+- `src/app/globals.css` → Tailwind v4 (`@import "tailwindcss"`, no `tailwind.config.*`) + design tokens in `@theme`.
+- `src/app/empresa/empresa.styles.css` → route-specific styles.
+- `components.json` → shadcn config (`base-nova` on **Base UI**, `@base-ui/react`, not Radix).
+- `cn()` is re-exported from `@/lib/utils`.
 
-> Mantener esta tabla actualizada cuando se agreguen rutas.
+> Keep this table up to date when routes are added.
+
+### Design tokens (`globals.css` → `@theme`)
+
+Each token generates Tailwind utilities (`bg-*`, `text-*`, `border-*`…) and a CSS variable (`var(--color-*)`).
+
+| Token | Use |
+|-------|-----|
+| `background` / `foreground` | Page background (paper) / main text (ink) |
+| `card`, `popover` (+ `-foreground`) | Raised surfaces |
+| `primary` / `primary-foreground` | Brand teal: main actions, links, focus |
+| `primary-hover`, `primary-deep` | Primary hover state / dark brand panels |
+| `secondary` (+ `-foreground`) | Soft teal surfaces (notices, badges) |
+| `muted` / `muted-foreground` | Subtle surfaces / secondary text |
+| `accent` (+ `-foreground`) | Hover/selected surfaces in menus and lists |
+| `destructive` | Errors and invalid fields |
+| `border`, `input`, `ring` | Borders, input borders, focus ring |
+| `font-sans`, `font-serif` | Body font / headings font |
 
 ---
 
-## Next.js 16 — lo que cambia respecto a lo que "sabés"
+## Next.js 16 — what differs from what you "know"
 
-- **`params` es una Promise** en rutas dinámicas (páginas y Route Handlers): siempre `await params`.
-- **Layouts** usan `LayoutProps<"/ruta">` importado de `next`, no `{ children: ReactNode }` a mano.
-- El antiguo `middleware.ts` pasó a llamarse **`proxy.ts`** en Next 16 — confirmarlo en la doc local antes de crear la protección de rutas (Fase 3).
-- Ante cualquier duda, **leer `node_modules/next/dist/docs/`** antes de escribir código. Si un patrón de internet no funciona, es probablemente por esto.
+- **`params` is a Promise** in dynamic routes (pages and Route Handlers): always `await params`.
+- **Layouts** use `LayoutProps<"/route">` imported from `next`, not a hand-written `{ children: ReactNode }`.
+- The old `middleware.ts` is now **`proxy.ts`** in Next 16 — confirm it in the local docs before building route protection (Phase 3).
+- `after()` from `next/server` runs work after the response is sent (useful for non-blocking side effects such as notification emails).
+- When in doubt, **read `node_modules/next/dist/docs/`** before writing code. If a pattern from the internet does not work, this is probably why.
 
 ---
 
-## Supabase en este proyecto
+## Supabase in this project
 
-- Variables (en `.env.local`, nunca commiteado):
+- Variables (in `.env.local`, never committed):
   - `NEXT_PUBLIC_SUPABASE_URL`
   - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
-  - `SUPABASE_SECRET_KEY` → **solo si hace falta**, solo en servidor, con `import "server-only"`.
-- En Server Components y Route Handlers usar siempre el cliente de `server.ts` (maneja las cookies de sesión). En el navegador, el de `client.ts`.
-- Los tipos de la base se importan de `@/types/database` (generados). No tipar filas a mano.
-- **No asumir nombres de tablas ni columnas.** Si no están en una migración de `supabase/migrations/` o en el esquema propuesto del roadmap, preguntar.
+  - `SUPABASE_SECRET_KEY` → **only if needed** (e.g. creating Admin accounts, rule 7), server only, with `import "server-only"`.
+- In Server Components and Route Handlers always use the client from `server.ts` (it handles session cookies). In the browser, the one from `client.ts`.
+- Database types are imported from `@/types/database` (generated). Do not type rows by hand.
+- **Do not assume table or column names.** If they are not in a migration under `supabase/migrations/` or in the roadmap's proposed schema, ask.
 
 ---
 
-## Forma de trabajo en cada sesión
+## Workflow for every session
 
-1. **Ubicarse:** leer la sección "Estado actual" del roadmap y confirmar en qué tarea estamos.
-2. **Planificar antes de tocar:** si la tarea afecta más de 2 archivos, la base de datos o la autenticación, primero proponer un plan corto (archivos a crear/modificar y por qué) y **esperar el OK**.
-3. **Cambios chicos y enfocados:** hacer solo lo que pide la tarea. Si aparece algo para mejorar fuera de alcance, anotarlo al final como sugerencia, no hacerlo.
-4. **Verificar:** correr `npm run lint` y `npm run build` antes de decir que está listo.
-5. **Cerrar la tarea:**
-   - tildar el ítem en `docs/ROADMAP.md` y actualizar "Estado actual";
-   - si cambiaron rutas, variables o setup → actualizar `README.md` y la tabla de arriba;
-   - **proponer** el mensaje de commit (Conventional Commits, en español). No commitear ni pushear sin que el usuario lo pida.
-6. **Si falta información** (decisión de negocio, nombre de tabla, credencial): frenar y preguntar. No inventar.
+1. **Get oriented:** read the "Current status" section of the roadmap and confirm which task we are on.
+2. **Plan before touching:** if the task affects more than 2 files, the database or authentication, first propose a short plan (files to create/modify and why) and **wait for the OK**. The plan is presented to the user in Spanish; if it is saved to a file, the file is in English.
+3. **Small, focused changes:** do only what the task asks. If something worth improving shows up out of scope, list it at the end as a suggestion, do not do it.
+4. **Verify:** run `npm run lint` and `npm run build` before saying it is ready.
+5. **Close the task:**
+   - check off the item in `docs/ROADMAP.md` and update "Current status";
+   - if routes, variables or setup changed → update `README.md` and the table above;
+   - **propose** the commit message (Conventional Commits, in Spanish). Do not commit or push unless the user asks.
+6. **If information is missing** (business decision, table name, credential): stop and ask. Do not invent.
 
 ---
 
-## Estilo de respuesta
+## Response style
 
-- Hablar en **español rioplatense**, directo y estructurado.
-- Explicar decisiones en 1–2 líneas; el detalle va en los comentarios del código.
-- Al terminar, resumir: qué se hizo, qué archivos se tocaron, cómo probarlo y qué sigue.
+- Speak in **Rioplatense Spanish**, direct and structured (see User Communication).
+- Explain decisions in 1–2 lines; details go in code comments.
+- When finishing, summarize: what was done, which files were touched, how to test it and what comes next.
