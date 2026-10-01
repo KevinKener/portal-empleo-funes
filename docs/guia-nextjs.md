@@ -162,7 +162,7 @@ src/
 │   │       └── page.tsx        # /ofertas/:id
 │   ├── saludo/
 │   │   └── page.tsx            # /saludo
-│   ├── globals.css             # Estilos globales + variables de color
+│   ├── globals.css             # Estilos globales + tokens de diseño (@theme)
 │   ├── layout.tsx              # Layout raíz: envuelve todas las páginas
 │   └── page.tsx                # /
 ├── components/
@@ -198,24 +198,29 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
 El proyecto usa **Tailwind CSS v4**. Las clases se aplican directamente en el JSX:
 
 ```tsx
-<button className="bg-blue-600 text-white px-4 py-2 rounded">
+<button className="bg-primary text-primary-foreground px-4 py-2 rounded">
   Enviar
 </button>
 ```
 
-No existe un archivo `tailwind.config.js`. La configuración vive en `src/app/globals.css`, que también define las variables de color del proyecto:
+No existe un archivo `tailwind.config.js`. La configuración vive en `src/app/globals.css`, que define los colores del proyecto como **tokens semánticos** dentro de `@theme`:
 
 ```css
-:root {
-  --teal: #0f5b53;    /* color principal */
-  --ink: #1b2926;     /* texto */
-  --paper: #f8f8f4;   /* fondo */
-  --muted: #6e7772;   /* texto secundario */
-  --line: #d8ddd7;    /* bordes */
+@theme {
+  --color-primary: #0f5b53;          /* color principal (teal) */
+  --color-foreground: #1b2926;       /* texto */
+  --color-background: #f8f8f4;       /* fondo */
+  --color-muted-foreground: #6e7772; /* texto secundario */
+  --color-border: #d8ddd7;           /* bordes */
 }
 ```
 
-Usá estas variables en CSS con `var(--teal)` cuando necesites los colores del diseño.
+Cada token de `@theme` hace dos cosas:
+
+1. **Genera utilidades de Tailwind**: `bg-primary`, `text-foreground`, `text-muted-foreground`, `border-border`…
+2. **Escribe la variable en `:root`**, así que en CSS plano también podés usar `var(--color-primary)`.
+
+Usá siempre los tokens semánticos en lugar de colores sueltos (`bg-blue-600`, `#0f5b53`). Los nombres siguen la convención de shadcn, así que los componentes de `src/components/ui/` toman automáticamente los colores de la marca. La lista completa de tokens está en `CLAUDE.md`.
 
 ---
 
