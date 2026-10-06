@@ -106,9 +106,12 @@ El esquema vive en `supabase/migrations/` y los datos de demo en `supabase/seed.
 npx supabase login                          # una sola vez, abre el navegador
 npx supabase link --project-ref <ref>       # <ref> está en la URL del proyecto en Supabase
 npx supabase db push --include-seed         # aplica migraciones pendientes + seed
+npx supabase gen types typescript --linked --schema public > src/types/database.ts  # regenera los tipos
 ```
 
 - Nunca cambiar tablas desde el dashboard sin crear la migración correspondiente.
+- Después de cada migración, regenerar `src/types/database.ts` (no se edita a mano).
+- Los estados y sus transiciones se consultan en `src/lib/estados.ts` (`puedeCambiarEstado`, `siguientesEstados`); no escribir estados sueltos en el código.
 - **Cuenta Admin inicial:** crearla en *Authentication → Users → Add user* (sin metadata) y después, en el *SQL Editor*:
   `insert into public.perfiles (id, rol) values ('<id del usuario>', 'admin');`
   Los demás Admins se crean desde la app (regla 7).

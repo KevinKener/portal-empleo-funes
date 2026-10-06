@@ -51,6 +51,8 @@ Other key files:
 
 - `src/lib/supabase/client.ts` → Supabase client for the **browser** (Client Components).
 - `src/lib/supabase/server.ts` → Supabase client for the **server** (Server Components, Route Handlers).
+- `src/types/database.ts` → generated DB types (`npx supabase gen types typescript --linked --schema public`). Never edit by hand; both Supabase clients are typed with it.
+- `src/lib/estados.ts` → statuses and transitions (`puedeCambiarEstado`, `siguientesEstados`). Mirrors the status triggers in `supabase/migrations/`; change both together.
 - `src/hooks/useOferta.ts` → consumes `/api/ofertas/[id]` (the route does **not exist yet**, see Phase 2).
 - `src/app/globals.css` → Tailwind v4 (`@import "tailwindcss"`, no `tailwind.config.*`) + design tokens in `@theme`.
 - `src/app/empresa/empresa.styles.css` → route-specific styles.
