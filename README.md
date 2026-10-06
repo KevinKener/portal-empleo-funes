@@ -98,6 +98,22 @@ npm run start    # correr el build
 npm run lint     # revisar el código con ESLint
 ```
 
+### Base de datos (migraciones)
+
+El esquema vive en `supabase/migrations/` y los datos de demo en `supabase/seed.sql`. Usamos el CLI de Supabase con `npx` (no hace falta instalarlo):
+
+```bash
+npx supabase login                          # una sola vez, abre el navegador
+npx supabase link --project-ref <ref>       # <ref> está en la URL del proyecto en Supabase
+npx supabase db push --include-seed         # aplica migraciones pendientes + seed
+```
+
+- Nunca cambiar tablas desde el dashboard sin crear la migración correspondiente.
+- **Cuenta Admin inicial:** crearla en *Authentication → Users → Add user* (sin metadata) y después, en el *SQL Editor*:
+  `insert into public.perfiles (id, rol) values ('<id del usuario>', 'admin');`
+  Los demás Admins se crean desde la app (regla 7).
+- Ojo: `postulaciones.notas_admin` es solo para Admins. Al consultar `postulaciones` hay que listar las columnas (`select('*')` da error de permisos); los Admins usan la vista `postulaciones_admin`.
+
 ---
 
 ## Estructura
