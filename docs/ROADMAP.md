@@ -8,9 +8,9 @@ Legend: `[x]` done · `[ ]` pending · `[~]` in progress
 
 ## Current status
 
-- **Current phase:** Phase 1 — Supabase and data model.
-- **Latest progress:** initial migration applied to the Supabase project (`npx supabase db push --include-seed`, 2026-10-06) from `feature/migracion-inicial`. Checked as anonymous via the REST API: `ofertas_publicas` returns the 5 published demo offers, `categorias` is readable, every other table and view is denied.
-- **Next step:** generate types in `src/types/database.ts`, then write `src/lib/estados.ts` matching the status triggers.
+- **Current phase:** Phase 2 — Public portal.
+- **Latest progress:** Phase 1 closed on `feature/tipos-y-estados`: generated `src/types/database.ts`, typed both Supabase clients with `Database`, and added `src/lib/estados.ts` (`puedeCambiarEstado`, `siguientesEstados`) mirroring the status triggers. The initial migration is applied in Supabase (PR #4).
+- **Next step:** Phase 2, starting with `GET /api/ofertas` over the `ofertas_publicas` view (and fixing the pre-existing lint error in `useOferta.ts`).
 
 > Update this section at the end of every work session.
 
@@ -44,7 +44,7 @@ Legend: `[x]` done · `[ ]` pending · `[~]` in progress
 
 ---
 
-## Phase 1 — Supabase and data model `[~]`
+## Phase 1 — Supabase and data model ✅
 
 **Goal:** real, secure and versioned database.
 
@@ -56,8 +56,8 @@ Legend: `[x]` done · `[ ]` pending · `[~]` in progress
 - [x] Initial migration: tables + status enums
 - [x] RLS policies per role in the same migration
 - [x] Private Storage buckets: `cvs`, `comprobantes-domicilio`, `constancias-arca`
-- [ ] Generated types in `src/types/database.ts`
-- [ ] `src/lib/estados.ts` with enums and transitions
+- [x] Generated types in `src/types/database.ts`
+- [x] `src/lib/estados.ts` with enums and transitions
 - [x] `supabase/seed.sql` with demo categories and offers
 
 **Demo:** tables created in Supabase with sample data and RLS active.
