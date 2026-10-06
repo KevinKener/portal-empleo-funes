@@ -9,8 +9,8 @@ Legend: `[x]` done · `[ ]` pending · `[~]` in progress
 ## Current status
 
 - **Current phase:** Phase 1 — Supabase and data model.
-- **Latest progress:** tutor review applied on `docs/correcciones-tutor`: agent instructions in English, design tokens migrated to `@theme`, flat Admin model, email notifications research. Previous branches `feature/supabase-setup` and `docs/documentacion-proyecto` are pushed but not yet merged into `main`.
-- **Next step:** validate the proposed schema with the team, then write the initial migration.
+- **Latest progress:** initial migration applied to the Supabase project (`npx supabase db push --include-seed`, 2026-10-06) from `feature/migracion-inicial`. Checked as anonymous via the REST API: `ofertas_publicas` returns the 5 published demo offers, `categorias` is readable, every other table and view is denied.
+- **Next step:** generate types in `src/types/database.ts`, then write `src/lib/estados.ts` matching the status triggers.
 
 > Update this section at the end of every work session.
 
@@ -52,13 +52,13 @@ Legend: `[x]` done · `[ ]` pending · `[~]` in progress
 - [x] Dependencies installed
 - [x] `.env.example` + `.gitignore` updated
 - [x] Integration committed
-- [ ] Validate the proposed schema with the team (see below)
-- [ ] Initial migration: tables + status enums
-- [ ] RLS policies per role in the same migration
-- [ ] Private Storage buckets: `cvs`, `comprobantes-domicilio`, `constancias-arca`
+- [x] Validate the proposed schema with the team (see below)
+- [x] Initial migration: tables + status enums
+- [x] RLS policies per role in the same migration
+- [x] Private Storage buckets: `cvs`, `comprobantes-domicilio`, `constancias-arca`
 - [ ] Generated types in `src/types/database.ts`
 - [ ] `src/lib/estados.ts` with enums and transitions
-- [ ] `supabase/seed.sql` with demo categories and offers
+- [x] `supabase/seed.sql` with demo categories and offers
 
 **Demo:** tables created in Supabase with sample data and RLS active.
 
@@ -71,8 +71,8 @@ Legend: `[x]` done · `[ ]` pending · `[~]` in progress
 | `empresas` | `perfil_id`, `razon_social`, `cuit` (unique), `nombre_comercial`, `telefono`, `direccion`, `constancia_arca_url`, `estado` | Starts `pendiente` |
 | `categorias` | `id`, `nombre` | Fields/industries |
 | `postulante_categorias` | `postulante_id`, `categoria_id` | N:M (multi-category) |
-| `ofertas` | `empresa_id`, `titulo`, `descripcion`, `categoria_id`, `requisitos`, `modalidad`, `estado`, `motivo_rechazo`, `fecha_publicacion` | Only `publicada` is public |
-| `postulaciones` | `oferta_id`, `postulante_id`, `estado`, `notas_admin` | Unique (`oferta_id`, `postulante_id`) |
+| `ofertas` | `empresa_id`, `titulo`, `descripcion`, `categoria_id`, `requisitos`, `jornada`, `estado`, `motivo_rechazo`, `fecha_publicacion` | Only `publicada` is public |
+| `postulaciones` | `oferta_id`, `postulante_id`, `estado`, `notas_admin`, `fecha_preseleccion` | Unique (`oferta_id`, `postulante_id`). `notas_admin` hidden from non-admins; companies only see rows with `fecha_preseleccion` set |
 | `seguimientos` | `postulacion_id`, `fecha`, `notas` | Hired people, every 2 months |
 | `cursos` | `nombre`, `descripcion`, `enlace` | Training courses |
 | `derivaciones` | `postulante_id`, `curso_id`, `fecha` | Rejected → courses |
