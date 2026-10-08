@@ -9,8 +9,8 @@ Legend: `[x]` done · `[ ]` pending · `[~]` in progress
 ## Current status
 
 - **Current phase:** Phase 2 — Public portal.
-- **Latest progress:** Phase 2 public portal on `feature/api-ofertas`: `GET /api/ofertas` and `/api/ofertas/[id]`, landing, `/ofertas` listing with category filter and pagination, offer detail, public layout with the municipal identity from funes.gob.ar. Before that, flow corrections from the tutor review (2026-10-08) on `feature/correcciones-flujo`: offers start as `borrador` (company edits only drafts, sends and takes back), rejected applications carry `motivo_rechazo`, company selection draft (`decision_empresa` + `confirmar_seleccion()`), ARCA certificate optional. Migrations applied in Supabase, types regenerated, `estados.ts` and `AGENTS.md` §2 updated.
-- **Next step:** deploy the public portal to Vercel for the demo, then Phase 3 (authentication).
+- **Latest progress:** public portal live on Vercel (https://portal-empleo-funes.vercel.app). Phase 2 merged in PR #7: `GET /api/ofertas` and `/api/ofertas/[id]`, landing, `/ofertas` listing with category filter and pagination, offer detail, public layout with the municipal identity from funes.gob.ar. Before that, flow corrections from the tutor review (2026-10-08) on `feature/correcciones-flujo`: offers start as `borrador` (company edits only drafts, sends and takes back), rejected applications carry `motivo_rechazo`, company selection draft (`decision_empresa` + `confirmar_seleccion()`), ARCA certificate optional. Migrations applied in Supabase, types regenerated, `estados.ts` and `AGENTS.md` §2 updated.
+- **Next step:** Phase 3 (authentication). Blocked on the Employment Office demo Gmail account (2FA + App Password) for Supabase SMTP.
 
 > Update this section at the end of every work session.
 
@@ -102,7 +102,7 @@ Legend: `[x]` done · `[ ]` pending · `[~]` in progress
 - [x] `/ofertas` listing with category filter
 - [~] `/ofertas/[id]` detail with "Postularme" button (shown disabled with a "coming soon" note; wire it to login in Phase 3)
 - [x] General layout: header, navigation, footer, responsive
-- [ ] Deploy to Vercel (preview) for the demo
+- [x] Deploy to Vercel: https://portal-empleo-funes.vercel.app (auto-deploys `main`, preview URL per PR)
 - [ ] Ask the municipality for vector (SVG) versions of the logos (current PNGs are low resolution)
 
 **Demo:** public portal navigable from a phone with real offers from the database.
