@@ -39,9 +39,11 @@ All code lives in `src/`. The `@/*` alias points to `src/*`.
 
 | Route | File | Status |
 |-------|------|--------|
-| `/` | `src/app/page.tsx` | Home (skeleton) |
-| `/ofertas` | `src/app/ofertas/page.tsx` | Listing (skeleton) |
-| `/ofertas/[id]` | `src/app/ofertas/[id]/page.tsx` | Dynamic detail (skeleton) |
+| `/` | `src/app/(publico)/page.tsx` | Landing + latest offers |
+| `/ofertas` | `src/app/(publico)/ofertas/page.tsx` | Published offers, category filter, pagination (+ `loading`, `error`) |
+| `/ofertas/[id]` | `src/app/(publico)/ofertas/[id]/page.tsx` | Published offer detail (+ `not-found`) |
+| `/api/ofertas` | `src/app/api/ofertas/route.ts` | Public listing API (`?categoria`, `?pagina`) |
+| `/api/ofertas/[id]` | `src/app/api/ofertas/[id]/route.ts` | Public detail API (404 unless `publicada`) |
 | `/empresa` | `src/app/empresa/page.tsx` | Company dashboard (skeleton) |
 | `/admin` | `src/app/admin/page.tsx` | Admin dashboard (skeleton) |
 | `/saludo` | `src/app/saludo/page.tsx` | Client Component + fetch example |
@@ -53,7 +55,10 @@ Other key files:
 - `src/lib/supabase/server.ts` → Supabase client for the **server** (Server Components, Route Handlers).
 - `src/types/database.ts` → generated DB types (`npx supabase gen types typescript --linked --schema public`). Never edit by hand; both Supabase clients are typed with it.
 - `src/lib/estados.ts` → statuses and transitions (`puedeCambiarEstado`, `siguientesEstados`). Mirrors the status triggers in `supabase/migrations/`; change both together.
-- `src/hooks/useOferta.ts` → consumes `/api/ofertas/[id]` (the route does **not exist yet**, see Phase 2).
+- `src/app/(publico)/layout.tsx` → public shell (`Encabezado`, `PiePagina` in `src/components/layout/`).
+- `src/lib/ofertas.ts` → public offers queries over the `ofertas_publicas` view, shared by the API and Server Components. `src/lib/categorias.ts`, `src/lib/formato.ts` (labels, dates) and `src/lib/validaciones/ofertas.ts` sit next to it.
+- `src/hooks/useOferta.ts` → consumes `/api/ofertas/[id]` from Client Components.
+- `public/marca/` → municipal brand assets from funes.gob.ar (shield, white logo); `src/app/icon.png` is the favicon.
 - `src/app/globals.css` → Tailwind v4 (`@import "tailwindcss"`, no `tailwind.config.*`) + design tokens in `@theme`.
 - `src/app/empresa/empresa.styles.css` → route-specific styles.
 - `components.json` → shadcn config (`base-nova` on **Base UI**, `@base-ui/react`, not Radix).
@@ -69,14 +74,14 @@ Each token generates Tailwind utilities (`bg-*`, `text-*`, `border-*`…) and a 
 |-------|-----|
 | `background` / `foreground` | Page background (paper) / main text (ink) |
 | `card`, `popover` (+ `-foreground`) | Raised surfaces |
-| `primary` / `primary-foreground` | Brand teal: main actions, links, focus |
+| `primary` / `primary-foreground` | Brand green (funes.gob.ar): main actions, links, focus |
 | `primary-hover`, `primary-deep` | Primary hover state / dark brand panels |
-| `secondary` (+ `-foreground`) | Soft teal surfaces (notices, badges) |
+| `secondary` (+ `-foreground`) | Soft green surfaces (notices, badges) |
 | `muted` / `muted-foreground` | Subtle surfaces / secondary text |
 | `accent` (+ `-foreground`) | Hover/selected surfaces in menus and lists |
 | `destructive` | Errors and invalid fields |
 | `border`, `input`, `ring` | Borders, input borders, focus ring |
-| `font-sans`, `font-serif` | Body font / headings font |
+| `font-sans`, `font-heading` | Body font (Be Vietnam Pro) / headings font (Sora), loaded with `next/font` in the root layout |
 
 ---
 
