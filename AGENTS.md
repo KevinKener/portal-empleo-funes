@@ -66,6 +66,10 @@ These rules come from the requirements gathering with the Employment Office. All
 6. **Flexible CV:** the job seeker can build the CV on the platform **or** upload a PDF (meant for people less comfortable with digital tools). Both paths are valid.
 7. **No public Admin sign-up.** The first (seed) Admin account is created manually in Supabase. After that, **any Admin can create other Admin accounts** from the admin area (flat model: all Admins are equal). **No Admin can delete Admin accounts from the app**; deactivating one is done manually in Supabase.
 8. A job seeker **cannot apply twice** to the same offer.
+9. **Offers start as a draft (`borrador`).** The company edits an offer **only while it is `borrador`**; once sent (`pendiente`) it is out of its hands until the Admin decides, but the company (only the company) can take it back to `borrador`.
+10. **Every rejected application carries a reason:** `cupo_completo` (soft: the quota was filled) or `no_seleccionado`. The Admin dashboard counts rejections and referrals to courses.
+11. **Selection draft:** the company marks pre-selected candidates as `tomar` / `descartar` (`decision_empresa`) without changing their status, and applies every decision at once with `confirmar_seleccion()`. The job seeker never sees the draft.
+12. **ARCA certificate is optional** and belongs to the company profile; it is not required to sign up.
 
 ### State machines
 
@@ -79,8 +83,10 @@ pendiente ──(admin)──► rechazado
 
 **Oferta**
 ```
-pendiente ──(admin)──► publicada ──(empresa or admin)──► cerrada
-pendiente ──(admin)──► rechazada   (with reason)
+borrador ──(empresa)──► pendiente ──(admin)──► publicada ──(empresa or admin)──► cerrada
+    ▲                       │
+    └──(empresa reverts)────┤
+                            └──(admin)──► rechazada   (with reason)
 ```
 
 **Postulacion**
@@ -89,6 +95,8 @@ pendiente ──(admin)──────► preseleccionado ──(empresa acce
     │                            │                                    │
     └──(admin)──► rechazado ◄────┴──(empresa rejects)─────────────────┘
 ```
+- Every move to `rechazado` carries `motivo_rechazo` (`cupo_completo` | `no_seleccionado`).
+- The company's moves can be drafted first and applied in bulk (rule 11).
 - A `rechazado` job seeker can be **referred to courses** by the Admin.
 - A `contratado` job seeker enters **follow-up every 2 months**.
 
