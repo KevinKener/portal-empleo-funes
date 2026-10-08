@@ -1,35 +1,53 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
-interface Oferta {
-  id: string;
-}
+import type { OfertaPublica } from "@/lib/ofertas";
 
 interface UseOfertaResult {
-  data: Oferta | null;
+  data: OfertaPublica | null;
   loading: boolean;
   error: string | null;
 }
 
+type Resultado = {
+  id: string;
+  data: OfertaPublica | null;
+  error: string | null;
+};
+
+/** Loads one published offer from /api/ofertas/[id] in a Client Component. */
 export function useOferta(id: string): UseOfertaResult {
-  const [data, setData] = useState<Oferta | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [resultado, setResultado] = useState<Resultado | null>(null);
 
   useEffect(() => {
-    setLoading(true);
-    setError(null);
+    let cancelado = false;
 
     fetch(`/api/ofertas/${id}`)
-      .then((r) => {
-        if (!r.ok) throw new Error(`Error ${r.status}`);
-        return r.json();
+      .then(async (r) => {
+        const cuerpo: unknown = await r.json();
+        if (!r.ok) throw new Error(mensajeDeError(cuerpo, r.status));
+        return cuerpo as OfertaPublica;
       })
-      .then((d: Oferta) => setData(d))
-      .catch((e: Error) => setError(e.message))
-      .finally(() => setLoading(false));
+      .then((data) => {
+        if (!cancelado) setResultado({ id, data, error: null });
+      })
+      .catch((e: Error) => {
+        if (!cancelado) setResultado({ id, data: null, error: e.message });
+      });
+
+    return () => {
+      cancelado = true;
+    };
   }, [id]);
 
-  return { data, loading, error };
+  // Loading is derived instead of stored, so the effect never sets state synchronously.
+  const actual = resultado?.id === id ? resultado : null;
+  return { data: actual?.data ?? null, loading: actual === null, error: actual?.error ?? null };
+}
+
+function mensajeDeError(cuerpo: unknown, status: number): string {
+  if (typeof cuerpo === "object" && cuerpo !== null && "error" in cuerpo && typeof cuerpo.error === "string") {
+    return cuerpo.error;
+  }
+  return `Error ${status}`;
 }

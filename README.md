@@ -136,12 +136,15 @@ docs/             # Roadmap, guía de Next.js y material del proyecto
 
 | URL | Descripción |
 |-----|-------------|
-| `/` | Página principal |
-| `/ofertas` | Listado de ofertas publicadas |
-| `/ofertas/[id]` | Detalle de una oferta |
+| `/` | Landing: presentación del portal y últimas ofertas |
+| `/ofertas` | Listado de ofertas publicadas, con filtro por categoría (`?categoria=`) y paginación (`?pagina=`) |
+| `/ofertas/[id]` | Detalle de una oferta publicada (404 si no existe o no está publicada) |
+| `/api/ofertas` · `/api/ofertas/[id]` | API pública de ofertas publicadas (JSON) |
 | `/empresa` | Panel de empresa |
 | `/admin` | Panel de la Oficina de Empleo |
 | `/saludo` · `/api/saludo` | Ejemplo didáctico de Client Component + API |
+
+Las páginas públicas viven en el grupo `src/app/(publico)/`, que comparte encabezado y pie. La identidad visual (verde `#074A1F`, tipografías Sora y Be Vietnam Pro, escudo y logo en `public/marca/`) es la de [funes.gob.ar](https://funes.gob.ar/).
 
 ---
 
