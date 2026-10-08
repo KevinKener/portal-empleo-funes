@@ -9,7 +9,7 @@ Legend: `[x]` done · `[ ]` pending · `[~]` in progress
 ## Current status
 
 - **Current phase:** Phase 2 — Public portal.
-- **Latest progress:** Phase 1 closed on `feature/tipos-y-estados`: generated `src/types/database.ts`, typed both Supabase clients with `Database`, and added `src/lib/estados.ts` (`puedeCambiarEstado`, `siguientesEstados`) mirroring the status triggers. The initial migration is applied in Supabase (PR #4).
+- **Latest progress:** flow corrections from the tutor review (2026-10-08) on `feature/correcciones-flujo`: offers start as `borrador` (company edits only drafts, sends and takes back), rejected applications carry `motivo_rechazo`, company selection draft (`decision_empresa` + `confirmar_seleccion()`), ARCA certificate optional. Migrations applied in Supabase, types regenerated, `estados.ts` and `AGENTS.md` §2 updated.
 - **Next step:** Phase 2, starting with `GET /api/ofertas` over the `ofertas_publicas` view (and fixing the pre-existing lint error in `useOferta.ts`).
 
 > Update this section at the end of every work session.
@@ -26,6 +26,17 @@ Legend: `[x]` done · `[ ]` pending · `[~]` in progress
 - [x] Email provider decided: **Gmail SMTP**
 - [x] Status email notifications approved for v1, sent from a demo Gmail account of the Employment Office
 - [ ] Approve installing `nodemailer` when the email task starts
+
+---
+
+## Tutor review — 2026-10-08 (application flow deck)
+
+- [x] Offers start as `borrador`; company edits only drafts and can take a pending offer back (company only)
+- [x] Pending offers cannot be edited by the company
+- [x] Rejection reason on applications: `cupo_completo` (soft) / `no_seleccionado`
+- [x] Company selection draft (`tomar` / `descartar`) confirmed in bulk
+- [x] ARCA certificate optional, tied to the company profile
+- [x] OpenStreetMap suggested → moved to v2
 
 ---
 
@@ -72,7 +83,7 @@ Legend: `[x]` done · `[ ]` pending · `[~]` in progress
 | `categorias` | `id`, `nombre` | Fields/industries |
 | `postulante_categorias` | `postulante_id`, `categoria_id` | N:M (multi-category) |
 | `ofertas` | `empresa_id`, `titulo`, `descripcion`, `categoria_id`, `requisitos`, `jornada`, `estado`, `motivo_rechazo`, `fecha_publicacion` | Only `publicada` is public |
-| `postulaciones` | `oferta_id`, `postulante_id`, `estado`, `notas_admin`, `fecha_preseleccion` | Unique (`oferta_id`, `postulante_id`). `notas_admin` hidden from non-admins; companies only see rows with `fecha_preseleccion` set |
+| `postulaciones` | `oferta_id`, `postulante_id`, `estado`, `notas_admin`, `fecha_preseleccion`, `motivo_rechazo`, `decision_empresa` | Unique (`oferta_id`, `postulante_id`). `notas_admin` hidden from non-admins; companies only see rows with `fecha_preseleccion` set |
 | `seguimientos` | `postulacion_id`, `fecha`, `notas` | Hired people, every 2 months |
 | `cursos` | `nombre`, `descripcion`, `enlace` | Training courses |
 | `derivaciones` | `postulante_id`, `curso_id`, `fecha` | Rejected → courses |
@@ -102,7 +113,7 @@ Legend: `[x]` done · `[ ]` pending · `[~]` in progress
 - [ ] Create the demo Gmail account for the Employment Office (2FA + App Password)
 - [ ] Custom SMTP (Gmail) in Supabase Auth + auth email templates in Spanish (required: the default provider only emails project team members)
 - [ ] Job seeker sign-up (DNI, first name, last name, city, address, phone, email, password)
-- [ ] Company sign-up (legal name, CUIT, trade name, phone, address, ARCA certificate, email, password)
+- [ ] Company sign-up (legal name, CUIT, trade name, phone, address, optional ARCA certificate, email, password)
 - [ ] Login with DNI/CUIT or email + password (email resolved on the server)
 - [ ] Password recovery via code sent by email
 - [ ] Route protection per role (`proxy.ts`, see Next 16 docs)
@@ -133,9 +144,10 @@ Legend: `[x]` done · `[ ]` pending · `[~]` in progress
 **Goal:** the company posts offers and receives pre-selected candidates.
 
 - [ ] Pending-verification notice (no offer posting)
-- [ ] Offer CRUD (created as `pendiente`)
-- [ ] See the status of my offers (pending / published / rejected + reason)
-- [ ] See **pre-selected** candidates and accept/reject
+- [ ] Offer CRUD (created as `borrador`, editable only as draft)
+- [ ] Send an offer for review and take it back while `pendiente`
+- [ ] See the status of my offers (draft / pending / published / rejected + reason)
+- [ ] See **pre-selected** candidates, draft tomar/descartar and confirm in bulk (`confirmar_seleccion`)
 - [ ] Record a hire
 - [ ] Edit company data
 
@@ -152,7 +164,7 @@ Legend: `[x]` done · `[ ]` pending · `[~]` in progress
 - [ ] Approve/reject offers (with reason)
 - [ ] Pre-select job seekers per offer
 - [ ] Job seeker search by category, name or city ("verified address" filter)
-- [ ] Metrics dashboard: job seekers, hires, employability rate
+- [ ] Metrics dashboard: job seekers, hires, employability rate, rejections by reason and referrals to courses
 - [ ] Follow-up of hires (reminder every 2 months)
 - [ ] Refer non-selected job seekers to courses
 - [ ] Create other Admin accounts (flat model, rule 7; server-only, uses the secret key after checking the caller is Admin)
@@ -183,4 +195,5 @@ Legend: `[x]` done · `[ ]` pending · `[~]` in progress
 - Automatic course notifications to non-selected job seekers
 - Metrics export for the province (Excel/PDF)
 - Integration with the official registry to verify addresses
+- Map with OpenStreetMap (e.g. Leaflet) for addresses/offers in Funes (tutor suggestion)
 - Super-admin role (create **and delete** Admins), if the flat model falls short

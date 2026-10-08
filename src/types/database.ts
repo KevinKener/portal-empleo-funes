@@ -238,9 +238,15 @@ export type Database = {
       postulaciones: {
         Row: {
           created_at: string
+          decision_empresa:
+            | Database["public"]["Enums"]["decision_empresa"]
+            | null
           estado: Database["public"]["Enums"]["estado_postulacion"]
           fecha_preseleccion: string | null
           id: string
+          motivo_rechazo:
+            | Database["public"]["Enums"]["motivo_rechazo_postulacion"]
+            | null
           notas_admin: string | null
           oferta_id: string
           postulante_id: string
@@ -248,9 +254,15 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          decision_empresa?:
+            | Database["public"]["Enums"]["decision_empresa"]
+            | null
           estado?: Database["public"]["Enums"]["estado_postulacion"]
           fecha_preseleccion?: string | null
           id?: string
+          motivo_rechazo?:
+            | Database["public"]["Enums"]["motivo_rechazo_postulacion"]
+            | null
           notas_admin?: string | null
           oferta_id: string
           postulante_id: string
@@ -258,9 +270,15 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          decision_empresa?:
+            | Database["public"]["Enums"]["decision_empresa"]
+            | null
           estado?: Database["public"]["Enums"]["estado_postulacion"]
           fecha_preseleccion?: string | null
           id?: string
+          motivo_rechazo?:
+            | Database["public"]["Enums"]["motivo_rechazo_postulacion"]
+            | null
           notas_admin?: string | null
           oferta_id?: string
           postulante_id?: string
@@ -444,10 +462,16 @@ export type Database = {
           apellido: string | null
           categorias: string[] | null
           cv_url: string | null
+          decision_empresa:
+            | Database["public"]["Enums"]["decision_empresa"]
+            | null
           descripcion: string | null
           estado: Database["public"]["Enums"]["estado_postulacion"] | null
           fecha_preseleccion: string | null
           localidad: Database["public"]["Enums"]["localidad"] | null
+          motivo_rechazo:
+            | Database["public"]["Enums"]["motivo_rechazo_postulacion"]
+            | null
           nombre: string | null
           oferta_id: string | null
           postulacion_id: string | null
@@ -494,9 +518,15 @@ export type Database = {
       postulaciones_admin: {
         Row: {
           created_at: string | null
+          decision_empresa:
+            | Database["public"]["Enums"]["decision_empresa"]
+            | null
           estado: Database["public"]["Enums"]["estado_postulacion"] | null
           fecha_preseleccion: string | null
           id: string | null
+          motivo_rechazo:
+            | Database["public"]["Enums"]["motivo_rechazo_postulacion"]
+            | null
           notas_admin: string | null
           oferta_id: string | null
           postulante_id: string | null
@@ -504,9 +534,15 @@ export type Database = {
         }
         Insert: {
           created_at?: string | null
+          decision_empresa?:
+            | Database["public"]["Enums"]["decision_empresa"]
+            | null
           estado?: Database["public"]["Enums"]["estado_postulacion"] | null
           fecha_preseleccion?: string | null
           id?: string | null
+          motivo_rechazo?:
+            | Database["public"]["Enums"]["motivo_rechazo_postulacion"]
+            | null
           notas_admin?: string | null
           oferta_id?: string | null
           postulante_id?: string | null
@@ -514,9 +550,15 @@ export type Database = {
         }
         Update: {
           created_at?: string | null
+          decision_empresa?:
+            | Database["public"]["Enums"]["decision_empresa"]
+            | null
           estado?: Database["public"]["Enums"]["estado_postulacion"] | null
           fecha_preseleccion?: string | null
           id?: string | null
+          motivo_rechazo?:
+            | Database["public"]["Enums"]["motivo_rechazo_postulacion"]
+            | null
           notas_admin?: string | null
           oferta_id?: string | null
           postulante_id?: string | null
@@ -549,6 +591,7 @@ export type Database = {
     }
     Functions: {
       actua_como_admin: { Args: never; Returns: boolean }
+      confirmar_seleccion: { Args: { p_oferta_id: string }; Returns: number }
       empresa_actual_id: { Args: never; Returns: string }
       empresa_actual_ve_postulante: {
         Args: { p_perfil_postulante: string }
@@ -568,7 +611,13 @@ export type Database = {
       }
     }
     Enums: {
-      estado_oferta: "pendiente" | "publicada" | "rechazada" | "cerrada"
+      decision_empresa: "tomar" | "descartar"
+      estado_oferta:
+        | "borrador"
+        | "pendiente"
+        | "publicada"
+        | "rechazada"
+        | "cerrada"
       estado_postulacion:
         | "pendiente"
         | "preseleccionado"
@@ -578,6 +627,7 @@ export type Database = {
       estado_verificacion: "pendiente" | "verificado" | "rechazado"
       jornada: "completa" | "media_jornada" | "por_horas" | "temporal"
       localidad: "funes" | "roldan" | "rosario" | "otra"
+      motivo_rechazo_postulacion: "cupo_completo" | "no_seleccionado"
       rol_usuario: "postulante" | "empresa" | "admin"
     }
     CompositeTypes: {
@@ -706,7 +756,14 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      estado_oferta: ["pendiente", "publicada", "rechazada", "cerrada"],
+      decision_empresa: ["tomar", "descartar"],
+      estado_oferta: [
+        "borrador",
+        "pendiente",
+        "publicada",
+        "rechazada",
+        "cerrada",
+      ],
       estado_postulacion: [
         "pendiente",
         "preseleccionado",
@@ -717,6 +774,7 @@ export const Constants = {
       estado_verificacion: ["pendiente", "verificado", "rechazado"],
       jornada: ["completa", "media_jornada", "por_horas", "temporal"],
       localidad: ["funes", "roldan", "rosario", "otra"],
+      motivo_rechazo_postulacion: ["cupo_completo", "no_seleccionado"],
       rol_usuario: ["postulante", "empresa", "admin"],
     },
   },

@@ -10,11 +10,15 @@ export type Rol = Enums<"rol_usuario">
 export type EstadoVerificacion = Enums<"estado_verificacion">
 export type EstadoOferta = Enums<"estado_oferta">
 export type EstadoPostulacion = Enums<"estado_postulacion">
+export type MotivoRechazoPostulacion = Enums<"motivo_rechazo_postulacion">
+export type DecisionEmpresa = Enums<"decision_empresa">
 
 export const ROLES = Constants.public.Enums.rol_usuario
 export const ESTADOS_VERIFICACION = Constants.public.Enums.estado_verificacion
 export const ESTADOS_OFERTA = Constants.public.Enums.estado_oferta
 export const ESTADOS_POSTULACION = Constants.public.Enums.estado_postulacion
+export const MOTIVOS_RECHAZO_POSTULACION = Constants.public.Enums.motivo_rechazo_postulacion
+export const DECISIONES_EMPRESA = Constants.public.Enums.decision_empresa
 
 type Transicion<E extends string> = {
   desde: E
@@ -29,13 +33,18 @@ const TRANSICIONES_VERIFICACION: readonly Transicion<EstadoVerificacion>[] = [
 ]
 
 // Rule 2: only the Admin approves; a rejection needs motivo_rechazo.
+// The company edits only while borrador, and may take a pending offer back.
 const TRANSICIONES_OFERTA: readonly Transicion<EstadoOferta>[] = [
+  { desde: "borrador", hacia: "pendiente", roles: ["empresa"] },
+  { desde: "pendiente", hacia: "borrador", roles: ["empresa"] },
   { desde: "pendiente", hacia: "publicada", roles: ["admin"] },
   { desde: "pendiente", hacia: "rechazada", roles: ["admin"] },
   { desde: "publicada", hacia: "cerrada", roles: ["admin", "empresa"] },
 ]
 
 // Rule 1: the Admin pre-selects before the company sees the candidate.
+// Every move to rechazado carries a MotivoRechazoPostulacion; the company
+// applies its tomar/descartar draft in bulk via confirmar_seleccion().
 const TRANSICIONES_POSTULACION: readonly Transicion<EstadoPostulacion>[] = [
   { desde: "pendiente", hacia: "preseleccionado", roles: ["admin"] },
   { desde: "pendiente", hacia: "rechazado", roles: ["admin"] },
