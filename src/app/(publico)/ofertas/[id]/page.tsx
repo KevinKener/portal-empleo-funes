@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { cache } from "react";
 import { ArrowLeft, BriefcaseBusiness, CalendarDays, Clock } from "lucide-react";
+import { AccionPostular } from "@/components/ofertas/AccionPostular";
 import { obtenerOfertaPublica } from "@/lib/ofertas";
 import { ETIQUETAS_JORNADA, formatearFecha } from "@/lib/formato";
 import { esUuid } from "@/lib/validaciones/ofertas";
@@ -68,23 +69,7 @@ export default async function OfertaDetallePage({ params }: PageProps<"/ofertas/
           </section>
         )}
 
-        <div className="space-y-2 border-t border-border pt-6">
-          {/* TODO(phase-3): send to login (or apply directly with a session) once auth exists. */}
-          <button
-            type="button"
-            disabled
-            className="inline-flex h-11 w-full items-center justify-center rounded-lg bg-primary px-6 font-medium text-primary-foreground disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
-          >
-            Postularme
-          </button>
-          <p className="text-sm text-muted-foreground">
-            Muy pronto vas a poder postularte desde acá. Mientras tanto, ya podés{" "}
-            <Link href="/registro" className="font-medium text-primary underline-offset-4 hover:underline">
-              crear tu cuenta
-            </Link>
-            . La Oficina de Empleo revisa cada postulación antes de enviarla a la empresa.
-          </p>
-        </div>
+        <AccionPostular ofertaId={id} />
       </article>
     </div>
   );

@@ -151,11 +151,13 @@ docs/             # Roadmap, guía de Next.js y material del proyecto
 | `/registro` | Crear cuenta: elegir entre postulante y empresa |
 | `/registro/postulante` · `/registro/empresa` | Formularios de registro por pasos |
 | `/registro/verificar` | Confirmar el email con el código de 6 números |
-| `/empresa` | Panel de empresa |
-| `/admin` | Panel de la Oficina de Empleo |
+| `/ingresar` | Ingresar con DNI, CUIT o email + contraseña |
+| `/postulante` | Panel del postulante (requiere rol postulante) |
+| `/empresa` | Panel de empresa, con aviso mientras está en revisión (requiere rol empresa) |
+| `/admin` | Panel de la Oficina de Empleo (requiere rol admin) |
 | `/saludo` · `/api/saludo` | Ejemplo didáctico de Client Component + API |
 
-Las páginas públicas viven en el grupo `src/app/(publico)/`, que comparte encabezado y pie. La identidad visual (verde `#074A1F`, tipografías Sora y Be Vietnam Pro, escudo y logo en `public/marca/`) es la de [funes.gob.ar](https://funes.gob.ar/).
+Las páginas públicas viven en el grupo `src/app/(publico)/`, que comparte encabezado y pie. Las áreas privadas (`/postulante`, `/empresa`, `/admin`) están protegidas en dos niveles: `src/proxy.ts` manda a `/ingresar` a quien no tiene sesión, y el `layout.tsx` de cada área verifica el rol; los datos los sigue protegiendo RLS en la base. La identidad visual (verde `#074A1F`, tipografías Sora y Be Vietnam Pro, escudo y logo en `public/marca/`) es la de [funes.gob.ar](https://funes.gob.ar/).
 
 ---
 

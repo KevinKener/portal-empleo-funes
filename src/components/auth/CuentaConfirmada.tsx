@@ -10,9 +10,8 @@ type Rol = "postulante" | "empresa" | null;
  * the route right after the Server Action.
  */
 export function CuentaConfirmada({ rol }: { rol: Rol }) {
-  // TODO(phase-3): send job seekers to /postulante once that area exists (PR B).
   const destino =
-    rol === "empresa" ? { href: "/empresa", texto: "Ir a mi empresa" } : { href: "/ofertas", texto: "Ver ofertas" };
+    rol === "empresa" ? { href: "/empresa", texto: "Ir a mi empresa" } : { href: "/postulante", texto: "Ir a mi panel" };
 
   return (
     <div className="space-y-4 text-center motion-safe:animate-in motion-safe:fade-in motion-safe:zoom-in-95 motion-safe:duration-500">
@@ -24,7 +23,7 @@ export function CuentaConfirmada({ rol }: { rol: Rol }) {
       <p className="text-muted-foreground">
         {rol === "empresa"
           ? "La Oficina de Empleo va a revisar los datos de tu empresa. Mientras tanto podés ingresar, pero todavía no publicar ofertas."
-          : "Ya podés ingresar con tu DNI y tu contraseña."}
+          : "La próxima vez ingresá con tu DNI y tu contraseña."}
       </p>
       <Link href={destino.href} className={buttonVariants({ className: "h-11 px-6 text-base hover:bg-primary-hover" })}>
         {destino.texto}
