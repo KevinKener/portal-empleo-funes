@@ -9,6 +9,7 @@ import { ProximoPaso } from "@/components/postulante/panel/ProximoPaso";
 import { ResumenPostulaciones } from "@/components/postulante/panel/ResumenPostulaciones";
 import { VistosPanel } from "@/components/postulante/panel/VistosPanel";
 import { requerirRol } from "@/lib/auth";
+import { urlFotoPerfil } from "@/lib/foto-perfil";
 import { consejoDelDia, nombresDeEmpresas, obtenerOfertasParaVos, proximoPaso } from "@/lib/panel-postulante";
 import { obtenerResumenPerfil, puedePostularse, tareasDelPerfil, type Tarea } from "@/lib/perfil-postulante";
 import { listarMisPostulaciones } from "@/lib/postulaciones";
@@ -27,9 +28,10 @@ export default async function PostulantePage() {
 
   const postulaciones = await listarMisPostulaciones(postulante.id);
   const ofertaIds = postulaciones.flatMap((p) => (p.oferta ? [p.oferta.id] : []));
-  const [{ ofertas, nuevas }, empresas] = await Promise.all([
+  const [{ ofertas, nuevas }, empresas, foto] = await Promise.all([
     obtenerOfertasParaVos(postulante.id, ofertaIds),
     nombresDeEmpresas(ofertaIds),
+    urlFotoPerfil(postulante.foto_url),
   ]);
 
   const listo = puedePostularse(resumen);
@@ -43,7 +45,7 @@ export default async function PostulantePage() {
     >
       <div className="space-y-6">
         <div className="flex items-center gap-4">
-          <Avatar nombre={postulante.nombre} apellido={postulante.apellido} />
+          <Avatar nombre={postulante.nombre} apellido={postulante.apellido} foto={foto} />
           <div className="min-w-0">
             <h1 className="truncate font-heading text-2xl font-bold sm:text-3xl">¡Hola, {postulante.nombre}!</h1>
             <p className="flex items-center gap-1.5 text-muted-foreground">

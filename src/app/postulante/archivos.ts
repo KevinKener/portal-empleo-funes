@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { ARCHIVOS, rutaValida, type TipoArchivo } from "@/lib/archivos";
 import { requerirRol } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
+import type { TablesUpdate } from "@/types/database";
 
 /**
  * Server side of the job seeker's files. The browser uploads straight to
@@ -13,10 +14,17 @@ import { createClient } from "@/lib/supabase/server";
 
 type Resultado = { error: string | null };
 
-const COLUMNA = { cv: "cv_url", comprobante: "comprobante_url" } as const;
+const COLUMNA = { cv: "cv_url", comprobante: "comprobante_url", foto: "foto_url" } as const;
+
+/** The postulantes update that stores (or clears) a file path. */
+function cambio(tipo: TipoArchivo, ruta: string | null): TablesUpdate<"postulantes"> {
+  if (tipo === "cv") return { cv_url: ruta };
+  if (tipo === "comprobante") return { comprobante_url: ruta };
+  return { foto_url: ruta };
+}
 
 function esTipo(tipo: string): tipo is TipoArchivo {
-  return tipo === "cv" || tipo === "comprobante";
+  return tipo === "cv" || tipo === "comprobante" || tipo === "foto";
 }
 
 async function contexto() {
@@ -24,7 +32,7 @@ async function contexto() {
   const supabase = await createClient();
   const { data: postulante } = await supabase
     .from("postulantes")
-    .select("id, cv_url, comprobante_url, estado_domicilio")
+    .select("id, cv_url, comprobante_url, foto_url, estado_domicilio")
     .eq("perfil_id", userId)
     .maybeSingle();
   return { userId, supabase, postulante };
@@ -42,7 +50,7 @@ export async function registrarArchivo(tipo: string, ruta: string): Promise<Resu
   const anterior = postulante[COLUMNA[tipo]];
   const { error } = await supabase
     .from("postulantes")
-    .update(tipo === "cv" ? { cv_url: ruta } : { comprobante_url: ruta })
+    .update(cambio(tipo, ruta))
     .eq("id", postulante.id);
   if (error) {
     console.error("registrarArchivo failed:", error.code);
@@ -73,7 +81,7 @@ export async function abrirArchivo(tipo: string): Promise<{ url: string | null; 
 }
 
 /**
- * Removes a file, e.g. a wrong photo. A verified proof of address cannot be
+ * Removes a file, e.g. a wrong photo or the profile photo. A verified proof of address cannot be
  * removed (it was already checked); it can only be replaced by a new one.
  */
 export async function eliminarArchivo(tipo: string): Promise<Resultado> {
@@ -87,7 +95,7 @@ export async function eliminarArchivo(tipo: string): Promise<Resultado> {
 
   const { error } = await supabase
     .from("postulantes")
-    .update(tipo === "cv" ? { cv_url: null } : { comprobante_url: null })
+    .update(cambio(tipo, null))
     .eq("id", postulante.id);
   if (error) {
     console.error("eliminarArchivo failed:", error.code);
