@@ -30,6 +30,13 @@ export type CampoRegistro = CampoPostulante | CampoEmpresa
 
 export type Errores<K extends string> = Partial<Record<K, string>>
 
+/** What a form's Server Action returns: field errors, a general error and an optional confirmation. */
+export type EstadoFormulario<K extends string> = {
+  errores: Errores<K>
+  mensaje: string | null
+  aviso?: string | null
+}
+
 export const CAMPOS_POSTULANTE = [
   "dni",
   "nombre",
@@ -50,6 +57,17 @@ export const CAMPOS_EMPRESA = [
   "email",
   "contrasena",
 ] as const satisfies readonly CampoEmpresa[]
+
+/** Personal data the job seeker can edit after signing up (DNI and email are fixed). */
+export type CampoDatos = Extract<CampoPostulante, "nombre" | "apellido" | "localidad" | "direccion" | "telefono">
+
+export const CAMPOS_DATOS = [
+  "nombre",
+  "apellido",
+  "localidad",
+  "direccion",
+  "telefono",
+] as const satisfies readonly CampoDatos[]
 
 export const LOCALIDADES = ["funes", "roldan", "rosario", "otra"] as const satisfies readonly Enums<"localidad">[]
 

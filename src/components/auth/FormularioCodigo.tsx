@@ -4,7 +4,7 @@ import { useActionState, useState, startTransition } from "react";
 import Link from "next/link";
 import { LoaderCircle, MailCheck } from "lucide-react";
 import { reenviarCodigo, verificarCodigo, type EstadoCodigo } from "@/app/(publico)/registro/actions";
-import { ESTILO_CONTROL } from "@/components/auth/Campo";
+import { ESTILO_CONTROL } from "@/components/formularios/Campo";
 import { CuentaConfirmada } from "@/components/auth/CuentaConfirmada";
 import { buttonVariants } from "@/components/ui/button";
 import { useCuentaRegresiva } from "@/hooks/useCuentaRegresiva";

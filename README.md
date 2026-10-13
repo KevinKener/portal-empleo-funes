@@ -153,7 +153,8 @@ docs/             # Roadmap, guía de Next.js y material del proyecto
 | `/registro/verificar` | Confirmar el email con el código de 6 números |
 | `/ingresar` | Ingresar con DNI, CUIT o email + contraseña |
 | `/recuperar` · `/recuperar/codigo` | Recuperar la contraseña con un código por email |
-| `/postulante` | Panel del postulante (requiere rol postulante) |
+| `/postulante` | Panel del postulante con "Completá tu perfil" (requiere rol postulante) |
+| `/postulante/datos` · `/postulante/rubros` | Editar datos personales y elegir rubros |
 | `/empresa` | Panel de empresa, con aviso mientras está en revisión (requiere rol empresa) |
 | `/admin` | Panel de la Oficina de Empleo (requiere rol admin) |
 | `/saludo` · `/api/saludo` | Ejemplo didáctico de Client Component + API |

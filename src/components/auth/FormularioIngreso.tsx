@@ -4,9 +4,9 @@ import { useActionState, useState, startTransition } from "react";
 import Link from "next/link";
 import { LoaderCircle } from "lucide-react";
 import { ingresar, type EstadoIngreso } from "@/app/(publico)/ingresar/actions";
-import { AvisoFormulario } from "@/components/auth/AvisoFormulario";
-import { CampoContrasena } from "@/components/auth/CampoContrasena";
-import { CampoTexto } from "@/components/auth/CampoTexto";
+import { AvisoFormulario } from "@/components/formularios/AvisoFormulario";
+import { CampoContrasena } from "@/components/formularios/CampoContrasena";
+import { CampoTexto } from "@/components/formularios/CampoTexto";
 import { buttonVariants } from "@/components/ui/button";
 
 const INICIAL: EstadoIngreso = { error: null };

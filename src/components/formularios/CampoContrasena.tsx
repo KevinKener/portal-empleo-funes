@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
-import { Campo } from "@/components/auth/Campo";
-import type { PropsEstadoCampo } from "@/components/auth/CampoTexto";
+import { Campo } from "@/components/formularios/Campo";
+import type { PropsEstadoCampo } from "@/components/formularios/CampoTexto";
 
 type PropsCampoContrasena = PropsEstadoCampo & {
   etiqueta: string;

@@ -1,5 +1,5 @@
 import type { HTMLInputAutoCompleteAttribute, HTMLInputTypeAttribute } from "react";
-import { Campo } from "@/components/auth/Campo";
+import { Campo } from "@/components/formularios/Campo";
 
 export type PropsEstadoCampo = {
   nombre: string;

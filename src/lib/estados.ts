@@ -26,10 +26,19 @@ type Transicion<E extends string> = {
   roles: readonly Rol[]
 }
 
-// Shared by empresas.estado and postulantes.estado_domicilio (Rules 3 and 4).
+// empresas.estado (Rule 3): only the Admin verifies or rejects.
 const TRANSICIONES_VERIFICACION: readonly Transicion<EstadoVerificacion>[] = [
   { desde: "pendiente", hacia: "verificado", roles: ["admin"] },
   { desde: "pendiente", hacia: "rechazado", roles: ["admin"] },
+]
+
+// postulantes.estado_domicilio (Rule 4): same as above, plus the job seeker
+// sends it back to review by uploading a new proof or changing the address.
+// The database applies that reset automatically (20261013140000_perfil_postulante.sql).
+const TRANSICIONES_DOMICILIO: readonly Transicion<EstadoVerificacion>[] = [
+  ...TRANSICIONES_VERIFICACION,
+  { desde: "rechazado", hacia: "pendiente", roles: ["postulante"] },
+  { desde: "verificado", hacia: "pendiente", roles: ["postulante"] },
 ]
 
 // Rule 2: only the Admin approves; a rejection needs motivo_rechazo.
@@ -56,6 +65,7 @@ const TRANSICIONES_POSTULACION: readonly Transicion<EstadoPostulacion>[] = [
 
 type EstadosPorEntidad = {
   verificacion: EstadoVerificacion
+  domicilio: EstadoVerificacion
   oferta: EstadoOferta
   postulacion: EstadoPostulacion
 }
@@ -67,6 +77,7 @@ const TRANSICIONES: {
   [K in Entidad]: readonly Transicion<EstadosPorEntidad[K]>[]
 } = {
   verificacion: TRANSICIONES_VERIFICACION,
+  domicilio: TRANSICIONES_DOMICILIO,
   oferta: TRANSICIONES_OFERTA,
   postulacion: TRANSICIONES_POSTULACION,
 }
