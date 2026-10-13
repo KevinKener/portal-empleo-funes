@@ -6,6 +6,8 @@ Conecta a vecinos que buscan trabajo con empresas de la zona, manteniendo a la O
 
 > 🚧 **Estado:** MVP en desarrollo — ver [`docs/ROADMAP.md`](docs/ROADMAP.md) para el avance por fases.
 
+🌐 **Demo:** https://portal-empleo-funes.vercel.app
+
 ---
 
 ## El problema
@@ -88,6 +90,10 @@ Abrí [http://localhost:3000](http://localhost:3000).
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Cliente y servidor | Clave pública (publishable) de Supabase |
 
 > ⚠️ `.env.local` **nunca** se sube al repo. Si agregás una variable nueva, sumala a `.env.example` (sin valor) y a esta tabla.
+
+### Deploy (Vercel)
+
+El proyecto está conectado a Vercel con la integración de GitHub: cada push a `main` se publica en https://portal-empleo-funes.vercel.app y cada PR genera una URL de preview. Las variables de la tabla de arriba están cargadas en Vercel (Production y Preview); si agregás una nueva, cargala también ahí y hacé **Redeploy**. No conectes la integración "Supabase" de Vercel: la base ya está vinculada con esas variables.
 
 ### Scripts
 
