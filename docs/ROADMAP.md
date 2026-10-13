@@ -10,7 +10,7 @@ Legend: `[x]` done · `[ ]` pending · `[~]` in progress
 
 - **Current phase:** Phase 3 — Authentication and roles.
 - **Latest progress:** public portal live on Vercel (https://portal-empleo-funes.vercel.app). Phase 2 merged in PR #7: `GET /api/ofertas` and `/api/ofertas/[id]`, landing, `/ofertas` listing with category filter and pagination, offer detail, public layout with the municipal identity from funes.gob.ar. Before that, flow corrections from the tutor review (2026-10-08) on `feature/correcciones-flujo`: offers start as `borrador` (company edits only drafts, sends and takes back), rejected applications carry `motivo_rechazo`, company selection draft (`decision_empresa` + `confirmar_seleccion()`), ARCA certificate optional. Migrations applied in Supabase, types regenerated, `estados.ts` and `AGENTS.md` §2 updated.
-- **Next step:** PR A (`feature/auth-registro`, 2026-10-13): sign-up for job seekers and companies with email code confirmation, following [`docs/research/auth-ux.md`](research/auth-ux.md). Then PR B (login with DNI/CUIT/email, logout, `proxy.ts`, role guard) and PR C (password recovery by code).
+- **Next step:** PR #9 (sign-up) merged 2026-10-13. PR B on `feature/auth-login`: sign-in with DNI/CUIT/email, sign-out, `src/proxy.ts`, role-guarded area layouts. Then PR C (password recovery by code) closes Phase 3.
 
 > Update this section at the end of every work session.
 
@@ -100,7 +100,7 @@ Legend: `[x]` done · `[ ]` pending · `[~]` in progress
 - [x] Municipal visual identity from funes.gob.ar (palette, Sora / Be Vietnam Pro, shield and logo; approved by the Employment Office)
 - [x] Landing with portal presentation and latest offers
 - [x] `/ofertas` listing with category filter
-- [~] `/ofertas/[id]` detail with "Postularme" button (shown disabled with a "coming soon" note; wire it to login in Phase 3)
+- [x] `/ofertas/[id]` detail with "Postularme" button (visitors → sign in and back; applying itself is Phase 4)
 - [x] General layout: header, navigation, footer, responsive
 - [x] Deploy to Vercel: https://portal-empleo-funes.vercel.app (auto-deploys `main`, preview URL per PR)
 - [ ] Ask the municipality for vector (SVG) versions of the logos (current PNGs are low resolution)
@@ -118,11 +118,11 @@ Legend: `[x]` done · `[ ]` pending · `[~]` in progress
 - [~] Auth email templates in Spanish: confirmation code done (`supabase/templates/confirmar-cuenta.html`); recovery code pending (PR C)
 - [x] Job seeker sign-up (DNI, first name, last name, city, address, phone, email, password) — 3 steps + email code
 - [x] Company sign-up (legal name, CUIT, trade name, phone, address, email, password) — ARCA certificate moved to the company profile (Phase 5)
-- [ ] Login with DNI/CUIT or email + password (email resolved on the server)
+- [x] Login with DNI/CUIT or email + password (email resolved on the server)
 - [ ] Password recovery via code sent by email
-- [ ] Route protection per role (`proxy.ts`, see Next 16 docs)
+- [x] Route protection per role (`src/proxy.ts` for the session + `requerirRol()` in each area layout)
 - [x] Manual creation of the seed Admin account documented in the README
-- [ ] Log out
+- [x] Log out
 
 **Demo:** sign up as a job seeker and as a company, and check each one only reaches its own area.
 
@@ -147,7 +147,7 @@ Legend: `[x]` done · `[ ]` pending · `[~]` in progress
 
 **Goal:** the company posts offers and receives pre-selected candidates.
 
-- [ ] Pending-verification notice (no offer posting)
+- [x] Pending-verification notice (no offer posting) — on `/empresa`
 - [ ] Offer CRUD (created as `borrador`, editable only as draft)
 - [ ] Send an offer for review and take it back while `pendiente`
 - [ ] See the status of my offers (draft / pending / published / rejected + reason)
