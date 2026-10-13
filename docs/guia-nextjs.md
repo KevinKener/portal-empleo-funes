@@ -46,24 +46,25 @@ export default function Contador() {
 }
 ```
 
-**Regla práctica:** empezá sin `"use client"`. Solo lo agregás cuando el componente necesita estado, efectos o interacción del usuario. Podés ver un ejemplo real en `src/app/saludo/page.tsx`.
+**Regla práctica:** empezá sin `"use client"`. Solo lo agregás cuando el componente necesita estado, efectos o interacción del usuario. Podés ver un ejemplo real en `src/components/ofertas/BotonPostularme.tsx` (usa estado y responde al clic).
 
 ### Route Handlers — APIs dentro del proyecto
 
 Las rutas de API se definen con un archivo `route.ts`. La carpeta `api/` dentro de `src/app/` es convención, pero no obligatoria.
 
 ```
-src/app/api/saludo/route.ts  →  GET http://localhost:3000/api/saludo
+src/app/api/ofertas/route.ts  →  GET http://localhost:3000/api/ofertas
 ```
 
 ```ts
-// src/app/api/saludo/route.ts
+// Simplified version of src/app/api/ofertas/route.ts
 export async function GET() {
-  return Response.json({ mensaje: "Hola" });
+  const ofertas = await listarOfertasPublicas({ pagina: 1 });
+  return Response.json(ofertas);
 }
 ```
 
-Podés ver cómo `src/app/saludo/page.tsx` consume esa API con un `fetch`.
+Podés ver cómo `src/hooks/useOferta.ts` consume `/api/ofertas/[id]` con un `fetch` desde un Client Component.
 
 ### Navegación entre páginas — componente `<Link>`
 
@@ -139,8 +140,7 @@ export default async function OfertaDetallePage({ params }: Props) {
 | `/ofertas/[id]` | `src/app/ofertas/[id]/page.tsx` | Detalle de una oferta (ruta dinámica) |
 | `/empresa` | `src/app/empresa/page.tsx` | Dashboard para empresas |
 | `/admin` | `src/app/admin/page.tsx` | Dashboard de administración |
-| `/saludo` | `src/app/saludo/page.tsx` | Ejemplo de Client Component con fetch |
-| `/api/saludo` | `src/app/api/saludo/route.ts` | Endpoint de ejemplo |
+| `/api/ofertas` | `src/app/api/ofertas/route.ts` | API pública de ofertas |
 
 ---
 
@@ -150,8 +150,8 @@ export default async function OfertaDetallePage({ params }: Props) {
 src/
 ├── app/                        # Rutas de la aplicación
 │   ├── api/                    # Route Handlers (endpoints de la API)
-│   │   └── saludo/
-│   │       └── route.ts        # GET /api/saludo
+│   │   └── ofertas/
+│   │       └── route.ts        # GET /api/ofertas
 │   ├── admin/
 │   │   └── page.tsx            # /admin
 │   ├── empresa/
@@ -160,8 +160,6 @@ src/
 │   │   ├── page.tsx            # /ofertas
 │   │   └── [id]/
 │   │       └── page.tsx        # /ofertas/:id
-│   ├── saludo/
-│   │   └── page.tsx            # /saludo
 │   ├── globals.css             # Estilos globales + tokens de diseño (@theme)
 │   ├── layout.tsx              # Layout raíz: envuelve todas las páginas
 │   └── page.tsx                # /

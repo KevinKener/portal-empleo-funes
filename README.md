@@ -160,7 +160,6 @@ docs/             # Roadmap, guía de Next.js y material del proyecto
 | `/postulante/postulaciones` | Mis postulaciones, con el estado de cada una |
 | `/empresa` | Panel de empresa, con aviso mientras está en revisión (requiere rol empresa) |
 | `/admin` | Panel de la Oficina de Empleo (requiere rol admin) |
-| `/saludo` · `/api/saludo` | Ejemplo didáctico de Client Component + API |
 
 Las páginas públicas viven en el grupo `src/app/(publico)/`, que comparte encabezado y pie. Las áreas privadas (`/postulante`, `/empresa`, `/admin`) están protegidas en dos niveles: `src/proxy.ts` manda a `/ingresar` a quien no tiene sesión, y el `layout.tsx` de cada área verifica el rol; los datos los sigue protegiendo RLS en la base. La identidad visual (verde `#074A1F`, tipografías Sora y Be Vietnam Pro, escudo y logo en `public/marca/`) es la de [funes.gob.ar](https://funes.gob.ar/).
 

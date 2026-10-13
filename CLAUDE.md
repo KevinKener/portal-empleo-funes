@@ -57,8 +57,6 @@ All code lives in `src/`. The `@/*` alias points to `src/*`.
 | `/postulante/postulaciones` | `src/app/postulante/postulaciones/page.tsx` | "Mis postulaciones": status timeline in plain words |
 | `/empresa` | `src/app/empresa/page.tsx` | Company home with pending-review notice; `layout.tsx` requires role `empresa` |
 | `/admin` | `src/app/admin/page.tsx` | Admin home (skeleton); `layout.tsx` requires role `admin` |
-| `/saludo` | `src/app/saludo/page.tsx` | Client Component + fetch example |
-| `/api/saludo` | `src/app/api/saludo/route.ts` | Example endpoint |
 
 Other key files:
 
