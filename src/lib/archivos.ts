@@ -1,10 +1,11 @@
 /**
- * Files the job seeker uploads (CV in PDF, proof of address). Shared by
+ * Files the job seeker uploads (CV in PDF, proof of address, profile photo). Shared by
  * the browser (checks before uploading) and the Server Actions (path
- * checks). Buckets enforce the same limits in Storage (20261006120100_storage.sql).
+ * checks). Buckets enforce the same limits in Storage (20261006120100_storage.sql,
+ * 20261013150000_foto_perfil.sql).
  */
 
-export type TipoArchivo = "cv" | "comprobante"
+export type TipoArchivo = "cv" | "comprobante" | "foto"
 
 export const TAMANIO_MAXIMO = 5 * 1024 * 1024 // bucket file_size_limit
 
@@ -15,6 +16,8 @@ export const ARCHIVOS: Record<TipoArchivo, { bucket: string; tipos: Record<strin
     tipos: { "application/pdf": "pdf", "image/jpeg": "jpg", "image/png": "png" },
     formatos: "PDF, JPG o PNG",
   },
+  // Always stored as JPEG: the browser crops and converts it first (recortarFoto)
+  foto: { bucket: "fotos-perfil", tipos: { "image/jpeg": "jpg" }, formatos: "JPG o PNG" },
 }
 
 /** Storage path of a file: always inside the owner's folder ("<auth uid>/..."). */
@@ -56,4 +59,35 @@ export async function achicarImagen(archivo: File): Promise<File> {
   const blob = await new Promise<Blob | null>((resolver) => lienzo.toBlob(resolver, "image/jpeg", 0.85))
   if (!blob || blob.size >= archivo.size) return archivo
   return new File([blob], archivo.name.replace(/\.\w+$/, ".jpg"), { type: "image/jpeg" })
+}
+
+const LADO_FOTO = 512 // px: enough for an avatar, ~50–100 KB
+const FOTO_MAXIMA = 20 * 1024 * 1024 // raw phone photo, before cropping
+
+/** Error message for a profile photo before cropping it, or null when it can go. */
+export function errorFoto(archivo: File): string | null {
+  if (archivo.size === 0) return "La foto está vacía."
+  if (!["image/jpeg", "image/png", "image/webp"].includes(archivo.type)) return "La foto tiene que ser JPG o PNG."
+  if (archivo.size > FOTO_MAXIMA) return "La foto es muy pesada. Probá con otra."
+  return null
+}
+
+/**
+ * Crops the centre square of a photo and shrinks it to a 512 px JPEG, so
+ * every avatar looks the same and uploads fast on a slow connection.
+ * Browser only.
+ */
+export async function recortarFoto(archivo: File): Promise<File> {
+  const imagen = await createImageBitmap(archivo)
+  const lado = Math.min(imagen.width, imagen.height)
+  const lienzo = document.createElement("canvas")
+  lienzo.width = lienzo.height = Math.min(LADO_FOTO, lado)
+  lienzo
+    .getContext("2d")
+    ?.drawImage(imagen, (imagen.width - lado) / 2, (imagen.height - lado) / 2, lado, lado, 0, 0, lienzo.width, lienzo.height)
+  imagen.close()
+
+  const blob = await new Promise<Blob | null>((resolver) => lienzo.toBlob(resolver, "image/jpeg", 0.85))
+  if (!blob) throw new Error("recortarFoto: canvas export failed")
+  return new File([blob], "foto.jpg", { type: "image/jpeg" })
 }

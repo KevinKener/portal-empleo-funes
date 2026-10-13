@@ -3,7 +3,8 @@ import type { NextConfig } from "next";
 const isDev = process.env.NODE_ENV === "development";
 
 // The browser talks to Supabase directly only for file uploads (Vercel caps
-// request bodies, see src/lib/archivos.ts); everything else goes through our server.
+// request bodies, see src/lib/archivos.ts) and to show profile photos through
+// signed URLs (src/lib/foto-perfil.ts); everything else goes through our server.
 const supabase = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
 
 // CSP without nonces (Next.js guide "content-security-policy"): nonces would
@@ -12,7 +13,7 @@ const csp = [
   "default-src 'self'",
   `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' blob: data:",
+  `img-src 'self' blob: data: ${supabase}`,
   "font-src 'self'",
   `connect-src 'self' ${supabase}`,
   "object-src 'none'",
