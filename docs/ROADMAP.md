@@ -10,7 +10,7 @@ Legend: `[x]` done · `[ ]` pending · `[~]` in progress
 
 - **Current phase:** Phase 3 — Authentication and roles.
 - **Latest progress:** public portal live on Vercel (https://portal-empleo-funes.vercel.app). Phase 2 merged in PR #7: `GET /api/ofertas` and `/api/ofertas/[id]`, landing, `/ofertas` listing with category filter and pagination, offer detail, public layout with the municipal identity from funes.gob.ar. Before that, flow corrections from the tutor review (2026-10-08) on `feature/correcciones-flujo`: offers start as `borrador` (company edits only drafts, sends and takes back), rejected applications carry `motivo_rechazo`, company selection draft (`decision_empresa` + `confirmar_seleccion()`), ARCA certificate optional. Migrations applied in Supabase, types regenerated, `estados.ts` and `AGENTS.md` §2 updated.
-- **Next step:** PR #9 (sign-up) merged 2026-10-13. PR B on `feature/auth-login`: sign-in with DNI/CUIT/email, sign-out, `src/proxy.ts`, role-guarded area layouts. Then PR C (password recovery by code) closes Phase 3.
+- **Next step:** Phase 3 code complete (2026-10-13): PR #10 (sign-in, proxy, role guard) and PR C on `feature/auth-recuperar` (password recovery by code, stacked on #10). Once merged, Phase 4 (job seeker profile and applications).
 
 > Update this section at the end of every work session.
 
@@ -115,11 +115,11 @@ Legend: `[x]` done · `[ ]` pending · `[~]` in progress
 
 - [x] Create the demo Gmail account for the Employment Office (2FA + App Password): `empleofunes.demo@gmail.com`
 - [x] Custom SMTP (Gmail) in Supabase Auth + Site URL / redirect URLs (test invite delivered, landed in spam)
-- [~] Auth email templates in Spanish: confirmation code done (`supabase/templates/confirmar-cuenta.html`); recovery code pending (PR C)
+- [x] Auth email templates in Spanish: `confirmar-cuenta.html` (Confirm sign up) and `recuperar-contrasena.html` (Reset password)
 - [x] Job seeker sign-up (DNI, first name, last name, city, address, phone, email, password) — 3 steps + email code
 - [x] Company sign-up (legal name, CUIT, trade name, phone, address, email, password) — ARCA certificate moved to the company profile (Phase 5)
 - [x] Login with DNI/CUIT or email + password (email resolved on the server)
-- [ ] Password recovery via code sent by email
+- [x] Password recovery via code sent by email (`/recuperar`)
 - [x] Route protection per role (`src/proxy.ts` for the session + `requerirRol()` in each area layout)
 - [x] Manual creation of the seed Admin account documented in the README
 - [x] Log out

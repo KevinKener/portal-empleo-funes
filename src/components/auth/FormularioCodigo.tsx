@@ -1,12 +1,13 @@
 "use client";
 
-import { useActionState, useEffect, useState, startTransition } from "react";
+import { useActionState, useState, startTransition } from "react";
 import Link from "next/link";
 import { LoaderCircle, MailCheck } from "lucide-react";
 import { reenviarCodigo, verificarCodigo, type EstadoCodigo } from "@/app/(publico)/registro/actions";
 import { ESTILO_CONTROL } from "@/components/auth/Campo";
 import { CuentaConfirmada } from "@/components/auth/CuentaConfirmada";
 import { buttonVariants } from "@/components/ui/button";
+import { useCuentaRegresiva } from "@/hooks/useCuentaRegresiva";
 import { cn } from "@/lib/utils";
 
 const ESPERA_REENVIO = 60; // seconds, same as Supabase's resend interval
@@ -21,13 +22,7 @@ export function FormularioCodigo({ email }: { email: string }) {
   const [estado, verificar, verificando] = useActionState(verificarCodigo, INICIAL);
   const [reenvio, reenviar, reenviando] = useActionState(reenviarCodigo, INICIAL);
   const [codigo, setCodigo] = useState("");
-  const [espera, setEspera] = useState(ESPERA_REENVIO);
-
-  useEffect(() => {
-    if (espera <= 0) return;
-    const temporizador = setTimeout(() => setEspera((actual) => actual - 1), 1000);
-    return () => clearTimeout(temporizador);
-  }, [espera]);
+  const espera = useCuentaRegresiva(ESPERA_REENVIO);
 
   if (estado.confirmada) return <CuentaConfirmada rol={estado.rol} />;
 
@@ -39,7 +34,7 @@ export function FormularioCodigo({ email }: { email: string }) {
   }
 
   function pedirOtro() {
-    setEspera(ESPERA_REENVIO);
+    espera.reiniciar();
     startTransition(() => reenviar());
   }
 
@@ -104,10 +99,10 @@ export function FormularioCodigo({ email }: { email: string }) {
         <button
           type="button"
           onClick={pedirOtro}
-          disabled={espera > 0 || reenviando}
+          disabled={espera.restantes > 0 || reenviando}
           className="font-medium text-primary underline-offset-4 hover:underline disabled:cursor-not-allowed disabled:text-muted-foreground disabled:no-underline"
         >
-          {espera > 0 ? `Pedir otro código en 0:${String(espera).padStart(2, "0")}` : "Pedir otro código"}
+          {espera.restantes > 0 ? `Pedir otro código en ${espera.texto}` : "Pedir otro código"}
         </button>
         <p className="text-muted-foreground">
           ¿El email está mal?{" "}

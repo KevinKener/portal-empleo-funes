@@ -4,6 +4,7 @@ import { useActionState, useState, startTransition } from "react";
 import Link from "next/link";
 import { LoaderCircle } from "lucide-react";
 import { ingresar, type EstadoIngreso } from "@/app/(publico)/ingresar/actions";
+import { AvisoFormulario } from "@/components/auth/AvisoFormulario";
 import { CampoContrasena } from "@/components/auth/CampoContrasena";
 import { CampoTexto } from "@/components/auth/CampoTexto";
 import { buttonVariants } from "@/components/ui/button";
@@ -32,14 +33,7 @@ export function FormularioIngreso({ siguiente }: { siguiente: string | null }) {
 
   return (
     <form onSubmit={enviar} noValidate className="space-y-5">
-      {estado.error && (
-        <p
-          role="alert"
-          className="rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive motion-safe:animate-in motion-safe:fade-in"
-        >
-          {estado.error}
-        </p>
-      )}
+      <AvisoFormulario error={estado.error} />
 
       <CampoTexto
         nombre="identificador"
@@ -61,8 +55,9 @@ export function FormularioIngreso({ siguiente }: { siguiente: string | null }) {
           onSalir={() => {}}
           autoComplete="current-password"
         />
-        {/* TODO(phase-3): password recovery page (PR C). */}
-        <p className="text-sm text-muted-foreground">¿Olvidaste tu contraseña? Muy pronto vas a poder recuperarla desde acá.</p>
+        <Link href="/recuperar" className="inline-block text-sm font-medium text-primary underline-offset-4 hover:underline">
+          ¿Olvidaste tu contraseña?
+        </Link>
       </div>
 
       <button
