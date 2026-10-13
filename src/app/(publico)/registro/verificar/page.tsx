@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { CuentaConfirmada } from "@/components/auth/CuentaConfirmada";
 import { FormularioCodigo } from "@/components/auth/FormularioCodigo";
-import { leerEmailPendiente } from "@/lib/registro";
+import { leerEmailPendiente } from "@/lib/email-pendiente";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = { title: "Confirmá tu cuenta" };
@@ -13,7 +13,7 @@ export const metadata: Metadata = { title: "Confirmá tu cuenta" };
  * neither there is nothing to confirm.
  */
 export default async function VerificarPage() {
-  const email = await leerEmailPendiente();
+  const email = await leerEmailPendiente("registro");
   if (email) return <FormularioCodigo email={email} />;
 
   const supabase = await createClient();

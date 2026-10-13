@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { destinoTrasIngresar } from "@/lib/auth";
 import { emailParaIngresar } from "@/lib/ingreso";
-import { guardarEmailPendiente } from "@/lib/registro";
+import { guardarEmailPendiente } from "@/lib/email-pendiente";
 import { createClient } from "@/lib/supabase/server";
 
 /**
@@ -44,7 +44,7 @@ export async function ingresar(_previo: EstadoIngreso, formData: FormData): Prom
     // Right password but the code step was never finished: send a fresh code
     // and take the person back to it instead of a dead end.
     await supabase.auth.resend({ type: "signup", email });
-    await guardarEmailPendiente(email);
+    await guardarEmailPendiente("registro", email);
     redirect("/registro/verificar");
   }
   if (error?.code === "over_request_rate_limit") {

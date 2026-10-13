@@ -1,5 +1,4 @@
 import "server-only"
-import { cookies } from "next/headers"
 import { createAdminClient } from "@/lib/supabase/admin"
 
 /**
@@ -8,8 +7,6 @@ import { createAdminClient } from "@/lib/supabase/admin"
  * duplicate check uses the secret-key client and returns only a yes/no,
  * never data about the existing account (AGENTS.md §3).
  */
-
-const COOKIE_EMAIL = "registro_email"
 
 /**
  * Whether a DNI (postulantes) or CUIT (empresas) already belongs to a
@@ -37,31 +34,4 @@ export async function documentoOcupado(tipo: "dni" | "cuit", documento: string):
   const { error: errorBorrado } = await admin.auth.admin.deleteUser(data.perfil_id)
   if (errorBorrado) throw errorBorrado
   return false
-}
-
-/**
- * Remembers which email is waiting for its confirmation code, so the
- * address never travels in the URL. httpOnly: only the server reads it.
- */
-export async function guardarEmailPendiente(email: string): Promise<void> {
-  const cookieStore = await cookies()
-  cookieStore.set(COOKIE_EMAIL, email, {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    path: "/registro",
-    maxAge: 60 * 60, // same as the code expiry in Supabase
-  })
-}
-
-/** Email waiting for confirmation in this browser, or null. */
-export async function leerEmailPendiente(): Promise<string | null> {
-  const cookieStore = await cookies()
-  return cookieStore.get(COOKIE_EMAIL)?.value ?? null
-}
-
-/** Forgets the pending email once the account is confirmed. */
-export async function borrarEmailPendiente(): Promise<void> {
-  const cookieStore = await cookies()
-  cookieStore.delete({ name: COOKIE_EMAIL, path: "/registro" })
 }

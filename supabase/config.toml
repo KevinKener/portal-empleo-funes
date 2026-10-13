@@ -249,6 +249,10 @@ otp_expiry = 3600
 subject = "Tu código para confirmar la cuenta · Portal de Empleo Funes"
 content_path = "./supabase/templates/confirmar-cuenta.html"
 
+[auth.email.template.recovery]
+subject = "Tu código para crear una contraseña nueva · Portal de Empleo Funes"
+content_path = "./supabase/templates/recuperar-contrasena.html"
+
 # [auth.email.template.invite]
 # subject = "You have been invited"
 # content_path = "./supabase/templates/invite.html"

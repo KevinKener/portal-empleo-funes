@@ -1,12 +1,8 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import {
-  borrarEmailPendiente,
-  documentoOcupado,
-  guardarEmailPendiente,
-  leerEmailPendiente,
-} from "@/lib/registro";
+import { borrarEmailPendiente, guardarEmailPendiente, leerEmailPendiente } from "@/lib/email-pendiente";
+import { documentoOcupado } from "@/lib/registro";
 import { createClient } from "@/lib/supabase/server";
 import {
   CAMPOS_EMPRESA,
@@ -114,7 +110,7 @@ async function crearCuenta<K extends CampoPostulante | CampoEmpresa>(
     };
   }
 
-  await guardarEmailPendiente(email);
+  await guardarEmailPendiente("registro", email);
   redirect("/registro/verificar");
 }
 
@@ -123,7 +119,7 @@ async function crearCuenta<K extends CampoPostulante | CampoEmpresa>(
  * session (cookies set by the server client) and the account is ready.
  */
 export async function verificarCodigo(_previo: EstadoCodigo, formData: FormData): Promise<EstadoCodigo> {
-  const email = await leerEmailPendiente();
+  const email = await leerEmailPendiente("registro");
   if (!email) {
     return { ...SIN_CAMBIOS, error: "Se venció el tiempo para confirmar. Volvé a crear la cuenta." };
   }
@@ -141,7 +137,7 @@ export async function verificarCodigo(_previo: EstadoCodigo, formData: FormData)
     return { ...SIN_CAMBIOS, error: mensajeErrorAuth(error?.code) };
   }
 
-  await borrarEmailPendiente();
+  await borrarEmailPendiente("registro");
   const { data: perfil } = await supabase.from("perfiles").select("rol").eq("id", data.user.id).maybeSingle();
   const rol = perfil?.rol === "postulante" || perfil?.rol === "empresa" ? perfil.rol : null;
   return { error: null, aviso: null, confirmada: true, rol };
@@ -149,7 +145,7 @@ export async function verificarCodigo(_previo: EstadoCodigo, formData: FormData)
 
 /** Sends a new code to the pending email. Supabase allows one every 60 s. */
 export async function reenviarCodigo(): Promise<EstadoCodigo> {
-  const email = await leerEmailPendiente();
+  const email = await leerEmailPendiente("registro");
   if (!email) {
     return { ...SIN_CAMBIOS, error: "Se venció el tiempo para confirmar. Volvé a crear la cuenta." };
   }

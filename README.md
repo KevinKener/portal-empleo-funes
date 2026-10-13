@@ -122,7 +122,7 @@ npx supabase gen types typescript --linked --schema public > src/types/database.
 - **Cuenta Admin inicial:** crearla en *Authentication → Users → Add user* (sin metadata) y después, en el *SQL Editor*:
   `insert into public.perfiles (id, rol) values ('<id del usuario>', 'admin');`
   Los demás Admins se crean desde la app (regla 7).
-- **Autenticación (configurada en el dashboard, no en migraciones):** SMTP de Gmail (`empleofunes.demo@gmail.com`), *Confirm email* activado, contraseña mínima de 8 caracteres. Las plantillas de mail viven en `supabase/templates/` y se pegan a mano en *Authentication → Emails → Templates* (el asunto está en el comentario de cada archivo). `supabase/config.toml` refleja la misma configuración para desarrollo local.
+- **Autenticación (configurada en el dashboard, no en migraciones):** SMTP de Gmail (`empleofunes.demo@gmail.com`), *Confirm email* activado, contraseña mínima de 8 caracteres. Las plantillas de mail viven en `supabase/templates/` (`confirmar-cuenta.html` → *Confirm sign up*, `recuperar-contrasena.html` → *Reset password*) y se pegan a mano en *Authentication → Emails → Templates* (el asunto está en el comentario de cada archivo). `supabase/config.toml` refleja la misma configuración para desarrollo local.
 - Ojo: `postulaciones.notas_admin` es solo para Admins. Al consultar `postulaciones` hay que listar las columnas (`select('*')` da error de permisos); los Admins usan la vista `postulaciones_admin`.
 
 ---
@@ -152,6 +152,7 @@ docs/             # Roadmap, guía de Next.js y material del proyecto
 | `/registro/postulante` · `/registro/empresa` | Formularios de registro por pasos |
 | `/registro/verificar` | Confirmar el email con el código de 6 números |
 | `/ingresar` | Ingresar con DNI, CUIT o email + contraseña |
+| `/recuperar` · `/recuperar/codigo` | Recuperar la contraseña con un código por email |
 | `/postulante` | Panel del postulante (requiere rol postulante) |
 | `/empresa` | Panel de empresa, con aviso mientras está en revisión (requiere rol empresa) |
 | `/admin` | Panel de la Oficina de Empleo (requiere rol admin) |
