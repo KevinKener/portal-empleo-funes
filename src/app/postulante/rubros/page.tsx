@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { EncabezadoSeccion } from "@/components/postulante/EncabezadoSeccion";
+import { EncabezadoSeccion, VOLVER_A_MI_PERFIL } from "@/components/postulante/EncabezadoSeccion";
 import { SelectorRubros } from "@/components/postulante/SelectorRubros";
 import { requerirRol } from "@/lib/auth";
 import { listarCategorias } from "@/lib/categorias";
@@ -19,7 +19,7 @@ export default async function RubrosPage() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
-      <EncabezadoSeccion
+      <EncabezadoSeccion volver={VOLVER_A_MI_PERFIL}
         titulo="¿En qué te gustaría trabajar?"
         descripcion="Elegí todos los rubros que te interesen. La Oficina de Empleo los usa para encontrarte cuando aparece una oferta."
       />

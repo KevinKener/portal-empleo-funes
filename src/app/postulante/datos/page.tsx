@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { EncabezadoSeccion } from "@/components/postulante/EncabezadoSeccion";
+import { EncabezadoSeccion, VOLVER_A_MI_PERFIL } from "@/components/postulante/EncabezadoSeccion";
 import { FormularioDatos } from "@/components/postulante/FormularioDatos";
 import { requerirRol } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
@@ -24,7 +24,7 @@ export default async function DatosPage() {
   const { dni, ...iniciales } = postulante;
   return (
     <div className="mx-auto max-w-2xl space-y-6">
-      <EncabezadoSeccion titulo="Tus datos" descripcion="Mantené tus datos al día para que la Oficina de Empleo pueda contactarte." />
+      <EncabezadoSeccion volver={VOLVER_A_MI_PERFIL} titulo="Tus datos" descripcion="Mantené tus datos al día para que la Oficina de Empleo pueda contactarte." />
       <div className="rounded-2xl border border-border bg-card p-5 sm:p-6">
         <FormularioDatos iniciales={iniciales} dni={dni} email={usuario.user?.email ?? ""} />
       </div>

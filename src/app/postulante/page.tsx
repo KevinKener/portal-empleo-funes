@@ -1,58 +1,116 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { notFound } from "next/navigation";
+import { ArrowRight, CircleCheck, Lightbulb } from "lucide-react";
+import { Avatar } from "@/components/postulante/Avatar";
 import { ListaTareas } from "@/components/postulante/ListaTareas";
-import { PanelBienvenida } from "@/components/layout/PanelBienvenida";
-import { buttonVariants } from "@/components/ui/button";
+import { OfertasParaVos } from "@/components/postulante/panel/OfertasParaVos";
+import { ProximoPaso } from "@/components/postulante/panel/ProximoPaso";
+import { ResumenPostulaciones } from "@/components/postulante/panel/ResumenPostulaciones";
+import { VistosPanel } from "@/components/postulante/panel/VistosPanel";
 import { requerirRol } from "@/lib/auth";
-import { obtenerResumenPerfil, puedePostularse, tareasDelPerfil } from "@/lib/perfil-postulante";
+import { consejoDelDia, nombresDeEmpresas, obtenerOfertasParaVos, proximoPaso } from "@/lib/panel-postulante";
+import { obtenerResumenPerfil, puedePostularse, tareasDelPerfil, type Tarea } from "@/lib/perfil-postulante";
 import { listarMisPostulaciones } from "@/lib/postulaciones";
-import { textoEstadoPostulacion } from "@/lib/formato";
 
 export const metadata: Metadata = { title: "Mi panel" };
 
-/** Job seeker home: profile checklist and, once ready, the way to the offers. */
+/**
+ * Job seeker home ("Mi panel"): the next step, applications, offers in their
+ * categories and the profile (docs/research/panel-postulante.md).
+ */
 export default async function PostulantePage() {
   const { userId } = await requerirRol("postulante");
   const resumen = await obtenerResumenPerfil(userId);
-  const recientes = resumen ? await listarMisPostulaciones(resumen.postulante.id, 3) : [];
+  if (!resumen) notFound();
+  const { postulante } = resumen;
+
+  const postulaciones = await listarMisPostulaciones(postulante.id);
+  const ofertaIds = postulaciones.flatMap((p) => (p.oferta ? [p.oferta.id] : []));
+  const [{ ofertas, nuevas }, empresas] = await Promise.all([
+    obtenerOfertasParaVos(postulante.id, ofertaIds),
+    nombresDeEmpresas(ofertaIds),
+  ]);
+
+  const listo = puedePostularse(resumen);
+  const tareas = tareasDelPerfil(resumen);
+  const faltan = tareas.filter((t) => t.requerida && t.estado !== "completo").length;
 
   return (
-    <PanelBienvenida
-      saludo={resumen ? `¡Hola, ${resumen.postulante.nombre}!` : "¡Hola!"}
-      descripcion="Completá tu perfil y postulate a las ofertas. La Oficina de Empleo revisa cada postulación antes de enviarla a la empresa."
+    <VistosPanel
+      postulanteId={postulante.id}
+      actual={{ perfilListo: listo, estados: Object.fromEntries(postulaciones.map((p) => [p.id, p.estado])) }}
     >
-      <div className="grid gap-6 lg:grid-cols-[2fr_1fr] lg:items-start">
-        {resumen && <ListaTareas tareas={tareasDelPerfil(resumen)} />}
-        <aside className="space-y-3 rounded-2xl border border-border bg-secondary p-5 text-secondary-foreground sm:p-6">
-          <h2 className="font-heading text-lg font-semibold">Ofertas de trabajo</h2>
-          <p className="text-sm">
-            {resumen && puedePostularse(resumen)
-              ? "Tu perfil está listo. Buscá una oferta que te interese y postulate."
-              : "Podés mirar las ofertas ahora y postularte cuando completes tu perfil."}
-          </p>
-          <Link href="/ofertas" className={buttonVariants({ className: "h-11 w-full px-6 text-base hover:bg-primary-hover" })}>
-            Ver ofertas
-          </Link>
-          {recientes.length > 0 && (
-            <div className="space-y-2 border-t border-primary/20 pt-4">
-              <h2 className="font-heading font-semibold">Tus últimas postulaciones</h2>
-              <ul className="space-y-2 text-sm">
-                {recientes.map((postulacion) => (
-                  <li key={postulacion.id} className="flex items-center justify-between gap-2">
-                    <span className="min-w-0 truncate">{postulacion.oferta?.titulo ?? "Oferta"}</span>
-                    <span className="shrink-0 rounded-full bg-card px-2 py-0.5 text-xs font-medium">
-                      {textoEstadoPostulacion(postulacion.estado, postulacion.motivo_rechazo).titulo}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-              <Link href="/postulante/postulaciones" className="inline-block text-sm font-medium underline underline-offset-4">
-                Ver todas
-              </Link>
-            </div>
-          )}
-        </aside>
+      <div className="space-y-6">
+        <div className="flex items-center gap-4">
+          <Avatar nombre={postulante.nombre} apellido={postulante.apellido} />
+          <div className="min-w-0">
+            <h1 className="truncate font-heading text-2xl font-bold sm:text-3xl">¡Hola, {postulante.nombre}!</h1>
+            <p className="flex items-center gap-1.5 text-muted-foreground">
+              {listo ? (
+                <>
+                  <CircleCheck aria-hidden className="size-4 text-primary" />
+                  Tu perfil está listo para postularte
+                </>
+              ) : faltan === 1 ? (
+                "Te falta 1 paso para poder postularte"
+              ) : (
+                `Te faltan ${faltan} pasos para poder postularte`
+              )}
+            </p>
+          </div>
+        </div>
+
+        <div className="grid gap-6 lg:grid-cols-[2fr_1fr] lg:items-start">
+          <div className="space-y-6">
+            <ProximoPaso
+              paso={proximoPaso(resumen, nuevas)}
+              perfilListo={listo}
+              postulaciones={postulaciones.map((p) => ({ id: p.id, estado: p.estado, titulo: p.oferta?.titulo ?? "la oferta" }))}
+            />
+            {!listo && <ListaTareas tareas={tareas} />}
+            <ResumenPostulaciones postulaciones={postulaciones} empresas={empresas} />
+            {resumen.rubros > 0 && <OfertasParaVos ofertas={ofertas} />}
+          </div>
+
+          <aside className="space-y-6">
+            {listo && <PerfilCompleto domicilio={tareas.find((t) => t.clave === "domicilio")} />}
+            <section aria-labelledby="titulo-consejo" className="space-y-2 rounded-2xl bg-secondary p-5 text-secondary-foreground sm:p-6">
+              <h2 id="titulo-consejo" className="flex items-center gap-2 font-heading font-semibold">
+                <Lightbulb aria-hidden className="size-5" />
+                Consejo
+              </h2>
+              <p className="text-sm">{consejoDelDia()}</p>
+            </section>
+          </aside>
+        </div>
       </div>
-    </PanelBienvenida>
+    </VistosPanel>
+  );
+}
+
+const TEXTO_DOMICILIO: Partial<Record<Tarea["estado"], string>> = {
+  opcional: "Si querés, sumá tu comprobante de domicilio. Es opcional.",
+  en_revision: "Tu comprobante de domicilio está en revisión.",
+  rechazado: "Tu comprobante no se pudo verificar. Podés subir otro.",
+};
+
+/** Once the profile is ready the checklist shrinks to this card (it stays complete in "Mi perfil"). */
+function PerfilCompleto({ domicilio }: { domicilio?: Tarea }) {
+  const aviso = domicilio && TEXTO_DOMICILIO[domicilio.estado];
+  return (
+    <section aria-labelledby="titulo-perfil-completo" className="space-y-3 rounded-2xl border border-border bg-card p-5 sm:p-6">
+      <h2 id="titulo-perfil-completo" className="flex items-center gap-2 font-heading font-semibold">
+        <CircleCheck aria-hidden className="size-5 text-primary" />
+        Tu perfil está completo
+      </h2>
+      <div aria-hidden className="h-2 rounded-full bg-primary" />
+      <p className="text-sm text-muted-foreground">Mantenelo al día: la Oficina de Empleo lo mira en cada postulación.</p>
+      {aviso && <p className="text-sm">{aviso}</p>}
+      <Link href="/postulante/perfil" className="inline-flex items-center gap-1 text-sm font-medium text-primary underline-offset-4 hover:underline">
+        Ver mi perfil
+        <ArrowRight aria-hidden className="size-4" />
+      </Link>
+    </section>
   );
 }

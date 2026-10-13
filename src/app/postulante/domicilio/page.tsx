@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CircleCheck, Clock, TriangleAlert } from "lucide-react";
-import { EncabezadoSeccion } from "@/components/postulante/EncabezadoSeccion";
+import { EncabezadoSeccion, VOLVER_A_MI_PERFIL } from "@/components/postulante/EncabezadoSeccion";
 import { SubidaArchivo } from "@/components/postulante/SubidaArchivo";
 import { TarjetaSeccion } from "@/components/postulante/TarjetaSeccion";
 import { requerirRol } from "@/lib/auth";
@@ -41,7 +41,7 @@ export default async function DomicilioPage() {
   if (localidad !== "funes") {
     return (
       <div className="mx-auto max-w-2xl space-y-6">
-        <EncabezadoSeccion titulo="Comprobante de domicilio" descripcion="Solo se pide a quienes viven en Funes." />
+        <EncabezadoSeccion volver={VOLVER_A_MI_PERFIL} titulo="Comprobante de domicilio" descripcion="Solo se pide a quienes viven en Funes." />
         <p className="rounded-xl border border-border bg-muted p-4 text-sm">
           Según tus datos no vivís en Funes, así que no necesitás subir nada. Si te mudaste,{" "}
           <Link href="/postulante/datos" className="font-medium text-primary underline underline-offset-4">
@@ -56,7 +56,7 @@ export default async function DomicilioPage() {
   const estado = comprobante_url ? ESTADOS[estado_domicilio] : null;
   return (
     <div className="mx-auto max-w-2xl space-y-6">
-      <EncabezadoSeccion
+      <EncabezadoSeccion volver={VOLVER_A_MI_PERFIL}
         titulo="Comprobante de domicilio"
         descripcion="Es opcional y no te impide postularte. La Oficina de Empleo prioriza a los vecinos de Funes y tiene en cuenta el comprobante al revisar tu perfil."
       />
