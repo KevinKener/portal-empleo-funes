@@ -87,7 +87,8 @@ export function SubidaArchivo({ tipo, userId, etiqueta, cargado, eliminable = fa
       {cargado && (
         <div className="flex flex-wrap items-center gap-3 rounded-xl border border-border bg-secondary p-4 text-secondary-foreground">
           <CircleCheck aria-hidden className="size-5 shrink-0" />
-          <p className="min-w-0 flex-1 text-sm font-medium">Ya subiste tu archivo.</p>
+          {/* min-w-40: on phones the buttons wrap below instead of squeezing the text word by word */}
+          <p className="min-w-40 flex-1 text-sm font-medium">Ya subiste tu archivo.</p>
           <button type="button" onClick={ver} disabled={pendiente} className={buttonVariants({ variant: "outline", size: "lg" })}>
             <FileText aria-hidden />
             Ver
