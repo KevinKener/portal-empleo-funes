@@ -153,7 +153,8 @@ docs/             # Roadmap, guía de Next.js y material del proyecto
 | `/registro/verificar` | Confirmar el email con el código de 6 números |
 | `/ingresar` | Ingresar con DNI, CUIT o email + contraseña |
 | `/recuperar` · `/recuperar/codigo` | Recuperar la contraseña con un código por email |
-| `/postulante` | Panel del postulante con "Completá tu perfil" (requiere rol postulante) |
+| `/postulante` | "Mi panel": próximo paso, mis postulaciones y ofertas de mis rubros (requiere rol postulante) |
+| `/postulante/perfil` | "Mi perfil": lista de tareas con datos, rubros, CV y domicilio |
 | `/postulante/datos` · `/postulante/rubros` | Editar datos personales y elegir rubros |
 | `/postulante/cv` | Armar el CV (sobre vos, experiencia, estudios) o subirlo en PDF |
 | `/postulante/domicilio` | Subir el comprobante de domicilio (solo vecinos de Funes) |

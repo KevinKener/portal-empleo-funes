@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { CircleCheck, Info } from "lucide-react";
 import { SeccionExperiencias, SeccionFormaciones } from "@/components/postulante/cv/SeccionesCv";
 import { SobreMi } from "@/components/postulante/cv/SobreMi";
-import { EncabezadoSeccion } from "@/components/postulante/EncabezadoSeccion";
+import { EncabezadoSeccion, VOLVER_A_MI_PERFIL } from "@/components/postulante/EncabezadoSeccion";
 import { SubidaArchivo } from "@/components/postulante/SubidaArchivo";
 import { TarjetaSeccion } from "@/components/postulante/TarjetaSeccion";
 import { requerirRol } from "@/lib/auth";
@@ -34,7 +34,7 @@ export default async function CvPage() {
   const completo = tieneCv(resumen);
   return (
     <div className="mx-auto max-w-3xl space-y-6">
-      <EncabezadoSeccion
+      <EncabezadoSeccion volver={VOLVER_A_MI_PERFIL}
         titulo="Tu CV"
         descripcion="Armalo acá completando las secciones, o subí tu CV en PDF. Con cualquiera de los dos ya podés postularte."
       />

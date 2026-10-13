@@ -49,7 +49,8 @@ All code lives in `src/`. The `@/*` alias points to `src/*`.
 | `/registro/verificar` | `src/app/(publico)/registro/verificar/page.tsx` | Email confirmation with a 6-digit code |
 | `/ingresar` | `src/app/(publico)/ingresar/page.tsx` | Sign-in with DNI, CUIT or email (`?siguiente=`); `ingresar` / `salir` Server Actions in `actions.ts` |
 | `/recuperar`, `/recuperar/codigo` | `src/app/(publico)/recuperar/` | Password recovery: identifier → emailed code + new password |
-| `/postulante` | `src/app/postulante/page.tsx` | Job seeker home: "Completá tu perfil" task list (+ `loading`, `error`); `layout.tsx` requires role `postulante`; Server Actions in `actions.ts` |
+| `/postulante` | `src/app/postulante/page.tsx` | "Mi panel": next step (with celebrations), applications summary, offers in your categories (+ `loading`, `error`); `layout.tsx` requires role `postulante` and adds `NavegacionPostulante`; Server Actions in `actions.ts` |
+| `/postulante/perfil` | `src/app/postulante/perfil/page.tsx` | "Mi perfil": avatar and the "Completá tu perfil" task list linking to each section |
 | `/postulante/datos` | `src/app/postulante/datos/page.tsx` | Edit personal data (DNI and email fixed) |
 | `/postulante/rubros` | `src/app/postulante/rubros/page.tsx` | Category chips (Rule 5) |
 | `/postulante/cv` | `src/app/postulante/cv/page.tsx` | CV: "Sobre vos", experience and education (add another) or PDF (Rule 6); actions in `cv/actions.ts` |
@@ -70,6 +71,7 @@ Other key files:
 - `src/proxy.ts` → refreshes the Supabase session on every request (`src/lib/supabase/proxy.ts`) and sends visitors without one away from `/postulante`, `/empresa`, `/admin`. Role checks live in each area's layout via `requerirRol()` (`src/lib/auth.ts`, with `obtenerSesion()` and `AREA_POR_ROL`).
 - `src/lib/email-pendiente.ts` → httpOnly cookie with the email waiting for a code (`registro` / `recuperar` flows).
 - `src/lib/perfil-postulante.ts` → profile summary, task list and `puedePostularse()` (minimum: one category + a CV in either format).
+- `src/lib/panel-postulante.ts` → "Mi panel" rules and queries (`proximoPaso()`, `obtenerOfertasParaVos()`, `nombresDeEmpresas()`). `src/components/postulante/panel/VistosPanel.tsx` remembers the previous visit in `localStorage` for celebrations and "Novedad" badges (`docs/research/panel-postulante.md`).
 - `src/lib/postulaciones.ts` → the job seeker's applications (only readable columns) and `yaSePostulo()`. Applying is `postularme()` in `src/app/postulante/actions.ts`, called from `AccionPostular` on the offer detail.
 - `src/lib/archivos.ts` → upload limits, Storage paths (`<uid>/cv.pdf`, `<uid>/comprobante.<ext>`) and phone photo shrinking. Files go browser → Storage directly (Vercel caps bodies at 4.5 MB); `src/app/postulante/archivos.ts` records, opens (signed URL, 60 s) or removes them.
 - `src/components/formularios/` → shared form fields (`Campo`, `CampoTexto`, `CampoContrasena`, `CampoLocalidad`, `AvisoFormulario`).

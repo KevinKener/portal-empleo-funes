@@ -29,6 +29,23 @@
   --color-border: #dde3df;
   --color-input: #dde3df;
   --color-ring: #074a1f;
+
+  /* Celebrations in the job seeker panel (docs/research/panel-postulante.md §3.5); always used
+     behind motion-safe: so reduced motion shows the message without movement. */
+  --animate-festejo-pop: festejo-pop 400ms ease-out both;
+  --animate-festejo-chispa: festejo-chispa 1s ease-out 150ms both;
+
+  @keyframes festejo-pop {
+    0% { transform: scale(0.6); opacity: 0; }
+    60% { transform: scale(1.12); opacity: 1; }
+    100% { transform: scale(1); }
+  }
+
+  /* Each dot flies to its own --x/--y and fades out */
+  @keyframes festejo-chispa {
+    0% { transform: translate(0, 0) scale(1); opacity: 1; }
+    100% { transform: translate(var(--x), var(--y)) scale(0.4); opacity: 0; }
+  }
 }
 
 /* Fonts from funes.gob.ar, loaded with next/font in the root layout. inline: they point at
