@@ -36,8 +36,8 @@ export function NavegacionPostulante() {
                 href={href}
                 aria-current={actual ? "page" : undefined}
                 className={cn(
-                  "flex flex-col items-center gap-0.5 px-1 py-2 text-xs font-medium transition-colors focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none",
-                  "sm:flex-row sm:gap-2 sm:border-b-2 sm:px-3 sm:py-3 sm:text-sm",
+                  "flex h-14 flex-col items-center justify-center gap-0.5 px-1 text-xs font-medium transition-colors focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none",
+                  "sm:h-auto sm:flex-row sm:gap-2 sm:border-b-2 sm:px-3 sm:py-3 sm:text-sm",
                   actual
                     ? "text-primary sm:border-primary"
                     : "text-muted-foreground hover:text-foreground sm:border-transparent",
