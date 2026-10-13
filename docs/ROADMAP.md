@@ -8,9 +8,9 @@ Legend: `[x]` done · `[ ]` pending · `[~]` in progress
 
 ## Current status
 
-- **Current phase:** Phase 2 — Public portal.
+- **Current phase:** Phase 3 — Authentication and roles.
 - **Latest progress:** public portal live on Vercel (https://portal-empleo-funes.vercel.app). Phase 2 merged in PR #7: `GET /api/ofertas` and `/api/ofertas/[id]`, landing, `/ofertas` listing with category filter and pagination, offer detail, public layout with the municipal identity from funes.gob.ar. Before that, flow corrections from the tutor review (2026-10-08) on `feature/correcciones-flujo`: offers start as `borrador` (company edits only drafts, sends and takes back), rejected applications carry `motivo_rechazo`, company selection draft (`decision_empresa` + `confirmar_seleccion()`), ARCA certificate optional. Migrations applied in Supabase, types regenerated, `estados.ts` and `AGENTS.md` §2 updated.
-- **Next step:** Phase 3 (authentication). Gmail SMTP is configured in Supabase (2026-10-13); next are the sign-up flows and the Spanish auth email templates.
+- **Next step:** PR A (`feature/auth-registro`, 2026-10-13): sign-up for job seekers and companies with email code confirmation, following [`docs/research/auth-ux.md`](research/auth-ux.md). Then PR B (login with DNI/CUIT/email, logout, `proxy.ts`, role guard) and PR C (password recovery by code).
 
 > Update this section at the end of every work session.
 
@@ -115,13 +115,13 @@ Legend: `[x]` done · `[ ]` pending · `[~]` in progress
 
 - [x] Create the demo Gmail account for the Employment Office (2FA + App Password): `empleofunes.demo@gmail.com`
 - [x] Custom SMTP (Gmail) in Supabase Auth + Site URL / redirect URLs (test invite delivered, landed in spam)
-- [ ] Auth email templates in Spanish (confirmation, recovery code, invitation) — also helps deliverability
-- [ ] Job seeker sign-up (DNI, first name, last name, city, address, phone, email, password)
-- [ ] Company sign-up (legal name, CUIT, trade name, phone, address, optional ARCA certificate, email, password)
+- [~] Auth email templates in Spanish: confirmation code done (`supabase/templates/confirmar-cuenta.html`); recovery code pending (PR C)
+- [x] Job seeker sign-up (DNI, first name, last name, city, address, phone, email, password) — 3 steps + email code
+- [x] Company sign-up (legal name, CUIT, trade name, phone, address, email, password) — ARCA certificate moved to the company profile (Phase 5)
 - [ ] Login with DNI/CUIT or email + password (email resolved on the server)
 - [ ] Password recovery via code sent by email
 - [ ] Route protection per role (`proxy.ts`, see Next 16 docs)
-- [ ] Manual creation of the seed Admin account documented in the README
+- [x] Manual creation of the seed Admin account documented in the README
 - [ ] Log out
 
 **Demo:** sign up as a job seeker and as a company, and check each one only reaches its own area.
@@ -153,7 +153,7 @@ Legend: `[x]` done · `[ ]` pending · `[~]` in progress
 - [ ] See the status of my offers (draft / pending / published / rejected + reason)
 - [ ] See **pre-selected** candidates, draft tomar/descartar and confirm in bulk (`confirmar_seleccion`)
 - [ ] Record a hire
-- [ ] Edit company data
+- [ ] Edit company data (includes uploading the optional ARCA certificate)
 
 **Demo:** a company posts an offer and sees the flow through to the hire.
 

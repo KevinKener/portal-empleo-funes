@@ -44,6 +44,9 @@ All code lives in `src/`. The `@/*` alias points to `src/*`.
 | `/ofertas/[id]` | `src/app/(publico)/ofertas/[id]/page.tsx` | Published offer detail (+ `not-found`) |
 | `/api/ofertas` | `src/app/api/ofertas/route.ts` | Public listing API (`?categoria`, `?pagina`) |
 | `/api/ofertas/[id]` | `src/app/api/ofertas/[id]/route.ts` | Public detail API (404 unless `publicada`) |
+| `/registro` | `src/app/(publico)/registro/page.tsx` | Sign-up: account type choice (+ shared `layout`, Server Actions in `actions.ts`) |
+| `/registro/postulante`, `/registro/empresa` | `src/app/(publico)/registro/*/page.tsx` | Multi-step sign-up forms (`src/components/auth/`) |
+| `/registro/verificar` | `src/app/(publico)/registro/verificar/page.tsx` | Email confirmation with a 6-digit code |
 | `/empresa` | `src/app/empresa/page.tsx` | Company dashboard (skeleton) |
 | `/admin` | `src/app/admin/page.tsx` | Admin dashboard (skeleton) |
 | `/saludo` | `src/app/saludo/page.tsx` | Client Component + fetch example |
@@ -58,6 +61,9 @@ Other key files:
 - `src/app/(publico)/layout.tsx` → public shell (`Encabezado`, `PiePagina` in `src/components/layout/`).
 - `src/lib/ofertas.ts` → public offers queries over the `ofertas_publicas` view, shared by the API and Server Components. `src/lib/categorias.ts`, `src/lib/formato.ts` (labels, dates) and `src/lib/validaciones/ofertas.ts` sit next to it.
 - `src/hooks/useOferta.ts` → consumes `/api/ofertas/[id]` from Client Components.
+- `src/lib/supabase/admin.ts` → secret-key client (`server-only`, bypasses RLS). Only for lookups anonymous flows need (`src/lib/registro.ts`) and, later, creating Admins.
+- `src/lib/validaciones/auth.ts` → sign-up validation shared by the browser (inline feedback) and the Server Actions. `src/hooks/useFormularioPorPasos.ts` drives the multi-step forms.
+- `supabase/templates/` → Spanish auth email templates, pasted manually in the Supabase dashboard.
 - `public/marca/` → municipal brand assets from funes.gob.ar (shield, white logo); `src/app/icon.png` is the favicon.
 - `src/app/globals.css` → Tailwind v4 (`@import "tailwindcss"`, no `tailwind.config.*`) + design tokens in `@theme`.
 - `src/app/empresa/empresa.styles.css` → route-specific styles.

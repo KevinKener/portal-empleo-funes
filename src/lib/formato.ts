@@ -20,3 +20,11 @@ const FORMATO_FECHA = new Intl.DateTimeFormat("es-AR", {
 export function formatearFecha(iso: string | null): string {
   return iso ? FORMATO_FECHA.format(new Date(iso)) : ""
 }
+
+/** UI labels for the localidad enum. */
+export const ETIQUETAS_LOCALIDAD: Record<Enums<"localidad">, string> = {
+  funes: "Funes",
+  roldan: "Roldán",
+  rosario: "Rosario",
+  otra: "Otra localidad",
+}
