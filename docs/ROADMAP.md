@@ -8,9 +8,9 @@ Legend: `[x]` done · `[ ]` pending · `[~]` in progress
 
 ## Current status
 
-- **Current phase:** Phase 4 — Job seeker.
+- **Current phase:** Phase 5 — Company.
 - **Latest progress:** public portal live on Vercel (https://portal-empleo-funes.vercel.app). Phase 2 merged in PR #7: `GET /api/ofertas` and `/api/ofertas/[id]`, landing, `/ofertas` listing with category filter and pagination, offer detail, public layout with the municipal identity from funes.gob.ar. Before that, flow corrections from the tutor review (2026-10-08) on `feature/correcciones-flujo`: offers start as `borrador` (company edits only drafts, sends and takes back), rejected applications carry `motivo_rechazo`, company selection draft (`decision_empresa` + `confirmar_seleccion()`), ARCA certificate optional. Migrations applied in Supabase, types regenerated, `estados.ts` and `AGENTS.md` §2 updated.
-- **Next step:** Phase 4 code complete (2026-10-13) in three stacked PRs: #12 (profile, categories, migration), #13 (CV + proof of address), PR F on `feature/postulante-postulaciones` (apply + Mis postulaciones). Merge in order, then Phase 5 (company).
+- **Next step:** Phase 4 closed (2026-10-13): PRs #12, #13 and #14 merged and the apply flow tested manually. Start Phase 5 (company) with the offer CRUD.
 
 > Update this section at the end of every work session.
 
@@ -184,7 +184,11 @@ Legend: `[x]` done · `[ ]` pending · `[~]` in progress
 
 - [ ] Responsive review on phone, tablet and desktop
 - [ ] Basic accessibility and loading/empty/error states on every screen
+- [ ] Sign-up UX: warn that a DNI/CUIT is already registered on blur, not only on the final submit (Server Action returning only yes/no, with rate limiting so it cannot be used to enumerate registered documents)
 - [ ] Review of RLS policies and data exposed on public routes
+- [ ] Storage policies per role and bucket (job seekers only `cvs` / `comprobantes-domicilio`, companies only `constancias-arca`); a verified proof of address cannot be deleted through the Storage API either (security review 2026-10-13)
+- [ ] Rate limiting for the DNI/CUIT lookups that use the secret key (sign-up and sign-in), and check how Supabase Auth rate limits apply when calls come from our server; `documentoOcupado()` should not delete an unconfirmed account that is still within its code window
+- [x] Security headers (CSP, `frame-ancestors`, `nosniff`, `Referrer-Policy`) and Next.js 16.3.8 (security review 2026-10-13)
 - [ ] Realistic demo data in the seed
 - [ ] Tests for critical rules (status transitions, permissions) — tool to be defined
 - [ ] Deploy to Vercel with environment variables configured
