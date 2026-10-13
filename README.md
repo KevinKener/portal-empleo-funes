@@ -88,6 +88,7 @@ Abrí [http://localhost:3000](http://localhost:3000).
 |----------|-------------|-------------|
 | `NEXT_PUBLIC_SUPABASE_URL` | Cliente y servidor | URL del proyecto de Supabase |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Cliente y servidor | Clave pública (publishable) de Supabase |
+| `SUPABASE_SECRET_KEY` | **Solo servidor** (`src/lib/supabase/admin.ts`) | Clave secreta (*Project Settings → API Keys → Secret keys*). Saltea RLS: se usa solo para chequeos que un visitante sin sesión no puede hacer (ej. "¿este DNI ya tiene cuenta?"). Nunca con prefijo `NEXT_PUBLIC_` |
 
 > ⚠️ `.env.local` **nunca** se sube al repo. Si agregás una variable nueva, sumala a `.env.example` (sin valor) y a esta tabla.
 
@@ -121,6 +122,7 @@ npx supabase gen types typescript --linked --schema public > src/types/database.
 - **Cuenta Admin inicial:** crearla en *Authentication → Users → Add user* (sin metadata) y después, en el *SQL Editor*:
   `insert into public.perfiles (id, rol) values ('<id del usuario>', 'admin');`
   Los demás Admins se crean desde la app (regla 7).
+- **Autenticación (configurada en el dashboard, no en migraciones):** SMTP de Gmail (`empleofunes.demo@gmail.com`), *Confirm email* activado, contraseña mínima de 8 caracteres. Las plantillas de mail viven en `supabase/templates/` y se pegan a mano en *Authentication → Emails → Templates* (el asunto está en el comentario de cada archivo). `supabase/config.toml` refleja la misma configuración para desarrollo local.
 - Ojo: `postulaciones.notas_admin` es solo para Admins. Al consultar `postulaciones` hay que listar las columnas (`select('*')` da error de permisos); los Admins usan la vista `postulaciones_admin`.
 
 ---
@@ -146,6 +148,9 @@ docs/             # Roadmap, guía de Next.js y material del proyecto
 | `/ofertas` | Listado de ofertas publicadas, con filtro por categoría (`?categoria=`) y paginación (`?pagina=`) |
 | `/ofertas/[id]` | Detalle de una oferta publicada (404 si no existe o no está publicada) |
 | `/api/ofertas` · `/api/ofertas/[id]` | API pública de ofertas publicadas (JSON) |
+| `/registro` | Crear cuenta: elegir entre postulante y empresa |
+| `/registro/postulante` · `/registro/empresa` | Formularios de registro por pasos |
+| `/registro/verificar` | Confirmar el email con el código de 6 números |
 | `/empresa` | Panel de empresa |
 | `/admin` | Panel de la Oficina de Empleo |
 | `/saludo` · `/api/saludo` | Ejemplo didáctico de Client Component + API |

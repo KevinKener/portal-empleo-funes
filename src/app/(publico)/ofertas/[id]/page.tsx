@@ -78,8 +78,11 @@ export default async function OfertaDetallePage({ params }: PageProps<"/ofertas/
             Postularme
           </button>
           <p className="text-sm text-muted-foreground">
-            Muy pronto vas a poder registrarte y postularte desde acá. La Oficina de Empleo revisa cada postulación
-            antes de enviarla a la empresa.
+            Muy pronto vas a poder postularte desde acá. Mientras tanto, ya podés{" "}
+            <Link href="/registro" className="font-medium text-primary underline-offset-4 hover:underline">
+              crear tu cuenta
+            </Link>
+            . La Oficina de Empleo revisa cada postulación antes de enviarla a la empresa.
           </p>
         </div>
       </article>
