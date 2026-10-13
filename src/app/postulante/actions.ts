@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { requerirRol } from "@/lib/auth";
+import { obtenerResumenPerfil, puedePostularse } from "@/lib/perfil-postulante";
 import { createClient } from "@/lib/supabase/server";
 import { esUuid } from "@/lib/validaciones/ofertas";
 import {
@@ -121,4 +122,39 @@ export async function guardarRubros(_previo: EstadoRubros, formData: FormData): 
 
   revalidatePath("/postulante", "layout");
   return { error: null, aviso: "Guardamos tus rubros." };
+}
+
+export type ResultadoPostulacion = { ok: boolean; error: string | null };
+
+/**
+ * Applies to a published offer. Checked here and not only in the page: the
+ * minimum profile (one category + a CV, docs/research/postulante-ux.md §3);
+ * RLS checks the offer is published (Rule 2) and the unique constraint
+ * blocks applying twice (Rule 8).
+ */
+export async function postularme(ofertaId: string): Promise<ResultadoPostulacion> {
+  const { userId } = await requerirRol("postulante");
+  if (!esUuid(ofertaId)) return { ok: false, error: "La oferta no es válida." };
+
+  const resumen = await obtenerResumenPerfil(userId);
+  if (!resumen || !puedePostularse(resumen)) {
+    return { ok: false, error: "Completá tu perfil (rubros y CV) para postularte." };
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("postulaciones")
+    .insert({ oferta_id: ofertaId, postulante_id: resumen.postulante.id });
+
+  // Already applied (e.g. a double tap): the outcome the person wanted
+  if (error?.code === "23505") return { ok: true, error: null };
+  if (error) {
+    // 42501: RLS refused it, the offer is no longer published
+    if (error.code !== "42501") console.error("postularme failed:", error.code);
+    return { ok: false, error: "Esta oferta ya no recibe postulaciones." };
+  }
+
+  revalidatePath("/postulante", "layout");
+  revalidatePath(`/ofertas/${ofertaId}`);
+  return { ok: true, error: null };
 }

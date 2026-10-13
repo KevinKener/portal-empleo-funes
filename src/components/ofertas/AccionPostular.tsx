@@ -1,13 +1,17 @@
 import Link from "next/link";
+import { CircleCheck } from "lucide-react";
+import { BotonPostularme } from "@/components/ofertas/BotonPostularme";
 import { buttonVariants } from "@/components/ui/button";
 import { obtenerSesion } from "@/lib/auth";
+import { obtenerResumenPerfil, puedePostularse, tieneCv } from "@/lib/perfil-postulante";
+import { yaSePostulo } from "@/lib/postulaciones";
 
 const ENLACE = "font-medium text-primary underline-offset-4 hover:underline";
 
 /**
  * "Postularme" area of an offer, by session: visitors are sent to sign in
- * and come back here; job seekers see the button (applying arrives in
- * Phase 4); companies and the Admin cannot apply.
+ * and come back here; job seekers apply, see that they already did (Rule
+ * 8) or what their profile is missing; companies and the Admin cannot apply.
  */
 export async function AccionPostular({ ofertaId }: { ofertaId: string }) {
   const sesion = await obtenerSesion();
@@ -38,20 +42,50 @@ export async function AccionPostular({ ofertaId }: { ofertaId: string }) {
     );
   }
 
+  const resumen = await obtenerResumenPerfil(sesion.userId);
+  if (!resumen) return null;
+
+  if (await yaSePostulo(resumen.postulante.id, ofertaId)) {
+    return (
+      <div className="flex flex-col gap-3 border-t border-border pt-6 sm:flex-row sm:items-center">
+        <p className="flex flex-1 items-center gap-2 font-medium text-primary">
+          <CircleCheck aria-hidden className="size-5" />
+          Ya te postulaste a esta oferta.
+        </p>
+        <Link href="/postulante/postulaciones" className={buttonVariants({ variant: "outline", size: "lg" })}>
+          Ver el estado
+        </Link>
+      </div>
+    );
+  }
+
+  if (!puedePostularse(resumen)) {
+    // Inline checklist instead of a dead end: what is missing and where to do it
+    const faltan = [
+      resumen.rubros === 0 && { href: "/postulante/rubros", texto: "Elegir al menos un rubro" },
+      !tieneCv(resumen) && { href: "/postulante/cv", texto: "Armar tu CV o subirlo en PDF" },
+    ].filter((item): item is { href: string; texto: string } => Boolean(item));
+
+    return (
+      <div className="space-y-3 border-t border-border pt-6">
+        <p className="font-medium">Para postularte, completá tu perfil:</p>
+        <ul className="space-y-2">
+          {faltan.map((item) => (
+            <li key={item.href}>
+              <Link href={item.href} className={ENLACE}>
+                {item.texto}
+              </Link>
+            </li>
+          ))}
+        </ul>
+        <p className="text-sm text-muted-foreground">Te lleva unos minutos y te sirve para todas las ofertas.</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-2 border-t border-border pt-6">
-      {/* TODO(phase-4): apply to the offer (Rule 8: no double application). */}
-      <button
-        type="button"
-        disabled
-        className={buttonVariants({ className: "h-11 w-full px-6 text-base disabled:opacity-60 sm:w-auto" })}
-      >
-        Postularme
-      </button>
-      <p className="text-sm text-muted-foreground">
-        Muy pronto vas a poder postularte desde acá. La Oficina de Empleo revisa cada postulación antes de enviarla a la
-        empresa.
-      </p>
+    <div className="border-t border-border pt-6">
+      <BotonPostularme ofertaId={ofertaId} />
     </div>
   );
 }

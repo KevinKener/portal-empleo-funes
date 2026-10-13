@@ -10,7 +10,7 @@ Legend: `[x]` done · `[ ]` pending · `[~]` in progress
 
 - **Current phase:** Phase 4 — Job seeker.
 - **Latest progress:** public portal live on Vercel (https://portal-empleo-funes.vercel.app). Phase 2 merged in PR #7: `GET /api/ofertas` and `/api/ofertas/[id]`, landing, `/ofertas` listing with category filter and pagination, offer detail, public layout with the municipal identity from funes.gob.ar. Before that, flow corrections from the tutor review (2026-10-08) on `feature/correcciones-flujo`: offers start as `borrador` (company edits only drafts, sends and takes back), rejected applications carry `motivo_rechazo`, company selection draft (`decision_empresa` + `confirmar_seleccion()`), ARCA certificate optional. Migrations applied in Supabase, types regenerated, `estados.ts` and `AGENTS.md` §2 updated.
-- **Next step:** Phase 3 closed (PRs #9–#11). Phase 4 decisions in [`docs/research/postulante-ux.md`](research/postulante-ux.md): structured CV (`experiencias`, `formaciones`), proof of address only for Funes residents (Funes first, verification as a badge + Admin toggle), new proof or address → `pendiente`, minimum to apply = one category + a CV. PR D (`feature/postulante-perfil`): migration, profile task list, personal data, categories. Then PR E (CV + proof of address) and PR F (apply + Mis postulaciones).
+- **Next step:** Phase 4 code complete (2026-10-13) in three stacked PRs: #12 (profile, categories, migration), #13 (CV + proof of address), PR F on `feature/postulante-postulaciones` (apply + Mis postulaciones). Merge in order, then Phase 5 (company).
 
 > Update this section at the end of every work session.
 
@@ -136,8 +136,8 @@ Legend: `[x]` done · `[ ]` pending · `[~]` in progress
 - [x] CV built on the platform **or** PDF upload (`/postulante/cv`)
 - [x] Select several categories (`/postulante/rubros`)
 - [x] Upload proof of address (status `pendiente`), only for Funes residents (`/postulante/domicilio`)
-- [ ] Apply to an offer (no duplicates)
-- [ ] "Mis postulaciones" with the status of each one
+- [x] Apply to an offer (no duplicates; minimum profile = one category + a CV)
+- [x] "Mis postulaciones" with the status of each one (`/postulante/postulaciones`)
 
 **Demo:** a resident builds their profile from a phone and applies.
 
