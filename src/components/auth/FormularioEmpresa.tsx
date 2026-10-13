@@ -1,8 +1,8 @@
 "use client";
 
 import { registrarEmpresa } from "@/app/(publico)/registro/actions";
-import { CampoContrasena } from "@/components/auth/CampoContrasena";
-import { CampoTexto } from "@/components/auth/CampoTexto";
+import { CampoContrasena } from "@/components/formularios/CampoContrasena";
+import { CampoTexto } from "@/components/formularios/CampoTexto";
 import { MarcoPasos } from "@/components/auth/MarcoPasos";
 import { useFormularioPorPasos, type Paso } from "@/hooks/useFormularioPorPasos";
 import { CONTRASENA_MINIMA, type CampoEmpresa } from "@/lib/validaciones/auth";

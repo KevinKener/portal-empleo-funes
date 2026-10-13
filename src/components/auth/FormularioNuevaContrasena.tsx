@@ -8,9 +8,9 @@ import {
   reenviarCodigoRecuperacion,
   type EstadoRecuperacion,
 } from "@/app/(publico)/recuperar/actions";
-import { AvisoFormulario } from "@/components/auth/AvisoFormulario";
-import { ESTILO_CONTROL } from "@/components/auth/Campo";
-import { CampoContrasena } from "@/components/auth/CampoContrasena";
+import { AvisoFormulario } from "@/components/formularios/AvisoFormulario";
+import { ESTILO_CONTROL } from "@/components/formularios/Campo";
+import { CampoContrasena } from "@/components/formularios/CampoContrasena";
 import { buttonVariants } from "@/components/ui/button";
 import { useCuentaRegresiva } from "@/hooks/useCuentaRegresiva";
 import { CONTRASENA_MINIMA } from "@/lib/validaciones/auth";

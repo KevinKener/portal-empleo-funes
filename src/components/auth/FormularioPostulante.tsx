@@ -1,13 +1,12 @@
 "use client";
 
 import { registrarPostulante } from "@/app/(publico)/registro/actions";
-import { Campo } from "@/components/auth/Campo";
-import { CampoContrasena } from "@/components/auth/CampoContrasena";
-import { CampoTexto, type PropsEstadoCampo } from "@/components/auth/CampoTexto";
+import { CampoContrasena } from "@/components/formularios/CampoContrasena";
+import { CampoLocalidad } from "@/components/formularios/CampoLocalidad";
+import { CampoTexto } from "@/components/formularios/CampoTexto";
 import { MarcoPasos } from "@/components/auth/MarcoPasos";
 import { useFormularioPorPasos, type Paso } from "@/hooks/useFormularioPorPasos";
-import { ETIQUETAS_LOCALIDAD } from "@/lib/formato";
-import { CONTRASENA_MINIMA, LOCALIDADES, type CampoPostulante } from "@/lib/validaciones/auth";
+import { CONTRASENA_MINIMA, type CampoPostulante } from "@/lib/validaciones/auth";
 
 const PASOS: readonly Paso<CampoPostulante>[] = [
   { titulo: "Tus datos", campos: ["dni", "nombre", "apellido"] },
@@ -88,30 +87,5 @@ export function FormularioPostulante() {
         </>
       )}
     </MarcoPasos>
-  );
-}
-
-// Native select: on phones it opens the system picker, easier than a custom list.
-function CampoLocalidad({ nombre, valor, error, onCambiar, onSalir }: PropsEstadoCampo) {
-  return (
-    <Campo nombre={nombre} etiqueta="¿Dónde vivís?" error={error}>
-      {(control) => (
-        <select
-          {...control}
-          value={valor}
-          onChange={(evento) => onCambiar(evento.target.value)}
-          onBlur={onSalir}
-        >
-          <option value="" disabled>
-            Elegí una opción
-          </option>
-          {LOCALIDADES.map((localidad) => (
-            <option key={localidad} value={localidad}>
-              {ETIQUETAS_LOCALIDAD[localidad]}
-            </option>
-          ))}
-        </select>
-      )}
-    </Campo>
   );
 }

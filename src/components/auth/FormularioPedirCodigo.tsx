@@ -4,8 +4,8 @@ import { useActionState, useState, startTransition } from "react";
 import Link from "next/link";
 import { LoaderCircle } from "lucide-react";
 import { pedirCodigo, type EstadoRecuperacion } from "@/app/(publico)/recuperar/actions";
-import { AvisoFormulario } from "@/components/auth/AvisoFormulario";
-import { CampoTexto } from "@/components/auth/CampoTexto";
+import { AvisoFormulario } from "@/components/formularios/AvisoFormulario";
+import { CampoTexto } from "@/components/formularios/CampoTexto";
 import { buttonVariants } from "@/components/ui/button";
 
 const INICIAL: EstadoRecuperacion = { error: null, aviso: null };

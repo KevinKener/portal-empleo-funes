@@ -1,29 +1,42 @@
 "use client";
 
 import { useActionState, useEffect, useRef, useState, startTransition } from "react";
-import { validarCampo, validarCampos, type CampoRegistro, type Errores } from "@/lib/validaciones/auth";
-import type { EstadoRegistro } from "@/app/(publico)/registro/actions";
+import {
+  validarCampo,
+  validarCampos,
+  type CampoRegistro,
+  type Errores,
+  type EstadoFormulario,
+} from "@/lib/validaciones/auth";
 
 export type Paso<K extends CampoRegistro> = { titulo: string; campos: readonly K[] };
 
 type Accion<K extends CampoRegistro> = (
-  previo: EstadoRegistro<K>,
+  previo: EstadoFormulario<K>,
   formData: FormData,
-) => Promise<EstadoRegistro<K>>;
+) => Promise<EstadoFormulario<K>>;
 
 /**
- * State for a sign-up form split into steps that submits once at the end.
+ * State for a form split into steps (or a single one) that submits once at
+ * the end. `iniciales` pre-fills it when editing existing data.
  * Inputs are controlled so steps can unmount (and animate) without losing
  * values, and the action is called manually: React would otherwise reset the
  * form after the action and wipe what the person typed.
  * Validation timing follows Baymard: on blur, re-checked on every keystroke
  * once a field shows an error, and per step before moving forward.
  */
-export function useFormularioPorPasos<K extends CampoRegistro>(pasos: readonly Paso<K>[], accion: Accion<K>) {
-  const [estado, ejecutar, enviando] = useActionState(accion, { errores: {}, mensaje: null });
+export function useFormularioPorPasos<K extends CampoRegistro>(
+  pasos: readonly Paso<K>[],
+  accion: Accion<K>,
+  iniciales: Partial<Record<K, string>> = {},
+) {
+  const [estado, ejecutar, enviando] = useActionState<EstadoFormulario<K>, FormData>(accion, {
+    errores: {},
+    mensaje: null,
+  });
   const [paso, setPaso] = useState(0);
   const [direccion, setDireccion] = useState<"adelante" | "atras">("adelante");
-  const [valores, setValores] = useState<Partial<Record<K, string>>>({});
+  const [valores, setValores] = useState<Partial<Record<K, string>>>(iniciales);
   const [errores, setErrores] = useState<Errores<K>>({});
   const [validos, setValidos] = useState<Partial<Record<K, boolean>>>({});
   const [estadoVisto, setEstadoVisto] = useState(estado);
@@ -123,6 +136,7 @@ export function useFormularioPorPasos<K extends CampoRegistro>(pasos: readonly P
     direccion,
     esUltimo: paso === pasos.length - 1,
     mensaje: estado.mensaje,
+    aviso: estado.aviso ?? null,
     enviando,
     tituloRef,
     campo,

@@ -8,9 +8,9 @@ Legend: `[x]` done · `[ ]` pending · `[~]` in progress
 
 ## Current status
 
-- **Current phase:** Phase 3 — Authentication and roles.
+- **Current phase:** Phase 4 — Job seeker.
 - **Latest progress:** public portal live on Vercel (https://portal-empleo-funes.vercel.app). Phase 2 merged in PR #7: `GET /api/ofertas` and `/api/ofertas/[id]`, landing, `/ofertas` listing with category filter and pagination, offer detail, public layout with the municipal identity from funes.gob.ar. Before that, flow corrections from the tutor review (2026-10-08) on `feature/correcciones-flujo`: offers start as `borrador` (company edits only drafts, sends and takes back), rejected applications carry `motivo_rechazo`, company selection draft (`decision_empresa` + `confirmar_seleccion()`), ARCA certificate optional. Migrations applied in Supabase, types regenerated, `estados.ts` and `AGENTS.md` §2 updated.
-- **Next step:** Phase 3 code complete (2026-10-13): PR #10 (sign-in, proxy, role guard) and PR C on `feature/auth-recuperar` (password recovery by code, stacked on #10). Once merged, Phase 4 (job seeker profile and applications).
+- **Next step:** Phase 3 closed (PRs #9–#11). Phase 4 decisions in [`docs/research/postulante-ux.md`](research/postulante-ux.md): structured CV (`experiencias`, `formaciones`), proof of address only for Funes residents (Funes first, verification as a badge + Admin toggle), new proof or address → `pendiente`, minimum to apply = one category + a CV. PR D (`feature/postulante-perfil`): migration, profile task list, personal data, categories. Then PR E (CV + proof of address) and PR F (apply + Mis postulaciones).
 
 > Update this section at the end of every work session.
 
@@ -132,9 +132,9 @@ Legend: `[x]` done · `[ ]` pending · `[~]` in progress
 
 **Goal:** the job seeker can complete their profile and apply.
 
-- [ ] Complete/edit profile and personal data
+- [x] Complete/edit profile and personal data (`/postulante` task list, `/postulante/datos`)
 - [ ] CV built on the platform **or** PDF upload
-- [ ] Select several categories
+- [x] Select several categories (`/postulante/rubros`)
 - [ ] Upload proof of address (status `pendiente`)
 - [ ] Apply to an offer (no duplicates)
 - [ ] "Mis postulaciones" with the status of each one

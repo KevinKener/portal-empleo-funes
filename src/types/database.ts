@@ -154,6 +154,91 @@ export type Database = {
           },
         ]
       }
+      experiencias: {
+        Row: {
+          created_at: string
+          desde: string
+          empresa: string | null
+          hasta: string | null
+          id: string
+          postulante_id: string
+          puesto: string
+          tareas: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          desde: string
+          empresa?: string | null
+          hasta?: string | null
+          id?: string
+          postulante_id: string
+          puesto: string
+          tareas?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          desde?: string
+          empresa?: string | null
+          hasta?: string | null
+          id?: string
+          postulante_id?: string
+          puesto?: string
+          tareas?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "experiencias_postulante_id_fkey"
+            columns: ["postulante_id"]
+            isOneToOne: false
+            referencedRelation: "postulantes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      formaciones: {
+        Row: {
+          created_at: string
+          estado: Database["public"]["Enums"]["estado_formacion"]
+          id: string
+          institucion: string | null
+          nivel: Database["public"]["Enums"]["nivel_formacion"]
+          postulante_id: string
+          titulo: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          estado: Database["public"]["Enums"]["estado_formacion"]
+          id?: string
+          institucion?: string | null
+          nivel: Database["public"]["Enums"]["nivel_formacion"]
+          postulante_id: string
+          titulo: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          estado?: Database["public"]["Enums"]["estado_formacion"]
+          id?: string
+          institucion?: string | null
+          nivel?: Database["public"]["Enums"]["nivel_formacion"]
+          postulante_id?: string
+          titulo?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "formaciones_postulante_id_fkey"
+            columns: ["postulante_id"]
+            isOneToOne: false
+            referencedRelation: "postulantes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ofertas: {
         Row: {
           categoria_id: string
@@ -609,9 +694,11 @@ export type Database = {
         Args: { p_oferta_id: string }
         Returns: boolean
       }
+      quitar_datos_personales: { Args: { p_datos: Json }; Returns: Json }
     }
     Enums: {
       decision_empresa: "tomar" | "descartar"
+      estado_formacion: "completo" | "en_curso" | "incompleto"
       estado_oferta:
         | "borrador"
         | "pendiente"
@@ -628,6 +715,12 @@ export type Database = {
       jornada: "completa" | "media_jornada" | "por_horas" | "temporal"
       localidad: "funes" | "roldan" | "rosario" | "otra"
       motivo_rechazo_postulacion: "cupo_completo" | "no_seleccionado"
+      nivel_formacion:
+        | "primario"
+        | "secundario"
+        | "terciario"
+        | "universitario"
+        | "curso"
       rol_usuario: "postulante" | "empresa" | "admin"
     }
     CompositeTypes: {
@@ -757,6 +850,7 @@ export const Constants = {
   public: {
     Enums: {
       decision_empresa: ["tomar", "descartar"],
+      estado_formacion: ["completo", "en_curso", "incompleto"],
       estado_oferta: [
         "borrador",
         "pendiente",
@@ -775,6 +869,13 @@ export const Constants = {
       jornada: ["completa", "media_jornada", "por_horas", "temporal"],
       localidad: ["funes", "roldan", "rosario", "otra"],
       motivo_rechazo_postulacion: ["cupo_completo", "no_seleccionado"],
+      nivel_formacion: [
+        "primario",
+        "secundario",
+        "terciario",
+        "universitario",
+        "curso",
+      ],
       rol_usuario: ["postulante", "empresa", "admin"],
     },
   },

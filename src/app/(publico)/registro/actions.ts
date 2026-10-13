@@ -13,6 +13,7 @@ import {
   type CampoEmpresa,
   type CampoPostulante,
   type Errores,
+  type EstadoFormulario,
 } from "@/lib/validaciones/auth";
 
 /**
@@ -21,10 +22,7 @@ import {
  * and Postgres enforces formats, uniqueness and the starting statuses.
  */
 
-export type EstadoRegistro<K extends string> = {
-  errores: Errores<K>;
-  mensaje: string | null;
-};
+export type EstadoRegistro<K extends string> = EstadoFormulario<K>;
 
 export type EstadoCodigo = {
   error: string | null;

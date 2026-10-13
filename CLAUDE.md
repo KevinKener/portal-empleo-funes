@@ -49,7 +49,9 @@ All code lives in `src/`. The `@/*` alias points to `src/*`.
 | `/registro/verificar` | `src/app/(publico)/registro/verificar/page.tsx` | Email confirmation with a 6-digit code |
 | `/ingresar` | `src/app/(publico)/ingresar/page.tsx` | Sign-in with DNI, CUIT or email (`?siguiente=`); `ingresar` / `salir` Server Actions in `actions.ts` |
 | `/recuperar`, `/recuperar/codigo` | `src/app/(publico)/recuperar/` | Password recovery: identifier → emailed code + new password |
-| `/postulante` | `src/app/postulante/page.tsx` | Job seeker home (skeleton); `layout.tsx` requires role `postulante` |
+| `/postulante` | `src/app/postulante/page.tsx` | Job seeker home: "Completá tu perfil" task list (+ `loading`, `error`); `layout.tsx` requires role `postulante`; Server Actions in `actions.ts` |
+| `/postulante/datos` | `src/app/postulante/datos/page.tsx` | Edit personal data (DNI and email fixed) |
+| `/postulante/rubros` | `src/app/postulante/rubros/page.tsx` | Category chips (Rule 5) |
 | `/empresa` | `src/app/empresa/page.tsx` | Company home with pending-review notice; `layout.tsx` requires role `empresa` |
 | `/admin` | `src/app/admin/page.tsx` | Admin home (skeleton); `layout.tsx` requires role `admin` |
 | `/saludo` | `src/app/saludo/page.tsx` | Client Component + fetch example |
@@ -66,6 +68,8 @@ Other key files:
 - `src/hooks/useOferta.ts` → consumes `/api/ofertas/[id]` from Client Components.
 - `src/proxy.ts` → refreshes the Supabase session on every request (`src/lib/supabase/proxy.ts`) and sends visitors without one away from `/postulante`, `/empresa`, `/admin`. Role checks live in each area's layout via `requerirRol()` (`src/lib/auth.ts`, with `obtenerSesion()` and `AREA_POR_ROL`).
 - `src/lib/email-pendiente.ts` → httpOnly cookie with the email waiting for a code (`registro` / `recuperar` flows).
+- `src/lib/perfil-postulante.ts` → profile summary, task list and `puedePostularse()` (minimum: one category + a CV in either format).
+- `src/components/formularios/` → shared form fields (`Campo`, `CampoTexto`, `CampoContrasena`, `CampoLocalidad`, `AvisoFormulario`).
 - `src/lib/ingreso.ts` → resolves DNI/CUIT → email on the server for sign-in (never exposed).
 - `src/lib/supabase/admin.ts` → secret-key client (`server-only`, bypasses RLS). Only for lookups anonymous flows need (`src/lib/registro.ts`) and, later, creating Admins.
 - `src/lib/validaciones/auth.ts` → sign-up validation shared by the browser (inline feedback) and the Server Actions. `src/hooks/useFormularioPorPasos.ts` drives the multi-step forms.
