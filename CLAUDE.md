@@ -54,6 +54,7 @@ All code lives in `src/`. The `@/*` alias points to `src/*`.
 | `/postulante/rubros` | `src/app/postulante/rubros/page.tsx` | Category chips (Rule 5) |
 | `/postulante/cv` | `src/app/postulante/cv/page.tsx` | CV: "Sobre vos", experience and education (add another) or PDF (Rule 6); actions in `cv/actions.ts` |
 | `/postulante/domicilio` | `src/app/postulante/domicilio/page.tsx` | Proof of address, only for Funes residents (Rule 4) |
+| `/postulante/postulaciones` | `src/app/postulante/postulaciones/page.tsx` | "Mis postulaciones": status timeline in plain words |
 | `/empresa` | `src/app/empresa/page.tsx` | Company home with pending-review notice; `layout.tsx` requires role `empresa` |
 | `/admin` | `src/app/admin/page.tsx` | Admin home (skeleton); `layout.tsx` requires role `admin` |
 | `/saludo` | `src/app/saludo/page.tsx` | Client Component + fetch example |
@@ -71,6 +72,7 @@ Other key files:
 - `src/proxy.ts` → refreshes the Supabase session on every request (`src/lib/supabase/proxy.ts`) and sends visitors without one away from `/postulante`, `/empresa`, `/admin`. Role checks live in each area's layout via `requerirRol()` (`src/lib/auth.ts`, with `obtenerSesion()` and `AREA_POR_ROL`).
 - `src/lib/email-pendiente.ts` → httpOnly cookie with the email waiting for a code (`registro` / `recuperar` flows).
 - `src/lib/perfil-postulante.ts` → profile summary, task list and `puedePostularse()` (minimum: one category + a CV in either format).
+- `src/lib/postulaciones.ts` → the job seeker's applications (only readable columns) and `yaSePostulo()`. Applying is `postularme()` in `src/app/postulante/actions.ts`, called from `AccionPostular` on the offer detail.
 - `src/lib/archivos.ts` → upload limits, Storage paths (`<uid>/cv.pdf`, `<uid>/comprobante.<ext>`) and phone photo shrinking. Files go browser → Storage directly (Vercel caps bodies at 4.5 MB); `src/app/postulante/archivos.ts` records, opens (signed URL, 60 s) or removes them.
 - `src/components/formularios/` → shared form fields (`Campo`, `CampoTexto`, `CampoContrasena`, `CampoLocalidad`, `AvisoFormulario`).
 - `src/lib/ingreso.ts` → resolves DNI/CUIT → email on the server for sign-in (never exposed).

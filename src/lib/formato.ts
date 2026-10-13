@@ -65,3 +65,31 @@ export function formatearMesAnio(fecha: string): string {
   const [anio, mes] = fecha.split("-")
   return `${MESES[Number(mes) - 1]} ${anio}`
 }
+
+/**
+ * How the job seeker reads each application status (plain words, Spanish).
+ * Rejections are told apart by motivo_rechazo: a full quota reads softer (Rule 10).
+ */
+export const ESTADO_POSTULACION_PARA_POSTULANTE: Record<
+  Enums<"estado_postulacion"> | "cupo_completo" | "no_seleccionado",
+  { titulo: string; detalle: string }
+> = {
+  pendiente: { titulo: "Enviada", detalle: "La Oficina de Empleo está revisando tu perfil." },
+  preseleccionado: { titulo: "Preseleccionada", detalle: "La Oficina envió tu perfil a la empresa." },
+  entrevista: { titulo: "Entrevista", detalle: "La empresa quiere conocerte. Te van a contactar." },
+  contratado: { titulo: "¡Contratado/a!", detalle: "¡Felicitaciones! La Oficina va a hacer un seguimiento." },
+  rechazado: { titulo: "No seleccionada", detalle: "Esta vez no avanzaste. Seguí postulándote." },
+  cupo_completo: {
+    titulo: "Cupo completo",
+    detalle: "Se completaron los puestos de esta oferta. Tu perfil sigue activo para otras.",
+  },
+  no_seleccionado: { titulo: "No seleccionada", detalle: "Esta vez no avanzaste. Seguí postulándote." },
+}
+
+/** Plain-words status of an application, using the rejection reason when there is one. */
+export function textoEstadoPostulacion(
+  estado: Enums<"estado_postulacion">,
+  motivo: Enums<"motivo_rechazo_postulacion"> | null,
+): { titulo: string; detalle: string } {
+  return ESTADO_POSTULACION_PARA_POSTULANTE[estado === "rechazado" && motivo ? motivo : estado]
+}
