@@ -6,6 +6,10 @@ import { cn } from "@/lib/utils";
 export const ESTILO_CONTROL =
   "h-11 w-full min-w-0 rounded-lg border border-input bg-card px-3 pr-10 text-base text-foreground transition-colors outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 disabled:cursor-not-allowed disabled:opacity-50";
 
+// Multi-line text: same look as the inputs, grows with the content.
+export const ESTILO_AREA =
+  "min-h-28 w-full min-w-0 rounded-lg border border-input bg-card px-3 py-2.5 text-base text-foreground transition-colors outline-none field-sizing-content placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20";
+
 export type PropsControl = {
   id: string;
   name: string;

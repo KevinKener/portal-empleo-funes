@@ -133,9 +133,9 @@ Legend: `[x]` done · `[ ]` pending · `[~]` in progress
 **Goal:** the job seeker can complete their profile and apply.
 
 - [x] Complete/edit profile and personal data (`/postulante` task list, `/postulante/datos`)
-- [ ] CV built on the platform **or** PDF upload
+- [x] CV built on the platform **or** PDF upload (`/postulante/cv`)
 - [x] Select several categories (`/postulante/rubros`)
-- [ ] Upload proof of address (status `pendiente`)
+- [x] Upload proof of address (status `pendiente`), only for Funes residents (`/postulante/domicilio`)
 - [ ] Apply to an offer (no duplicates)
 - [ ] "Mis postulaciones" with the status of each one
 

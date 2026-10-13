@@ -28,3 +28,40 @@ export const ETIQUETAS_LOCALIDAD: Record<Enums<"localidad">, string> = {
   rosario: "Rosario",
   otra: "Otra localidad",
 }
+
+/** UI labels for the education level enum. */
+export const ETIQUETAS_NIVEL_FORMACION: Record<Enums<"nivel_formacion">, string> = {
+  primario: "Primario",
+  secundario: "Secundario",
+  terciario: "Terciario",
+  universitario: "Universitario",
+  curso: "Curso o capacitación",
+}
+
+/** UI labels for the education status enum. */
+export const ETIQUETAS_ESTADO_FORMACION: Record<Enums<"estado_formacion">, string> = {
+  completo: "Completo",
+  en_curso: "En curso",
+  incompleto: "Incompleto",
+}
+
+export const MESES = [
+  "enero",
+  "febrero",
+  "marzo",
+  "abril",
+  "mayo",
+  "junio",
+  "julio",
+  "agosto",
+  "septiembre",
+  "octubre",
+  "noviembre",
+  "diciembre",
+] as const
+
+/** "marzo 2024" from a "YYYY-MM-DD" date column (no time zone involved). */
+export function formatearMesAnio(fecha: string): string {
+  const [anio, mes] = fecha.split("-")
+  return `${MESES[Number(mes) - 1]} ${anio}`
+}

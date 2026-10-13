@@ -155,6 +155,8 @@ docs/             # Roadmap, guía de Next.js y material del proyecto
 | `/recuperar` · `/recuperar/codigo` | Recuperar la contraseña con un código por email |
 | `/postulante` | Panel del postulante con "Completá tu perfil" (requiere rol postulante) |
 | `/postulante/datos` · `/postulante/rubros` | Editar datos personales y elegir rubros |
+| `/postulante/cv` | Armar el CV (sobre vos, experiencia, estudios) o subirlo en PDF |
+| `/postulante/domicilio` | Subir el comprobante de domicilio (solo vecinos de Funes) |
 | `/empresa` | Panel de empresa, con aviso mientras está en revisión (requiere rol empresa) |
 | `/admin` | Panel de la Oficina de Empleo (requiere rol admin) |
 | `/saludo` · `/api/saludo` | Ejemplo didáctico de Client Component + API |

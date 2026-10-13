@@ -16,7 +16,7 @@ export type ResumenPerfil = {
   itemsCv: number
 }
 
-export type EstadoTarea = "completo" | "pendiente" | "opcional" | "en_revision" | "rechazado" | "proximamente"
+export type EstadoTarea = "completo" | "pendiente" | "opcional" | "en_revision" | "rechazado"
 
 export type Tarea = {
   clave: "datos" | "rubros" | "cv" | "domicilio"
@@ -66,9 +66,6 @@ export function puedePostularse(resumen: ResumenPerfil): boolean {
   return resumen.rubros > 0 && tieneCv(resumen)
 }
 
-// TODO(phase-4): enable when the CV and proof of address pages land (PR E).
-const PAGINAS_CV_Y_DOMICILIO_LISTAS = false
-
 /**
  * Tasks of "Completá tu perfil", in any order (GOV.UK "Complete multiple
  * tasks"). The proof of address only shows up for Funes residents.
@@ -97,7 +94,7 @@ export function tareasDelPerfil(resumen: ResumenPerfil): Tarea[] {
       titulo: "Armar tu CV",
       descripcion: "Completalo acá o subí tu CV en PDF.",
       href: "/postulante/cv",
-      estado: !PAGINAS_CV_Y_DOMICILIO_LISTAS ? "proximamente" : tieneCv(resumen) ? "completo" : "pendiente",
+      estado: tieneCv(resumen) ? "completo" : "pendiente",
       requerida: true,
     },
   ]
@@ -108,7 +105,7 @@ export function tareasDelPerfil(resumen: ResumenPerfil): Tarea[] {
       titulo: "Subir comprobante de domicilio",
       descripcion: "Opcional. La Oficina de Empleo lo tiene en cuenta al revisar tu perfil.",
       href: "/postulante/domicilio",
-      estado: !PAGINAS_CV_Y_DOMICILIO_LISTAS ? "proximamente" : estadoDomicilio(postulante),
+      estado: estadoDomicilio(postulante),
       requerida: false,
     })
   }
