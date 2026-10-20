@@ -2,7 +2,7 @@
 
 import { useState, useTransition, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
-import { Pencil, Trash2 } from "lucide-react";
+import { LoaderCircle, Pencil, Trash2 } from "lucide-react";
 import { eliminarItemCv } from "@/app/postulante/cv/actions";
 import { buttonVariants } from "@/components/ui/button";
 
@@ -22,13 +22,12 @@ type PropsItemCv = {
 
 /**
  * One item of the CV timeline: a dot on the line and a card with the
- * summary, Change and Remove. Removing asks for a second tap instead of a
- * dialog (simpler on phones).
+ * summary, Change and Remove. Removing is one tap (tutor review 2026-10-20:
+ * no double confirmation); the item is small and easy to add again.
  */
 export function ItemCv({ tabla, id, titulo, subtitulo, etiquetas, destacado, formulario }: PropsItemCv) {
   const router = useRouter();
   const [editando, setEditando] = useState(false);
-  const [confirmando, setConfirmando] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [borrando, iniciar] = useTransition();
 
@@ -66,36 +65,20 @@ export function ItemCv({ tabla, id, titulo, subtitulo, etiquetas, destacado, for
           {error && <p className="text-sm text-destructive">{error}</p>}
         </div>
         <div className="flex gap-2">
-          {confirmando ? (
-            <>
-              <button
-                type="button"
-                onClick={borrar}
-                disabled={borrando}
-                className={buttonVariants({ variant: "destructive", size: "lg" })}
-              >
-                {borrando ? "Borrando…" : "Sí, borrar"}
-              </button>
-              <button type="button" onClick={() => setConfirmando(false)} className={buttonVariants({ variant: "ghost", size: "lg" })}>
-                Cancelar
-              </button>
-            </>
-          ) : (
-            <>
-              <button type="button" onClick={() => setEditando(true)} className={buttonVariants({ variant: "outline", size: "lg" })}>
-                <Pencil aria-hidden />
-                Cambiar<span className="sr-only"> {titulo}</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setConfirmando(true)}
-                className={buttonVariants({ variant: "ghost", size: "lg", className: "text-destructive" })}
-              >
-                <Trash2 aria-hidden />
-                <span className="sr-only">Borrar {titulo}</span>
-              </button>
-            </>
-          )}
+          <button type="button" onClick={() => setEditando(true)} className={buttonVariants({ variant: "outline", size: "lg" })}>
+            <Pencil aria-hidden />
+            Cambiar<span className="sr-only"> {titulo}</span>
+          </button>
+          <button
+            type="button"
+            onClick={borrar}
+            disabled={borrando}
+            title="Borrar"
+            className={buttonVariants({ variant: "ghost", size: "lg", className: "text-destructive" })}
+          >
+            {borrando ? <LoaderCircle aria-hidden className="animate-spin" /> : <Trash2 aria-hidden />}
+            <span className="sr-only">Borrar {titulo}</span>
+          </button>
         </div>
       </div>
     </li>

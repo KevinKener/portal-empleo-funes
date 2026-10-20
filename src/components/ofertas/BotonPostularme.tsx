@@ -10,11 +10,11 @@ import { buttonVariants } from "@/components/ui/button";
 const BOTON = "h-11 w-full px-6 text-base sm:w-auto";
 
 /**
- * One tap plus a confirmation that says what the Office will see. Success
- * shows right away (optimistic) and rolls back if the server refuses.
+ * One tap: what the Office will do with the profile is said next to the
+ * button beforehand (tutor review 2026-10-20: no second confirmation).
+ * Success shows right away (optimistic) and rolls back if the server refuses.
  */
 export function BotonPostularme({ ofertaId }: { ofertaId: string }) {
-  const [confirmando, setConfirmando] = useState(false);
   const [postulado, setPostulado] = useState(false);
   const [postuladoOptimista, marcarPostulado] = useOptimistic(postulado, (_actual, valor: boolean) => valor);
   const [error, setError] = useState<string | null>(null);
@@ -29,7 +29,6 @@ export function BotonPostularme({ ofertaId }: { ofertaId: string }) {
       startTransition(() => {
         if (resultado.ok) setPostulado(true);
         else setError(resultado.error);
-        setConfirmando(false);
       });
     });
   }
@@ -49,39 +48,20 @@ export function BotonPostularme({ ofertaId }: { ofertaId: string }) {
     );
   }
 
-  if (confirmando) {
-    return (
-      <div className="space-y-3 rounded-xl border border-border bg-muted/40 p-4 motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-top-2">
-        <p className="text-sm">
-          La Oficina de Empleo va a ver tu perfil y tu CV, y si encaja con la oferta se lo envía a la empresa.
-          ¿Confirmás tu postulación?
-        </p>
-        <div className="flex flex-col-reverse gap-2 sm:flex-row">
-          <button type="button" onClick={() => setConfirmando(false)} className={buttonVariants({ variant: "ghost", className: BOTON })}>
-            Cancelar
-          </button>
-          <button
-            type="button"
-            onClick={confirmar}
-            disabled={enviando}
-            className={buttonVariants({ className: `${BOTON} hover:bg-primary-hover` })}
-          >
-            {enviando ? <LoaderCircle aria-hidden className="animate-spin" /> : <Send aria-hidden />}
-            Confirmar postulación
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-3">
       <AvisoFormulario error={error} />
+      <p id="aviso-postulacion" className="text-sm text-muted-foreground">
+        La Oficina de Empleo va a ver tu perfil y tu CV, y si encaja con la oferta se lo envía a la empresa.
+      </p>
       <button
         type="button"
-        onClick={() => setConfirmando(true)}
+        onClick={confirmar}
+        disabled={enviando}
+        aria-describedby="aviso-postulacion"
         className={buttonVariants({ className: `${BOTON} hover:bg-primary-hover` })}
       >
+        {enviando ? <LoaderCircle aria-hidden className="animate-spin" /> : <Send aria-hidden />}
         Postularme
       </button>
     </div>
