@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Camera, LoaderCircle } from "lucide-react";
 import { eliminarArchivo, registrarArchivo } from "@/app/postulante/archivos";
 import { AvisoFormulario } from "@/components/formularios/AvisoFormulario";
+import { FondoMarca } from "@/components/layout/FondoMarca";
 import { buttonVariants } from "@/components/ui/button";
 import { ARCHIVOS, errorFoto, recortarFoto, rutaArchivo } from "@/lib/archivos";
 import { createClient } from "@/lib/supabase/client";
@@ -73,64 +74,70 @@ export function FotoPerfil({ userId, nombre, apellido, localidad, foto }: PropsF
   const ocupado = subiendo || quitando;
 
   return (
-    <section aria-label="Foto de perfil" className="space-y-4 rounded-2xl border border-border bg-card p-5 sm:p-6">
-      <div className="flex items-center gap-4">
-        <div className="relative">
-          <Avatar nombre={nombre} apellido={apellido} foto={foto} tamanio="lg" />
-          {ocupado && (
-            <span className="absolute inset-0 flex items-center justify-center rounded-full bg-card/70">
-              <LoaderCircle aria-hidden className="size-8 animate-spin text-primary" />
-            </span>
-          )}
-        </div>
-        <div className="min-w-0">
-          <p className="truncate font-heading text-xl font-semibold">
-            {nombre} {apellido}
-          </p>
-          <p className="text-muted-foreground">{localidad}</p>
-        </div>
+    <section aria-label="Foto de perfil" className="overflow-hidden rounded-2xl border border-border bg-card">
+      {/* Cover on the brand green, with the same moving background as the area homes */}
+      <div className="relative isolate h-24 overflow-hidden bg-primary-deep">
+        <FondoMarca compacto />
       </div>
+      <div className="space-y-4 px-5 pb-5 sm:px-6 sm:pb-6">
+        <div className="-mt-12 flex items-end gap-4">
+          <div className="relative rounded-full bg-card p-1 shadow-lg motion-safe:animate-entrada">
+            <Avatar nombre={nombre} apellido={apellido} foto={foto} tamanio="lg" />
+            {ocupado && (
+              <span className="absolute inset-0 flex items-center justify-center rounded-full bg-card/70">
+                <LoaderCircle aria-hidden className="size-8 animate-spin text-primary" />
+              </span>
+            )}
+          </div>
+          <div className="min-w-0 pb-1">
+            <p className="truncate font-heading text-xl font-semibold">
+              {nombre} {apellido}
+            </p>
+            <p className="text-muted-foreground">{localidad}</p>
+          </div>
+        </div>
 
-      <div className="flex flex-wrap items-center gap-2">
-        <label
-          htmlFor={idInput}
-          className={cn(
-            buttonVariants({ variant: "outline", size: "lg" }),
-            "cursor-pointer has-[:focus-visible]:ring-3 has-[:focus-visible]:ring-ring/50",
-            ocupado && "pointer-events-none opacity-60",
-          )}
-        >
-          <Camera aria-hidden />
-          {subiendo ? "Subiendo…" : foto ? "Cambiar foto" : "Subir foto"}
-          {/* No `capture`: phones offer both the camera and the gallery */}
-          <input
-            id={idInput}
-            type="file"
-            accept="image/jpeg,image/png,image/webp"
-            disabled={ocupado}
-            onChange={(evento) => {
-              const archivo = evento.target.files?.[0];
-              evento.target.value = "";
-              if (archivo) void subir(archivo);
-            }}
-            className="sr-only"
-          />
-        </label>
-        {foto && (
-          <button
-            type="button"
-            onClick={quitar}
-            disabled={ocupado}
-            className={buttonVariants({ variant: "ghost", size: "lg", className: "text-destructive" })}
+        <div className="flex flex-wrap items-center gap-2">
+          <label
+            htmlFor={idInput}
+            className={cn(
+              buttonVariants({ variant: "outline", size: "lg" }),
+              "cursor-pointer has-[:focus-visible]:ring-3 has-[:focus-visible]:ring-ring/50",
+              ocupado && "pointer-events-none opacity-60",
+            )}
           >
-            Quitar foto
-          </button>
-        )}
+            <Camera aria-hidden />
+            {subiendo ? "Subiendo…" : foto ? "Cambiar foto" : "Subir foto"}
+            {/* No `capture`: phones offer both the camera and the gallery */}
+            <input
+              id={idInput}
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              disabled={ocupado}
+              onChange={(evento) => {
+                const archivo = evento.target.files?.[0];
+                evento.target.value = "";
+                if (archivo) void subir(archivo);
+              }}
+              className="sr-only"
+            />
+          </label>
+          {foto && (
+            <button
+              type="button"
+              onClick={quitar}
+              disabled={ocupado}
+              className={buttonVariants({ variant: "ghost", size: "lg", className: "text-destructive" })}
+            >
+              Quitar foto
+            </button>
+          )}
+        </div>
+        <p className="text-sm text-muted-foreground">
+          Opcional. La ven vos y la Oficina de Empleo; las empresas no.
+        </p>
+        <AvisoFormulario error={error} aviso={aviso} />
       </div>
-      <p className="text-sm text-muted-foreground">
-        Opcional. La ven vos y la Oficina de Empleo; las empresas no.
-      </p>
-      <AvisoFormulario error={error} aviso={aviso} />
     </section>
   );
 }

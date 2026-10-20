@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Link from "next/link";
-import { ArrowRight, CircleCheck, Info } from "lucide-react";
+import { BriefcaseBusiness, FileUp, GraduationCap, UserRound } from "lucide-react";
 import { SeccionExperiencias, SeccionFormaciones } from "@/components/postulante/cv/SeccionesCv";
 import { SobreMi } from "@/components/postulante/cv/SobreMi";
 import { PaginaArea } from "@/components/layout/PaginaArea";
+import { Revelar } from "@/components/layout/Revelar";
+import { ProgresoCv } from "@/components/postulante/cv/ProgresoCv";
 import { IndiceCv } from "@/components/postulante/cv/IndiceCv";
 import { VOLVER_A_MI_PERFIL } from "@/components/postulante/volver";
 import { abrirArchivo, eliminarArchivo, registrarArchivo } from "@/app/postulante/archivos";
 import { SubidaArchivo } from "@/components/formularios/SubidaArchivo";
 import { TarjetaSeccion } from "@/components/postulante/TarjetaSeccion";
-import { buttonVariants } from "@/components/ui/button";
 import { requerirRol } from "@/lib/auth";
 import { obtenerResumenPerfil, tieneCv } from "@/lib/perfil-postulante";
 import { createClient } from "@/lib/supabase/server";
@@ -43,77 +43,74 @@ export default async function CvPage({ searchParams }: PageProps<"/postulante/cv
   if (e1 ?? e2) throw e1 ?? e2;
 
   const completo = tieneCv(resumen);
+  const { descripcion, cv_url } = resumen.postulante;
+  const secciones = [
+    { id: "sobre-vos", titulo: "Sobre vos", hecho: Boolean(descripcion?.trim()) },
+    { id: "experiencia", titulo: "Experiencia laboral", hecho: (experiencias ?? []).length > 0 },
+    { id: "estudios", titulo: "Estudios y cursos", hecho: (formaciones ?? []).length > 0 },
+  ];
+  const hecho = (seccion: string) => secciones.find((s) => s.id === seccion)?.hecho ?? false;
+
   return (
     <PaginaArea
       volver={VOLVER_A_MI_PERFIL}
       titulo="Tu CV"
       descripcion="Armalo acá completando las secciones, o subí el CV que ya tenés. Con cualquiera de los dos ya podés postularte."
-      aside={
-        <IndiceCv
-          secciones={[
-            { id: "sobre-vos", titulo: "Sobre vos", hecho: Boolean(resumen.postulante.descripcion?.trim()) },
-            { id: "experiencia", titulo: "Experiencia laboral", hecho: (experiencias ?? []).length > 0 },
-            { id: "estudios", titulo: "Estudios y cursos", hecho: (formaciones ?? []).length > 0 },
-            { id: "archivo", titulo: "CV adjunto", hecho: Boolean(resumen.postulante.cv_url) },
-          ]}
-        />
-      }
+      aside={<IndiceCv secciones={[...secciones, { id: "archivo", titulo: "CV adjunto", hecho: Boolean(cv_url) }]} />}
     >
+      <ProgresoCv secciones={secciones} completo={completo} oferta={oferta} />
 
-      <div
-        className={
-          completo
-            ? "flex gap-3 rounded-xl bg-secondary p-4 text-secondary-foreground"
-            : "flex gap-3 rounded-xl border border-border bg-muted p-4"
-        }
-      >
-        {completo ? <CircleCheck aria-hidden className="mt-0.5 size-5 shrink-0" /> : <Info aria-hidden className="mt-0.5 size-5 shrink-0" />}
-        <p className="text-sm">
-          {completo
-            ? "Tu CV está listo. Podés seguir sumando información cuando quieras."
-            : "Para completar tu CV: escribí unas líneas sobre vos y cargá al menos una experiencia o un estudio, o "}
-          {!completo && (
-            <a href="#archivo" className="font-medium text-primary underline underline-offset-4">
-              subí el CV que ya tenés
-            </a>
-          )}
-          {!completo && "."}
-        </p>
-      </div>
-
-      {oferta && !completo && (
-        <p className="text-sm text-muted-foreground">Cuando tu CV esté completo, te aparece acá el botón para volver a la oferta.</p>
-      )}
-      {oferta && completo && (
-        <Link href={oferta} className={buttonVariants({ className: "h-11 w-full px-6 text-base hover:bg-primary-hover sm:w-auto" })}>
-          Volver a la oferta y postularme
-          <ArrowRight aria-hidden />
-        </Link>
-      )}
-
-      <TarjetaSeccion id="sobre-vos" titulo="Sobre vos">
-        <SobreMi inicial={resumen.postulante.descripcion ?? ""} />
-      </TarjetaSeccion>
-      <TarjetaSeccion id="experiencia" titulo="Experiencia laboral">
-        <SeccionExperiencias experiencias={experiencias ?? []} />
-      </TarjetaSeccion>
-      <TarjetaSeccion id="estudios" titulo="Estudios y cursos">
-        <SeccionFormaciones formaciones={formaciones ?? []} />
-      </TarjetaSeccion>
-      <TarjetaSeccion
-        id="archivo"
-        titulo="¿Ya tenés tu CV hecho?"
-        descripcion="Subilo en PDF o Word, o sacale una foto si lo tenés en papel. La Oficina de Empleo lo va a ver junto con tu perfil."
-      >
-        <SubidaArchivo
-          tipo="cv"
-          userId={userId}
-          etiqueta="tu CV"
-          cargado={Boolean(resumen.postulante.cv_url)}
-          eliminable
-          acciones={{ registrar: registrarArchivo, abrir: abrirArchivo, eliminar: eliminarArchivo }}
-        />
-      </TarjetaSeccion>
+      <Revelar>
+        <TarjetaSeccion
+          id="sobre-vos"
+          titulo="Sobre vos"
+          descripcion="Una presentación corta, en tus palabras."
+          icono={<UserRound className="size-5" />}
+          hecho={hecho("sobre-vos")}
+        >
+          <SobreMi inicial={descripcion ?? ""} />
+        </TarjetaSeccion>
+      </Revelar>
+      <Revelar>
+        <TarjetaSeccion
+          id="experiencia"
+          titulo="Experiencia laboral"
+          descripcion="Empezá por la más reciente. También cuentan changas y trabajos sin registrar."
+          icono={<BriefcaseBusiness className="size-5" />}
+          hecho={hecho("experiencia")}
+        >
+          <SeccionExperiencias experiencias={experiencias ?? []} />
+        </TarjetaSeccion>
+      </Revelar>
+      <Revelar>
+        <TarjetaSeccion
+          id="estudios"
+          titulo="Estudios y cursos"
+          descripcion="Escuela, carreras, cursos y capacitaciones, terminados o en curso."
+          icono={<GraduationCap className="size-5" />}
+          hecho={hecho("estudios")}
+        >
+          <SeccionFormaciones formaciones={formaciones ?? []} />
+        </TarjetaSeccion>
+      </Revelar>
+      <Revelar>
+        <TarjetaSeccion
+          id="archivo"
+          titulo="¿Ya tenés tu CV hecho?"
+          descripcion="Subilo en PDF o Word, o sacale una foto si lo tenés en papel. La Oficina de Empleo lo va a ver junto con tu perfil."
+          icono={<FileUp className="size-5" />}
+          hecho={cv_url ? true : undefined}
+        >
+          <SubidaArchivo
+            tipo="cv"
+            userId={userId}
+            etiqueta="tu CV"
+            cargado={Boolean(cv_url)}
+            eliminable
+            acciones={{ registrar: registrarArchivo, abrir: abrirArchivo, eliminar: eliminarArchivo }}
+          />
+        </TarjetaSeccion>
+      </Revelar>
     </PaginaArea>
   );
 }

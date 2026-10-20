@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { SearchX } from "lucide-react";
+import { BadgeCheck, SearchX } from "lucide-react";
 import { FiltroCategorias } from "@/components/ofertas/FiltroCategorias";
 import { Paginacion } from "@/components/ofertas/Paginacion";
 import { TarjetaOferta } from "@/components/ofertas/TarjetaOferta";
+import { FondoMarca } from "@/components/layout/FondoMarca";
+import { Revelar } from "@/components/layout/Revelar";
 import { listarCategorias } from "@/lib/categorias";
 import { listarOfertasPublicas } from "@/lib/ofertas";
 import { validarFiltrosOfertas } from "@/lib/validaciones/ofertas";
@@ -25,11 +27,15 @@ export default async function OfertasPage({ searchParams }: PageProps<"/ofertas"
 
   return (
     <div className="mx-auto max-w-7xl space-y-6 px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-      <header className="space-y-2">
-        <h1 className="font-heading text-3xl font-semibold text-foreground sm:text-4xl">Ofertas de trabajo</h1>
-        <p className="text-muted-foreground">
-          Todas las ofertas fueron revisadas y aprobadas por la Oficina de Empleo.
-        </p>
+      <header className="relative isolate overflow-hidden rounded-3xl bg-primary-deep px-6 py-10 text-primary-foreground sm:px-10 sm:py-14">
+        <FondoMarca compacto />
+        <div className="max-w-2xl space-y-3 motion-safe:animate-entrada">
+          <h1 className="font-heading text-3xl font-semibold tracking-tight text-balance sm:text-5xl">Ofertas de trabajo</h1>
+          <p className="flex items-center gap-2 text-primary-foreground/85 sm:text-lg">
+            <BadgeCheck aria-hidden className="size-5 shrink-0" />
+            Todas fueron revisadas y aprobadas por la Oficina de Empleo.
+          </p>
+        </div>
       </header>
 
       {filtros.ok ? (
@@ -59,9 +65,12 @@ async function Listado({ categoria, pagina }: { categoria: string | null; pagina
 
       {resultado.ofertas.length > 0 ? (
         <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {resultado.ofertas.map((oferta) => (
+          {resultado.ofertas.map((oferta, i) => (
             <li key={oferta.id}>
-              <TarjetaOferta oferta={oferta} />
+              {/* Cards arrive row by row as the list scrolls in */}
+              <Revelar retraso={(i % 3) * 90} className="h-full">
+                <TarjetaOferta oferta={oferta} />
+              </Revelar>
             </li>
           ))}
         </ul>

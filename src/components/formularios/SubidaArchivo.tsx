@@ -87,8 +87,10 @@ export function SubidaArchivo({ tipo, userId, etiqueta, cargado, eliminable = fa
       <AvisoFormulario error={error} aviso={aviso} />
 
       {cargado && (
-        <div className="flex flex-wrap items-center gap-3 rounded-xl border border-border bg-secondary p-4 text-secondary-foreground">
-          <CircleCheck aria-hidden className="size-5 shrink-0" />
+        <div className="flex flex-wrap items-center gap-3 rounded-xl border border-primary/20 bg-secondary p-4 text-secondary-foreground motion-safe:animate-entrada">
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-md shadow-primary/20">
+            <CircleCheck aria-hidden className="size-5" />
+          </span>
           {/* min-w-40: on phones the buttons wrap below instead of squeezing the text word by word */}
           <p className="min-w-40 flex-1 text-sm font-medium">Ya subiste tu archivo.</p>
           <button type="button" onClick={ver} disabled={pendiente} className={buttonVariants({ variant: "outline", size: "lg" })}>
@@ -122,17 +124,15 @@ export function SubidaArchivo({ tipo, userId, etiqueta, cargado, eliminable = fa
           if (archivo) void subir(archivo);
         }}
         className={cn(
-          "flex cursor-pointer flex-col items-center gap-2 rounded-xl border-2 border-dashed px-4 py-8 text-center transition-colors",
+          "group flex cursor-pointer flex-col items-center gap-2 rounded-xl border-2 border-dashed px-4 py-8 text-center transition-colors duration-200",
           "has-[:focus-visible]:ring-3 has-[:focus-visible]:ring-ring/50",
           arrastrando ? "border-primary bg-accent" : "border-input hover:border-primary hover:bg-accent",
           subiendo && "pointer-events-none opacity-70",
         )}
       >
-        {subiendo ? (
-          <LoaderCircle aria-hidden className="size-8 animate-spin text-primary" />
-        ) : (
-          <Upload aria-hidden className="size-8 text-primary" />
-        )}
+        <span className="mb-1 flex size-14 items-center justify-center rounded-2xl bg-secondary text-primary transition-[background-color,color,translate] duration-300 group-hover:bg-primary group-hover:text-primary-foreground motion-safe:group-hover:-translate-y-1">
+          {subiendo ? <LoaderCircle aria-hidden className="size-7 animate-spin" /> : <Upload aria-hidden className="size-7" />}
+        </span>
         <span className="font-medium">{subiendo ? "Subiendo…" : cargado ? `Reemplazar ${etiqueta}` : `Subir ${etiqueta}`}</span>
         <span className="text-sm text-muted-foreground">
           {formatos}, hasta 5 MB.{tipo !== "arca" && " Desde el celular podés sacar una foto."}

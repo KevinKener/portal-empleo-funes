@@ -2,7 +2,8 @@
 
 import { useActionState, useState, startTransition } from "react";
 import Link from "next/link";
-import { LoaderCircle } from "lucide-react";
+import type { CSSProperties } from "react";
+import { ArrowRight, LoaderCircle } from "lucide-react";
 import { ingresar, type EstadoIngreso } from "@/app/(publico)/ingresar/actions";
 import { AvisoFormulario } from "@/components/formularios/AvisoFormulario";
 import { CampoContrasena } from "@/components/formularios/CampoContrasena";
@@ -10,6 +11,9 @@ import { CampoTexto } from "@/components/formularios/CampoTexto";
 import { buttonVariants } from "@/components/ui/button";
 
 const INICIAL: EstadoIngreso = { error: null };
+
+// Fields arrive one after another once the card is in (animate-entrada)
+const paso = (n: number) => ({ "--retraso": `${200 + n * 90}ms` }) as CSSProperties;
 
 /**
  * Sign-in form: one field that takes DNI, CUIT or email (resolved on the
@@ -35,18 +39,20 @@ export function FormularioIngreso({ siguiente }: { siguiente: string | null }) {
     <form onSubmit={enviar} noValidate className="space-y-5">
       <AvisoFormulario error={estado.error} />
 
-      <CampoTexto
-        nombre="identificador"
-        etiqueta="DNI, CUIT o email"
-        ayuda="Postulantes: tu DNI. Empresas: el CUIT. También podés usar tu email."
-        valor={identificador}
-        onCambiar={setIdentificador}
-        onSalir={() => {}}
-        autoComplete="username"
-        maxLength={254}
-      />
+      <div className="motion-safe:animate-entrada" style={paso(1)}>
+        <CampoTexto
+          nombre="identificador"
+          etiqueta="DNI, CUIT o email"
+          ayuda="Postulantes: tu DNI. Empresas: el CUIT. También podés usar tu email."
+          valor={identificador}
+          onCambiar={setIdentificador}
+          onSalir={() => {}}
+          autoComplete="username"
+          maxLength={254}
+        />
+      </div>
 
-      <div className="space-y-2">
+      <div className="space-y-2 motion-safe:animate-entrada" style={paso(2)}>
         <CampoContrasena
           nombre="contrasena"
           etiqueta="Contraseña"
@@ -60,16 +66,26 @@ export function FormularioIngreso({ siguiente }: { siguiente: string | null }) {
         </Link>
       </div>
 
-      <button
-        type="submit"
-        disabled={enviando}
-        className={buttonVariants({ className: "h-11 w-full px-6 text-base hover:bg-primary-hover" })}
-      >
-        {enviando && <LoaderCircle aria-hidden className="animate-spin" />}
-        {enviando ? "Ingresando…" : "Ingresar"}
-      </button>
+      <div className="motion-safe:animate-entrada" style={paso(3)}>
+        <button
+          type="submit"
+          disabled={enviando}
+          className={buttonVariants({
+            className: "group/ingresar relative h-12 w-full overflow-hidden px-6 text-base shadow-lg shadow-primary/25 hover:bg-primary-hover",
+          })}
+        >
+          {/* A light crosses the button on hover */}
+          <span
+            aria-hidden
+            className="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-transparent via-primary-foreground/25 to-transparent opacity-0 group-hover/ingresar:opacity-100 motion-safe:group-hover/ingresar:animate-brillo"
+          />
+          {enviando ? <LoaderCircle aria-hidden className="animate-spin" /> : null}
+          {enviando ? "Ingresando…" : "Ingresar"}
+          {!enviando && <ArrowRight aria-hidden className="transition-transform group-hover/ingresar:translate-x-1" />}
+        </button>
+      </div>
 
-      <p className="border-t border-border pt-4 text-center text-sm text-muted-foreground">
+      <p className="border-t border-border pt-4 text-center text-sm text-muted-foreground motion-safe:animate-entrada" style={paso(4)}>
         ¿Todavía no tenés cuenta?{" "}
         <Link href="/registro" className="font-medium text-primary underline-offset-4 hover:underline">
           Creá tu cuenta

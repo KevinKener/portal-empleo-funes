@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowRight, CircleCheck, Handshake, PartyPopper, Send, Sparkles } from "lucide-react";
+import { ArrowRight, CircleCheck, Compass, Handshake, PartyPopper, Send, Sparkles } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import type { ProximoPaso as Paso } from "@/lib/panel-postulante";
@@ -99,14 +99,29 @@ export function ProximoPaso({ paso, perfilListo, postulaciones }: { paso: Paso; 
   }
 
   return (
-    <section aria-labelledby="titulo-proximo-paso" className="rounded-2xl border border-border bg-card p-5 sm:p-6">
-      <p className="text-xs font-semibold tracking-wide text-primary uppercase">Próximo paso</p>
-      <h2 id="titulo-proximo-paso" className="mt-1 font-heading text-xl font-semibold">{paso.titulo}</h2>
-      <p className="mt-1 text-muted-foreground">{paso.texto}</p>
-      <Link href={paso.href} className={buttonVariants({ className: "mt-4 h-11 px-6 text-base hover:bg-primary-hover" })}>
-        {paso.accion}
-        <ArrowRight aria-hidden />
-      </Link>
+    <section
+      aria-labelledby="titulo-proximo-paso"
+      className="relative overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-secondary via-card to-card p-5 shadow-sm sm:p-6"
+    >
+      <div className="flex items-start gap-4">
+        <span className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/25">
+          <Compass aria-hidden className="size-6" />
+        </span>
+        <div className="min-w-0 space-y-1">
+          <p className="text-sm font-semibold text-primary">Tu próximo paso</p>
+          <h2 id="titulo-proximo-paso" className="font-heading text-xl font-semibold sm:text-2xl">
+            {paso.titulo}
+          </h2>
+          <p className="text-muted-foreground">{paso.texto}</p>
+          <Link
+            href={paso.href}
+            className={buttonVariants({ className: "group/accion mt-3 h-11 px-6 text-base shadow-md shadow-primary/20 hover:bg-primary-hover" })}
+          >
+            {paso.accion}
+            <ArrowRight aria-hidden className="transition-transform group-hover/accion:translate-x-1" />
+          </Link>
+        </div>
+      </div>
     </section>
   );
 }

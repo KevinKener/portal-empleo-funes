@@ -1,5 +1,7 @@
+import type { CSSProperties } from "react";
 import Link from "next/link";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, FileText, House, Tags, UserRound, type LucideIcon } from "lucide-react";
+import { AnilloProgreso } from "@/components/postulante/AnilloProgreso";
 import type { EstadoTarea, Tarea } from "@/lib/perfil-postulante";
 import { cn } from "@/lib/utils";
 
@@ -12,45 +14,63 @@ const ESTADOS: Record<EstadoTarea, { texto: string; clase: string }> = {
   rechazado: { texto: "Subí otro", clase: "bg-destructive/10 text-destructive" },
 };
 
-/** "Completá tu perfil": tasks in any order, each with an honest status. */
+const ICONOS: Record<Tarea["clave"], LucideIcon> = { datos: UserRound, rubros: Tags, cv: FileText, domicilio: House };
+
+/**
+ * "Completá tu perfil": tasks in any order, each with an honest status,
+ * joined by a line that fills as they get done.
+ */
 export function ListaTareas({ tareas }: { tareas: Tarea[] }) {
   const requeridas = tareas.filter((t) => t.requerida);
   const hechas = requeridas.filter((t) => t.estado === "completo").length;
   const listo = hechas === requeridas.length;
 
   return (
-    <section aria-labelledby="titulo-perfil" className="space-y-4 rounded-2xl border border-border bg-card p-5 sm:p-6">
-      <div className="space-y-2">
-        <h2 id="titulo-perfil" className="font-heading text-xl font-semibold">
-          {listo ? "Tu perfil está listo para postularte" : "Completá tu perfil para postularte"}
-        </h2>
-        <p className="text-sm text-muted-foreground">
-          {hechas} de {requeridas.length} pasos completos
-        </p>
-        <div
-          role="progressbar"
-          aria-label="Progreso del perfil"
-          aria-valuemin={0}
-          aria-valuemax={requeridas.length}
-          aria-valuenow={hechas}
-          className="h-2 overflow-hidden rounded-full bg-muted"
-        >
-          <div
-            className="h-full rounded-full bg-primary transition-[width] duration-700 ease-out"
-            style={{ width: `${(hechas / requeridas.length) * 100}%` }}
-          />
+    <section aria-labelledby="titulo-perfil" className="space-y-5 rounded-2xl border border-border bg-card p-5 sm:p-6">
+      <div className="flex items-center gap-4">
+        <AnilloProgreso hechas={hechas} total={requeridas.length} />
+        <div className="space-y-1">
+          <h2 id="titulo-perfil" className="font-heading text-xl font-semibold">
+            {listo ? "Tu perfil está listo para postularte" : "Completá tu perfil para postularte"}
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            {hechas} de {requeridas.length} pasos necesarios completos
+          </p>
         </div>
       </div>
 
-      <ul className="divide-y divide-border">
-        {tareas.map((tarea) => {
+      <ul className="relative">
+        {tareas.map((tarea, i) => {
           const estado = ESTADOS[tarea.estado];
+          const Icono = ICONOS[tarea.clave];
+          const completa = tarea.estado === "completo";
           return (
-            <li key={tarea.clave}>
+            <li key={tarea.clave} className="relative">
+              {/* Line to the next task, green once this one is done */}
+              {i < tareas.length - 1 && (
+                <span aria-hidden className="absolute top-12 -bottom-2 left-[1.375rem] w-0.5 overflow-hidden rounded-full bg-border">
+                  {completa && (
+                    <span
+                      className="block size-full origin-top bg-primary motion-safe:animate-llenar-y"
+                      style={{ "--retraso": `${300 + i * 200}ms` } as CSSProperties}
+                    />
+                  )}
+                </span>
+              )}
               <Link
                 href={tarea.href}
-                className="group -mx-2 flex items-center gap-3 rounded-lg px-2 py-3 transition-colors hover:bg-accent focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+                className="group flex items-center gap-4 rounded-xl py-2.5 pr-2 transition-colors hover:bg-accent focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
               >
+                <span
+                  className={cn(
+                    "relative z-[1] flex size-11 shrink-0 items-center justify-center rounded-xl border-2 transition-[background-color,border-color,color,scale] duration-300 motion-safe:group-hover:scale-105",
+                    completa
+                      ? "border-primary bg-primary text-primary-foreground"
+                      : "border-border bg-card text-muted-foreground group-hover:border-primary group-hover:text-primary",
+                  )}
+                >
+                  <Icono aria-hidden className="size-5" />
+                </span>
                 <span className="min-w-0 flex-1">
                   <span className="block font-medium">{tarea.titulo}</span>
                   <span className="block text-sm text-muted-foreground">{tarea.descripcion}</span>

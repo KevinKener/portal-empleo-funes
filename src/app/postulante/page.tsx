@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowRight, CircleCheck, Lightbulb } from "lucide-react";
+import { ArrowRight, Building2, CircleCheck, FileText, Lightbulb, Search, Send } from "lucide-react";
+import { FondoMarca } from "@/components/layout/FondoMarca";
 import { BandaBienvenida } from "@/components/layout/PanelBienvenida";
 import { Avatar } from "@/components/postulante/Avatar";
 import { ListaTareas } from "@/components/postulante/ListaTareas";
@@ -38,6 +39,8 @@ export default async function PostulantePage() {
   const listo = puedePostularse(resumen);
   const tareas = tareasDelPerfil(resumen);
   const faltan = tareas.filter((t) => t.requerida && t.estado !== "completo").length;
+  const enCurso = postulaciones.filter((p) => p.estado !== "rechazado").length;
+  const conEmpresa = postulaciones.filter((p) => p.estado === "preseleccionado" || p.estado === "entrevista").length;
 
   return (
     <VistosPanel
@@ -62,6 +65,7 @@ export default async function PostulantePage() {
               )}
             </p>
           }
+          extra={<AccesosPanel enCurso={enCurso} conEmpresa={conEmpresa} />}
         />
 
         <div className="grid gap-6 lg:grid-cols-[2fr_1fr] lg:items-start">
@@ -78,12 +82,22 @@ export default async function PostulantePage() {
 
           <aside className="space-y-6">
             {listo && <PerfilCompleto domicilio={tareas.find((t) => t.clave === "domicilio")} />}
-            <section aria-labelledby="titulo-consejo" className="space-y-2 rounded-2xl bg-secondary p-5 text-secondary-foreground sm:p-6">
-              <h2 id="titulo-consejo" className="flex items-center gap-2 font-heading font-semibold">
-                <Lightbulb aria-hidden className="size-5" />
-                Consejo
-              </h2>
-              <p className="text-sm">{consejoDelDia()}</p>
+            <section
+              aria-labelledby="titulo-consejo"
+              className="relative isolate space-y-3 overflow-hidden rounded-2xl bg-primary-deep p-5 text-primary-foreground sm:p-6"
+            >
+              <FondoMarca compacto />
+              <div className="flex items-center gap-3">
+                {/* The bulb glows: the one moving thing in the side column */}
+                <span className="relative flex size-11 items-center justify-center rounded-xl bg-primary-foreground text-primary-deep">
+                  <span aria-hidden className="absolute -inset-1 rounded-2xl bg-primary-foreground/40 blur-md motion-safe:animate-resplandor" />
+                  <Lightbulb aria-hidden className="relative size-5" />
+                </span>
+                <h2 id="titulo-consejo" className="font-heading text-lg font-semibold">
+                  Consejo del día
+                </h2>
+              </div>
+              <p className="leading-relaxed text-primary-foreground/95">{consejoDelDia()}</p>
             </section>
           </aside>
         </div>
@@ -115,5 +129,47 @@ function PerfilCompleto({ domicilio }: { domicilio?: Tarea }) {
         <ArrowRight aria-hidden className="size-4" />
       </Link>
     </section>
+  );
+}
+
+const VIDRIO = "flex items-center gap-2 rounded-xl border border-primary-foreground/15 bg-primary-foreground/10 px-3.5 py-2 text-sm backdrop-blur-sm";
+
+/** Figures and quick actions inside the greeting band, on frosted glass over the green. */
+function AccesosPanel({ enCurso, conEmpresa }: { enCurso: number; conEmpresa: number }) {
+  return (
+    <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+      <ul className="flex flex-wrap gap-2" aria-label="Tus postulaciones">
+        <li className={VIDRIO}>
+          <Send aria-hidden className="size-4" />
+          <span>
+            <strong className="font-heading text-base">{enCurso}</strong> {enCurso === 1 ? "postulación en curso" : "postulaciones en curso"}
+          </span>
+        </li>
+        {conEmpresa > 0 && (
+          <li className={VIDRIO}>
+            <Building2 aria-hidden className="size-4" />
+            <span>
+              <strong className="font-heading text-base">{conEmpresa}</strong> con la empresa
+            </span>
+          </li>
+        )}
+      </ul>
+      <div className="flex flex-wrap gap-2">
+        <Link
+          href="/ofertas"
+          className="group inline-flex h-10 items-center gap-2 rounded-xl bg-primary-foreground px-4 text-sm font-semibold text-primary-deep shadow-lg shadow-black/20 transition-[background-color,transform] hover:bg-secondary active:scale-[0.98]"
+        >
+          <Search aria-hidden className="size-4" />
+          Buscar ofertas
+        </Link>
+        <Link
+          href="/postulante/cv"
+          className="inline-flex h-10 items-center gap-2 rounded-xl border border-primary-foreground/30 px-4 text-sm font-semibold transition-colors hover:bg-primary-foreground/10"
+        >
+          <FileText aria-hidden className="size-4" />
+          Mi CV
+        </Link>
+      </div>
+    </div>
   );
 }

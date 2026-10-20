@@ -1,5 +1,5 @@
-import type { ReactNode } from "react";
-import { Escudo } from "@/components/layout/Escudo";
+import type { CSSProperties, ReactNode } from "react";
+import { FondoMarca } from "@/components/layout/FondoMarca";
 
 type PropsBandaBienvenida = {
   saludo: string;
@@ -7,6 +7,8 @@ type PropsBandaBienvenida = {
   descripcion: ReactNode;
   /** Shown before the greeting (the job seeker's avatar). */
   inicio?: ReactNode;
+  /** Row under the greeting: figures at a glance and quick actions. */
+  extra?: ReactNode;
 };
 
 /**
@@ -14,17 +16,30 @@ type PropsBandaBienvenida = {
  * shield as a watermark: the one bold piece of the private areas, so a
  * signed-in person always knows this is the municipal portal.
  */
-export function BandaBienvenida({ saludo, descripcion, inicio }: PropsBandaBienvenida) {
+export function BandaBienvenida({ saludo, descripcion, inicio, extra }: PropsBandaBienvenida) {
   return (
     <div className="relative isolate overflow-hidden rounded-2xl bg-primary-deep px-5 py-7 text-primary-foreground sm:px-8 sm:py-9">
-      <Escudo className="absolute -right-10 -bottom-16 -z-10 size-64 text-primary-foreground/[0.07] sm:right-6 sm:-bottom-24 sm:size-80" />
-      <div className="flex items-center gap-4 sm:gap-5">
-        {inicio}
+      <FondoMarca compacto />
+      <div className="flex items-center gap-4 motion-safe:animate-entrada sm:gap-6">
+        {inicio && (
+          // White frame around the photo, with a dotted ring turning slowly around it
+          <div className="relative shrink-0 p-2">
+            <svg aria-hidden viewBox="0 0 100 100" className="absolute inset-0 size-full text-primary-foreground/50 motion-safe:animate-giro">
+              <circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" strokeWidth="1.5" strokeDasharray="2 5" strokeLinecap="round" />
+            </svg>
+            <div className="rounded-full bg-primary-foreground p-1 shadow-xl shadow-black/30">{inicio}</div>
+          </div>
+        )}
         <div className="min-w-0 space-y-1.5">
           <h1 className="font-heading text-2xl font-bold text-balance sm:text-4xl">{saludo}</h1>
-          <div className="max-w-2xl text-primary-foreground/80">{descripcion}</div>
+          <div className="max-w-2xl text-base text-primary-foreground/90 sm:text-lg">{descripcion}</div>
         </div>
       </div>
+      {extra && (
+        <div className="mt-6 border-t border-primary-foreground/15 pt-5 motion-safe:animate-entrada" style={{ "--retraso": "180ms" } as CSSProperties}>
+          {extra}
+        </div>
+      )}
     </div>
   );
 }

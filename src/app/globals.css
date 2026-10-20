@@ -6,7 +6,7 @@
   and also exposes each token as a CSS variable on :root, so plain CSS can use var(--color-*).
   Names follow shadcn's semantic convention so components in src/components/ui pick up the brand.
   Palette taken from funes.gob.ar (base green #074A1F, dark gray #262B35); muted-foreground is
-  darker than the site's #868D98 so secondary text keeps AA contrast.
+  much darker than the site's #868D98 (about 8:1 on white) so secondary text reads easily.
 */
 @theme {
   --color-background: #f7f9f7;
@@ -22,13 +22,14 @@
   --color-secondary: #e8f1eb;
   --color-secondary-foreground: #074a1f;
   --color-muted: #eef2ef;
-  --color-muted-foreground: #5f6672;
+  --color-muted-foreground: #4a515c;
   --color-accent: #e8f1eb;
   --color-accent-foreground: #074a1f;
   --color-destructive: #b42318;
   --color-border: #dde3df;
   --color-input: #dde3df;
   --color-ring: #074a1f;
+
 
   /* Celebrations in the job seeker panel (docs/research/panel-postulante.md §3.5); always used
      behind motion-safe: so reduced motion shows the message without movement. */
@@ -49,13 +50,86 @@
 
   /* Brand backgrounds (FondoMarca): the shield drifts and a soft light sweeps, slow enough
      to read as texture, not as content. Only behind motion-safe:. */
-  --animate-deriva: deriva 40s ease-in-out infinite alternate;
-  --animate-deriva-lenta: deriva 60s ease-in-out infinite alternate-reverse;
-  --animate-luz: luz 18s ease-in-out infinite alternate;
+  --animate-deriva: deriva 22s ease-in-out infinite alternate;
+  --animate-deriva-lenta: deriva 34s ease-in-out infinite alternate-reverse;
+  --animate-luz: luz 12s ease-in-out infinite alternate;
 
   @keyframes deriva {
-    0% { transform: translate(0, 0) rotate(-6deg) scale(1); }
-    100% { transform: translate(-4%, 6%) rotate(4deg) scale(1.08); }
+    0% { transform: translate(0, 0) rotate(-8deg) scale(1); }
+    100% { transform: translate(-8%, 10%) rotate(6deg) scale(1.12); }
+  }
+
+  --animate-giro: giro 90s linear infinite;
+
+  /* Floating chips (RubrosFlotantes): each one sets its own --duracion, --retraso, --distancia */
+  --animate-flotar: flotar var(--duracion, 7s) ease-in-out var(--retraso, 0s) infinite alternate;
+
+  @keyframes flotar {
+    from { transform: translateY(0) rotate(-1deg); }
+    to { transform: translateY(calc(var(--distancia, 12px) * -1)) rotate(1deg); }
+  }
+
+  @keyframes giro {
+    to { transform: rotate(1turn); }
+  }
+
+  /* "¿Cómo funciona?" (PasosAnimados): a light travels the finished path; each icon sends one ring out */
+  --animate-recorrido: recorrido 3.2s ease-in-out var(--retraso, 0ms) infinite;
+  --animate-onda: onda 900ms ease-out var(--retraso, 0ms) both;
+
+  @keyframes recorrido {
+    from { left: -6rem; }
+    to { left: 100%; }
+  }
+
+  @keyframes onda {
+    from { transform: scale(1); opacity: 0.8; }
+    to { transform: scale(1.6); opacity: 0; }
+  }
+
+  /* Application tracker (SeguimientoPostulacion): segments fill one after another */
+  --animate-llenar-x: llenar-x 450ms ease-out var(--retraso, 0ms) both;
+  --animate-llenar-y: llenar-y 450ms ease-out var(--retraso, 0ms) both;
+
+  @keyframes llenar-x {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+
+  @keyframes llenar-y {
+    from { transform: scaleY(0); }
+    to { transform: scaleY(1); }
+  }
+
+  /* Profile progress ring (ListaTareas): draws from empty to its value */
+  --animate-anillo: anillo 1.1s cubic-bezier(0.2, 0.7, 0.2, 1) 200ms both;
+
+  @keyframes anillo {
+    from { stroke-dashoffset: var(--total); }
+  }
+
+  /* A slow, soft glow (the tip-of-the-day bulb): breathes, never blinks */
+  --animate-resplandor: resplandor 4s ease-in-out infinite;
+
+  @keyframes resplandor {
+    0%, 100% { opacity: 0.15; transform: scale(0.95); }
+    50% { opacity: 0.7; transform: scale(1.05); }
+  }
+
+  /* Green banners (FondoMarca): a light sweeps across every few seconds, then rests */
+  --animate-destello: destello 7s ease-in-out 1.5s infinite;
+
+  @keyframes destello {
+    0% { transform: translateX(-100%) skewX(-18deg); }
+    22%, 100% { transform: translateX(450%) skewX(-18deg); }
+  }
+
+  /* A shine that crosses a card once on hover (TarjetaOferta) */
+  --animate-brillo: brillo 1.6s cubic-bezier(0.4, 0, 0.2, 1) both;
+
+  @keyframes brillo {
+    from { transform: translateX(-120%) skewX(-20deg); }
+    to { transform: translateX(220%) skewX(-20deg); }
   }
 
   @keyframes luz {
@@ -98,4 +172,31 @@ body {
   background: var(--color-background);
   color: var(--color-foreground);
   font-family: var(--font-sans);
+}
+
+/* Account card border (MarcoAuth): a brand-green light keeps circling the card. The angle is a
+   registered property so it can animate; without motion it stays as a plain border. */
+@property --angulo-borde {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes borde-giro {
+  to { --angulo-borde: 360deg; }
+}
+
+@utility borde-vivo {
+  background:
+    conic-gradient(
+      from var(--angulo-borde),
+      transparent 0deg 250deg,
+      color-mix(in oklch, var(--color-primary) 55%, transparent) 300deg,
+      var(--color-primary) 330deg,
+      transparent 360deg
+    ),
+    var(--color-border);
+  @media (prefers-reduced-motion: no-preference) {
+    animation: borde-giro 6s linear infinite;
+  }
 }
