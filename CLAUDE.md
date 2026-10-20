@@ -108,7 +108,6 @@ Each token generates Tailwind utilities (`bg-*`, `text-*`, `border-*`…) and a 
 | `accent` (+ `-foreground`) | Hover/selected surfaces in menus and lists |
 | `destructive` | Errors and invalid fields |
 | `border`, `input`, `ring` | Borders, input borders, focus ring |
-| `rubro-1` … `rubro-6` | Category accents (offer cards, category chips, "Ofertas para vos"), picked per category name by `tonoRubro()` in `src/lib/formato.ts` |
 | `font-sans`, `font-heading` | Body font (Be Vietnam Pro) / headings font (Sora), loaded with `next/font` in the root layout |
 
 ---

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { FormularioIngreso } from "@/components/auth/FormularioIngreso";
 import { MarcoAuth } from "@/components/auth/MarcoAuth";
+import { Escudo } from "@/components/layout/Escudo";
 import { destinoTrasIngresar, obtenerSesion } from "@/lib/auth";
 
 export const metadata: Metadata = { title: "Ingresar" };
@@ -17,9 +18,14 @@ export default async function IngresarPage({ searchParams }: PageProps<"/ingresa
   return (
     <MarcoAuth>
       <div className="space-y-6">
-        <div className="space-y-2">
-          <h1 className="font-heading text-2xl font-bold">Ingresar</h1>
-          <p className="text-muted-foreground">Entrá a tu cuenta del Portal de Empleo.</p>
+        <div className="space-y-4">
+          <span className="flex size-14 items-center justify-center rounded-2xl bg-secondary shadow-inner motion-safe:animate-festejo-pop">
+            <Escudo className="size-9 text-primary" />
+          </span>
+          <div className="space-y-1">
+            <h1 className="font-heading text-3xl font-bold">Ingresá a tu cuenta</h1>
+            <p className="text-muted-foreground">Con tu DNI, tu CUIT o tu email.</p>
+          </div>
         </div>
         <FormularioIngreso siguiente={destino} />
       </div>

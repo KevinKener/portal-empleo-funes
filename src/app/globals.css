@@ -30,14 +30,6 @@
   --color-input: #dde3df;
   --color-ring: #074a1f;
 
-  /* Category accents (tonoRubro in src/lib/formato.ts): six hues that sit next to the brand
-     green, each AA as text on white, so offer cards are told apart at a glance. */
-  --color-rubro-1: #0f766e;
-  --color-rubro-2: #b45309;
-  --color-rubro-3: #1d4ed8;
-  --color-rubro-4: #9f1239;
-  --color-rubro-5: #6d28d9;
-  --color-rubro-6: #4d7c0f;
 
   /* Celebrations in the job seeker panel (docs/research/panel-postulante.md §3.5); always used
      behind motion-safe: so reduced motion shows the message without movement. */
@@ -172,4 +164,31 @@ body {
   background: var(--color-background);
   color: var(--color-foreground);
   font-family: var(--font-sans);
+}
+
+/* Account card border (MarcoAuth): a brand-green light keeps circling the card. The angle is a
+   registered property so it can animate; without motion it stays as a plain border. */
+@property --angulo-borde {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes borde-giro {
+  to { --angulo-borde: 360deg; }
+}
+
+@utility borde-vivo {
+  background:
+    conic-gradient(
+      from var(--angulo-borde),
+      transparent 0deg 250deg,
+      color-mix(in oklch, var(--color-primary) 55%, transparent) 300deg,
+      var(--color-primary) 330deg,
+      transparent 360deg
+    ),
+    var(--color-border);
+  @media (prefers-reduced-motion: no-preference) {
+    animation: borde-giro 6s linear infinite;
+  }
 }

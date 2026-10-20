@@ -43,11 +43,16 @@ export function MarcoAuth({ children }: { children: ReactNode }) {
       </aside>
 
       <div className="mx-auto w-full max-w-lg lg:max-w-none lg:self-center">
+        {/* 1.5px frame with a light circling it (borde-vivo), the card sits inside */}
         <div
-          className="rounded-2xl border border-border bg-card p-5 shadow-xl shadow-primary/[0.05] motion-safe:animate-entrada sm:p-8"
+          className="borde-vivo rounded-[1.1rem] p-[1.5px] shadow-2xl shadow-primary/[0.08] motion-safe:animate-entrada"
           style={{ "--retraso": "120ms" } as CSSProperties}
         >
-          {children}
+          <div className="relative overflow-hidden rounded-2xl bg-card p-5 sm:p-8">
+            {/* Soft brand glow in a corner, so the white card is not flat */}
+            <div aria-hidden className="pointer-events-none absolute -top-24 -right-24 size-56 rounded-full bg-secondary blur-3xl motion-safe:animate-luz" />
+            <div className="relative">{children}</div>
+          </div>
         </div>
       </div>
     </div>
