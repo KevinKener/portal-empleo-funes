@@ -28,7 +28,7 @@ export const ARCHIVOS: Record<TipoArchivo, { bucket: string; tipos: Record<strin
     tipos: { "application/pdf": "pdf", "image/jpeg": "jpg", "image/png": "png" },
     formatos: "PDF, JPG o PNG",
   },
-  // Always stored as JPEG: the browser crops and converts it first (recortarFoto)
+  // Always stored as JPEG: the browser shrinks and converts it first (prepararFoto)
   foto: { bucket: "fotos-perfil", tipos: { "image/jpeg": "jpg" }, formatos: "JPG o PNG" },
   arca: { bucket: "constancias-arca", tipos: { "application/pdf": "pdf" }, formatos: "PDF" },
 }
@@ -98,10 +98,10 @@ export async function achicarImagen(archivo: File): Promise<File> {
   return new File([blob], archivo.name.replace(/\.\w+$/, ".jpg"), { type: "image/jpeg" })
 }
 
-const LADO_FOTO = 512 // px: enough for an avatar, ~50–100 KB
-const FOTO_MAXIMA = 20 * 1024 * 1024 // raw phone photo, before cropping
+const LADO_FOTO = 1024 // px on the longest side: room to move and zoom it inside the frame, ~100–200 KB
+const FOTO_MAXIMA = 20 * 1024 * 1024 // raw phone photo, before shrinking
 
-/** Error message for a profile photo before cropping it, or null when it can go. */
+/** Error message for a profile photo before preparing it, or null when it can go. */
 export function errorFoto(archivo: File): string | null {
   if (archivo.size === 0) return "La foto está vacía."
   if (!["image/jpeg", "image/png", "image/webp"].includes(archivo.type)) return "La foto tiene que ser JPG o PNG."
@@ -110,21 +110,20 @@ export function errorFoto(archivo: File): string | null {
 }
 
 /**
- * Crops the centre square of a photo and shrinks it to a 512 px JPEG, so
- * every avatar looks the same and uploads fast on a slow connection.
- * Browser only.
+ * Shrinks a photo to a JPEG of at most 1024 px on its longest side, without
+ * cropping: the person frames it afterwards (src/lib/encuadre.ts), so the
+ * whole picture is kept. Browser only.
  */
-export async function recortarFoto(archivo: File): Promise<File> {
+export async function prepararFoto(archivo: File): Promise<File> {
   const imagen = await createImageBitmap(archivo)
-  const lado = Math.min(imagen.width, imagen.height)
+  const escala = Math.min(1, LADO_FOTO / Math.max(imagen.width, imagen.height))
   const lienzo = document.createElement("canvas")
-  lienzo.width = lienzo.height = Math.min(LADO_FOTO, lado)
-  lienzo
-    .getContext("2d")
-    ?.drawImage(imagen, (imagen.width - lado) / 2, (imagen.height - lado) / 2, lado, lado, 0, 0, lienzo.width, lienzo.height)
+  lienzo.width = Math.round(imagen.width * escala)
+  lienzo.height = Math.round(imagen.height * escala)
+  lienzo.getContext("2d")?.drawImage(imagen, 0, 0, lienzo.width, lienzo.height)
   imagen.close()
 
   const blob = await new Promise<Blob | null>((resolver) => lienzo.toBlob(resolver, "image/jpeg", 0.85))
-  if (!blob) throw new Error("recortarFoto: canvas export failed")
+  if (!blob) throw new Error("prepararFoto: canvas export failed")
   return new File([blob], "foto.jpg", { type: "image/jpeg" })
 }

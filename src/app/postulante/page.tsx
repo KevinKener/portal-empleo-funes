@@ -11,6 +11,7 @@ import { ProximoPaso } from "@/components/postulante/panel/ProximoPaso";
 import { ResumenPostulaciones } from "@/components/postulante/panel/ResumenPostulaciones";
 import { VistosPanel } from "@/components/postulante/panel/VistosPanel";
 import { requerirRol } from "@/lib/auth";
+import { encuadreDe } from "@/lib/encuadre";
 import { urlFotoPerfil } from "@/lib/foto-perfil";
 import { consejoDelDia, nombresDeEmpresas, obtenerOfertasParaVos, proximoPaso } from "@/lib/panel-postulante";
 import { obtenerResumenPerfil, puedePostularse, tareasDelPerfil, type Tarea } from "@/lib/perfil-postulante";
@@ -49,7 +50,7 @@ export default async function PostulantePage() {
     >
       <div className="space-y-6">
         <BandaBienvenida
-          inicio={<Avatar nombre={postulante.nombre} apellido={postulante.apellido} foto={foto} tamanio="lg" />}
+          inicio={<Avatar nombre={postulante.nombre} apellido={postulante.apellido} foto={foto} encuadre={encuadreDe(postulante)} tamanio="lg" />}
           saludo={`¡Hola, ${postulante.nombre}!`}
           descripcion={
             <p className="flex items-center gap-1.5">

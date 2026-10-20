@@ -8,7 +8,7 @@ Legend: `[x]` done · `[ ]` pending · `[~]` in progress
 
 ## Current status
 
-- **Current phase:** Phase 5 done (#19, #21, #22 merged). Now: tutor review 2026-10-20 fixes (see below), then Phase 6 (Admin).
+- **Current phase:** Phase 5 done and the tutor review of 2026-10-20 fully addressed (PRs #23–#27 and `feature/encuadre-foto`), plus a visual polish pass. Next: Phase 6 (Admin).
 - **Latest progress:** 2026-10-20, offer CRUD for companies on `feature/crud-ofertas` (no migrations): list, new draft, edit while `borrador`, send to review / take back / close / delete draft, "Usar como base" for rejected and closed offers, company area navigation. Test company: the seed's "Empresa Demo" (CUIT 30000000007, `verificado`), password set by hand in the SQL Editor. Before that, "Mi panel" redesign and profile photo merged (PRs #16, #17) and phone fixes (#18). Earlier: public portal live on Vercel (https://portal-empleo-funes.vercel.app). Phase 2 merged in PR #7: `GET /api/ofertas` and `/api/ofertas/[id]`, landing, `/ofertas` listing with category filter and pagination, offer detail, public layout with the municipal identity from funes.gob.ar. Before that, flow corrections from the tutor review (2026-10-08) on `feature/correcciones-flujo`: offers start as `borrador` (company edits only drafts, sends and takes back), rejected applications carry `motivo_rechazo`, company selection draft (`decision_empresa` + `confirmar_seleccion()`), ARCA certificate optional. Migrations applied in Supabase, types regenerated, `estados.ts` and `AGENTS.md` §2 updated.
 - **Next step:** offer CRUD (#19) and pre-selected candidates + company home (#21, re-opened from #20, which had landed on the stacked base branch) are merged; review and merge `feature/mi-empresa` (company data, ARCA certificate, migration `20261020130000`, already applied). After that, Phase 6 (Admin). Further ideas, ranked: [`docs/research/mejoras.md`](research/mejoras.md). The tutor's corrections arrive once everything is done.
 
@@ -42,7 +42,7 @@ Everything built works; UX details to fix:
 - [x] No double confirmations: one notice is enough (`fix/confirmaciones`: postularme, offer actions, confirm selection and CV items run on the first tap; what they mean is said next to the button beforehand)
 - [x] Use the available width better; single navigation (tabs) instead of header + area bar (`max-w-7xl`, `PaginaArea` with side column, area tabs inside the header from md)
 - [x] Visual polish (beyond the review): moving brand background on the landing and account screens, latest-offers carousel, offer title morph into its page, status stripes on cards, two-column account screens; fixed the unreadable hover of `secondary` buttons (undefined CSS variable); richer footer with draft terms of use and privacy policy (`/terminos`, `/privacidad`), animated application tracker and profile task list
-- [ ] Profile photo: move the image inside the frame, position saved in the database
+- [x] Profile photo: move the image inside the frame, position saved in the database (`feature/encuadre-foto`, migration `20261020150000_encuadre_foto.sql`)
 - [x] Better-quality municipal logo (EliasGallay/Solicitudes-Farmacia `src/assets/brand`): `escudo-blanco.png` via `Escudo`, also the watermark of the area homes' greeting band
 
 ---

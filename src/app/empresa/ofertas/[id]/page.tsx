@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { cache } from "react";
 import { ArrowLeft, CalendarDays, Clock, Tag, Users } from "lucide-react";
 import { AccionesOferta } from "@/components/empresa/AccionesOferta";
+import { TextoOferta } from "@/components/ofertas/TextoOferta";
 import { EtiquetaEstadoOferta } from "@/components/empresa/EtiquetaEstadoOferta";
 import { buttonVariants } from "@/components/ui/button";
 import { requerirRol } from "@/lib/auth";
@@ -101,13 +102,13 @@ export default async function OfertaEmpresaPage({ params }: PageProps<"/empresa/
 
           <section className="space-y-2">
             <h2 className="font-heading text-lg font-semibold">Descripción</h2>
-            <p className="whitespace-pre-line text-foreground/90">{oferta.descripcion}</p>
+            <TextoOferta texto={oferta.descripcion} />
           </section>
 
           {oferta.requisitos && (
             <section className="space-y-2">
               <h2 className="font-heading text-lg font-semibold">Requisitos</h2>
-              <p className="whitespace-pre-line text-foreground/90">{oferta.requisitos}</p>
+              <TextoOferta texto={oferta.requisitos} tilde />
             </section>
           )}
         </article>

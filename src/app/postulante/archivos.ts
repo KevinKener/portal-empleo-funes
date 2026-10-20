@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { ARCHIVOS, rutaValida, type TipoArchivo } from "@/lib/archivos";
+import { ENCUADRE_INICIAL, validarEncuadre } from "@/lib/encuadre";
 import { requerirRol } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import type { TablesUpdate } from "@/types/database";
@@ -23,7 +24,9 @@ const COLUMNA = { cv: "cv_url", comprobante: "comprobante_url", foto: "foto_url"
 function cambio(tipo: TipoPostulante, ruta: string | null): TablesUpdate<"postulantes"> {
   if (tipo === "cv") return { cv_url: ruta };
   if (tipo === "comprobante") return { comprobante_url: ruta };
-  return { foto_url: ruta };
+  // A new photo starts centred: the old framing belonged to another picture
+  const { x, y, zoom } = ENCUADRE_INICIAL;
+  return { foto_url: ruta, foto_x: x, foto_y: y, foto_zoom: zoom };
 }
 
 function esTipo(tipo: string): tipo is TipoPostulante {
@@ -105,6 +108,29 @@ export async function eliminarArchivo(tipo: string): Promise<Resultado> {
     return { error: "No pudimos borrar el archivo. Probá de nuevo." };
   }
   await supabase.storage.from(ARCHIVOS[tipo].bucket).remove([ruta]);
+  revalidatePath("/postulante", "layout");
+  return { error: null };
+}
+
+/**
+ * Saves how the person framed their profile photo inside the round frame
+ * (tutor review 2026-10-20). Only for their own row (RLS) and only when they
+ * have a photo; values are clamped to the database ranges.
+ */
+export async function guardarEncuadre(valor: unknown): Promise<Resultado> {
+  const encuadre = validarEncuadre(valor);
+  if (!encuadre) return { error: "No pudimos guardar la posición de la foto." };
+  const { supabase, postulante } = await contexto();
+  if (!postulante?.foto_url) return { error: "Primero subí una foto." };
+
+  const { error } = await supabase
+    .from("postulantes")
+    .update({ foto_x: encuadre.x, foto_y: encuadre.y, foto_zoom: encuadre.zoom })
+    .eq("id", postulante.id);
+  if (error) {
+    console.error("guardarEncuadre failed:", error.code);
+    return { error: "No pudimos guardar la posición de la foto. Probá de nuevo." };
+  }
   revalidatePath("/postulante", "layout");
   return { error: null };
 }

@@ -4,6 +4,7 @@ import { PaginaArea } from "@/components/layout/PaginaArea";
 import { FotoPerfil } from "@/components/postulante/FotoPerfil";
 import { ListaTareas } from "@/components/postulante/ListaTareas";
 import { requerirRol } from "@/lib/auth";
+import { encuadreDe } from "@/lib/encuadre";
 import { urlFotoPerfil } from "@/lib/foto-perfil";
 import { ETIQUETAS_LOCALIDAD } from "@/lib/formato";
 import { obtenerResumenPerfil, tareasDelPerfil } from "@/lib/perfil-postulante";
@@ -27,6 +28,7 @@ export default async function PerfilPage() {
           apellido={postulante.apellido}
           localidad={ETIQUETAS_LOCALIDAD[postulante.localidad]}
           foto={foto}
+          encuadre={encuadreDe(postulante)}
         />
         <ListaTareas tareas={tareasDelPerfil(resumen)} />
       </div>

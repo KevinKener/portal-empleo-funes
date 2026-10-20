@@ -2,15 +2,17 @@
 
 import { useId, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Camera, LoaderCircle } from "lucide-react";
+import { Camera, LoaderCircle, Move, Trash2 } from "lucide-react";
 import { eliminarArchivo, registrarArchivo } from "@/app/postulante/archivos";
 import { AvisoFormulario } from "@/components/formularios/AvisoFormulario";
 import { FondoMarca } from "@/components/layout/FondoMarca";
 import { buttonVariants } from "@/components/ui/button";
-import { ARCHIVOS, errorFoto, recortarFoto, rutaArchivo } from "@/lib/archivos";
+import { ARCHIVOS, errorFoto, prepararFoto, rutaArchivo } from "@/lib/archivos";
+import type { Encuadre } from "@/lib/encuadre";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 import { Avatar } from "./Avatar";
+import { EncuadreFoto } from "./EncuadreFoto";
 
 type PropsFotoPerfil = {
   userId: string;
@@ -19,20 +21,24 @@ type PropsFotoPerfil = {
   localidad: string;
   /** Signed URL of the current photo, or null. */
   foto: string | null;
+  /** How the photo is framed (postulantes.foto_x / foto_y / foto_zoom). */
+  encuadre: Encuadre;
 };
 
 /**
- * Optional profile photo: the browser crops it to a centred square and
+ * Optional profile photo: the browser shrinks it (without cropping) and
  * uploads it straight to Storage (same path as the CV and the proof of
- * address). Only the person and the Office see it, never companies.
+ * address); then the person frames it (EncuadreFoto). Only the person and
+ * the Office see it, never companies.
  */
-export function FotoPerfil({ userId, nombre, apellido, localidad, foto }: PropsFotoPerfil) {
+export function FotoPerfil({ userId, nombre, apellido, localidad, foto, encuadre }: PropsFotoPerfil) {
   const router = useRouter();
   const idInput = useId();
   const [subiendo, setSubiendo] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [aviso, setAviso] = useState<string | null>(null);
   const [quitando, iniciar] = useTransition();
+  const [acomodando, setAcomodando] = useState(false);
 
   async function subir(original: File) {
     setError(null);
@@ -42,7 +48,7 @@ export function FotoPerfil({ userId, nombre, apellido, localidad, foto }: PropsF
 
     setSubiendo(true);
     try {
-      const archivo = await recortarFoto(original);
+      const archivo = await prepararFoto(original);
       const ruta = rutaArchivo("foto", userId, "jpg");
       const { error: errorSubida } = await createClient()
         .storage.from(ARCHIVOS.foto.bucket)
@@ -51,8 +57,10 @@ export function FotoPerfil({ userId, nombre, apellido, localidad, foto }: PropsF
 
       const { error: errorRegistro } = await registrarArchivo("foto", ruta);
       if (errorRegistro) return setError(errorRegistro);
-      setAviso("¡Listo! Ya tenés foto de perfil.");
+      setAviso("¡Listo! Ahora acomodala para que se vea bien tu cara.");
       router.refresh();
+      // Straight to framing: a new photo is rarely centred on the face
+      setAcomodando(true);
     } catch {
       setError("No pudimos subir la foto. Probá de nuevo.");
     } finally {
@@ -82,7 +90,7 @@ export function FotoPerfil({ userId, nombre, apellido, localidad, foto }: PropsF
       <div className="space-y-4 px-5 pb-5 sm:px-6 sm:pb-6">
         <div className="-mt-12 flex items-end gap-4">
           <div className="relative rounded-full bg-card p-1 shadow-lg motion-safe:animate-entrada">
-            <Avatar nombre={nombre} apellido={apellido} foto={foto} tamanio="lg" />
+            <Avatar nombre={nombre} apellido={apellido} foto={foto} encuadre={encuadre} tamanio="lg" />
             {ocupado && (
               <span className="absolute inset-0 flex items-center justify-center rounded-full bg-card/70">
                 <LoaderCircle aria-hidden className="size-8 animate-spin text-primary" />
@@ -122,13 +130,29 @@ export function FotoPerfil({ userId, nombre, apellido, localidad, foto }: PropsF
               className="sr-only"
             />
           </label>
+          {foto && !acomodando && (
+            <button
+              type="button"
+              onClick={() => setAcomodando(true)}
+              disabled={ocupado}
+              className={buttonVariants({ variant: "outline", size: "lg" })}
+            >
+              <Move aria-hidden />
+              Acomodar foto
+            </button>
+          )}
           {foto && (
             <button
               type="button"
               onClick={quitar}
               disabled={ocupado}
-              className={buttonVariants({ variant: "ghost", size: "lg", className: "text-destructive" })}
+              className={buttonVariants({
+                variant: "outline",
+                size: "lg",
+                className: "border-destructive/30 text-destructive hover:border-destructive/50 hover:bg-destructive/10 hover:text-destructive",
+              })}
             >
+              <Trash2 aria-hidden />
               Quitar foto
             </button>
           )}
@@ -137,6 +161,10 @@ export function FotoPerfil({ userId, nombre, apellido, localidad, foto }: PropsF
           Opcional. La ven vos y la Oficina de Empleo; las empresas no.
         </p>
         <AvisoFormulario error={error} aviso={aviso} />
+        {foto && acomodando && (
+          // Keyed by the URL: a new photo starts the editor again from its own framing
+          <EncuadreFoto key={foto} foto={foto} inicial={encuadre} onListo={() => setAcomodando(false)} />
+        )}
       </div>
     </section>
   );
