@@ -1,6 +1,7 @@
 import type { CSSProperties, ReactNode } from "react";
 import { FondoMarca } from "@/components/layout/FondoMarca";
 import { Escudo } from "@/components/layout/Escudo";
+import { PasosCuenta } from "@/components/auth/PasosCuenta";
 
 // The real order of things, so numbering is information here, not decoration
 const PASOS = [
@@ -26,20 +27,7 @@ export function MarcoAuth({ children }: { children: ReactNode }) {
             Trabajo en Funes, con la Municipalidad de tu lado.
           </p>
         </div>
-        <ol className="space-y-5">
-          {PASOS.map((paso, i) => (
-            <li
-              key={paso}
-              className="flex gap-4 motion-safe:animate-entrada"
-              style={{ "--retraso": `${200 + i * 120}ms` } as CSSProperties}
-            >
-              <span className="flex size-8 shrink-0 items-center justify-center rounded-full border border-primary-foreground/30 font-heading text-sm font-semibold">
-                {i + 1}
-              </span>
-              <span className="pt-1 text-primary-foreground/85">{paso}</span>
-            </li>
-          ))}
-        </ol>
+        <PasosCuenta pasos={PASOS} />
       </aside>
 
       <div className="mx-auto w-full max-w-lg lg:max-w-none lg:self-center">

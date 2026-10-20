@@ -87,14 +87,14 @@ export default async function PostulantePage() {
               <div className="flex items-center gap-3">
                 {/* The bulb glows: the one moving thing in the side column */}
                 <span className="relative flex size-11 items-center justify-center rounded-xl bg-primary-foreground text-primary-deep">
-                  <span aria-hidden className="absolute inset-0 rounded-xl bg-primary-foreground/60 motion-safe:animate-ping" />
+                  <span aria-hidden className="absolute -inset-1 rounded-2xl bg-primary-foreground/40 blur-md motion-safe:animate-resplandor" />
                   <Lightbulb aria-hidden className="relative size-5" />
                 </span>
                 <h2 id="titulo-consejo" className="font-heading text-lg font-semibold">
                   Consejo del día
                 </h2>
               </div>
-              <p className="text-primary-foreground/85">{consejoDelDia()}</p>
+              <p className="leading-relaxed text-primary-foreground/95">{consejoDelDia()}</p>
             </section>
           </aside>
         </div>

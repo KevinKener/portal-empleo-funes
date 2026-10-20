@@ -6,7 +6,7 @@
   and also exposes each token as a CSS variable on :root, so plain CSS can use var(--color-*).
   Names follow shadcn's semantic convention so components in src/components/ui pick up the brand.
   Palette taken from funes.gob.ar (base green #074A1F, dark gray #262B35); muted-foreground is
-  darker than the site's #868D98 so secondary text keeps AA contrast.
+  much darker than the site's #868D98 (about 8:1 on white) so secondary text reads easily.
 */
 @theme {
   --color-background: #f7f9f7;
@@ -22,7 +22,7 @@
   --color-secondary: #e8f1eb;
   --color-secondary-foreground: #074a1f;
   --color-muted: #eef2ef;
-  --color-muted-foreground: #5f6672;
+  --color-muted-foreground: #4a515c;
   --color-accent: #e8f1eb;
   --color-accent-foreground: #074a1f;
   --color-destructive: #b42318;
@@ -106,6 +106,14 @@
 
   @keyframes anillo {
     from { stroke-dashoffset: var(--total); }
+  }
+
+  /* A slow, soft glow (the tip-of-the-day bulb): breathes, never blinks */
+  --animate-resplandor: resplandor 4s ease-in-out infinite;
+
+  @keyframes resplandor {
+    0%, 100% { opacity: 0.15; transform: scale(0.95); }
+    50% { opacity: 0.7; transform: scale(1.05); }
   }
 
   /* Green banners (FondoMarca): a light sweeps across every few seconds, then rests */
