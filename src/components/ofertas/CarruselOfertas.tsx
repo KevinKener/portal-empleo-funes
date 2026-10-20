@@ -1,26 +1,25 @@
 "use client";
 
 import { Children, useCallback, useEffect, useId, useRef, useState, type ReactNode } from "react";
-import { ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const INTERVALO = 5000; // ms per step: long enough to read a card title and its company
+const INTERVALO = 3500; // ms per card: enough to read a title and its company
 
 const BOTON =
   "flex size-10 items-center justify-center rounded-full border border-border bg-card text-foreground transition-[background-color,opacity,transform] duration-150 hover:bg-accent focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none active:scale-95 disabled:pointer-events-none disabled:opacity-35";
 
 /**
  * Horizontal row of offer cards that snaps card by card: swipe on phones,
- * arrows or dots on desktop. It also advances by itself every few seconds,
- * but stops while the pointer or focus is on it, after the person moves it,
- * when it is off screen and with reduced motion; the pause button stops it
- * for good (WCAG 2.2.2 Pause, Stop, Hide).
+ * arrows or dots on desktop. It also glides one card at a time by itself,
+ * and holds still while the pointer or focus is on it (the way to pause it,
+ * WCAG 2.2.2), after the person moves it, off screen and with reduced motion.
  */
 export function CarruselOfertas({ titulo, extra, children }: { titulo: ReactNode; extra?: ReactNode; children: ReactNode }) {
   const id = useId();
   const lista = useRef<HTMLUListElement>(null);
   const [pagina, setPagina] = useState({ actual: 0, total: 1 });
-  const [pausado, setPausado] = useState(false); // the person's choice
+  const [pausado, setPausado] = useState(false); // the person took over
   const [enUso, setEnUso] = useState(false); // hover or focus inside
   const [visible, setVisible] = useState(false);
   const [reducido, setReducido] = useState(false);
@@ -71,12 +70,17 @@ export function CarruselOfertas({ titulo, extra, children }: { titulo: ReactNode
   useEffect(() => {
     if (!avanza) return;
     const reloj = window.setInterval(() => {
-      if (document.hidden) return;
-      // Back to the first page after the last one, so the row keeps going
-      irA(pagina.actual >= pagina.total - 1 ? 0 : pagina.actual + 1);
+      const elemento = lista.current;
+      if (!elemento || document.hidden) return;
+      const fin = elemento.scrollLeft + elemento.clientWidth >= elemento.scrollWidth - 4;
+      const primera = elemento.querySelector("li");
+      const paso = primera ? primera.getBoundingClientRect().width + 16 : elemento.clientWidth;
+      // One card to the left each time; back to the start after the last one
+      if (fin) elemento.scrollTo({ left: 0, behavior: "smooth" });
+      else elemento.scrollBy({ left: paso, behavior: "smooth" });
     }, INTERVALO);
     return () => window.clearInterval(reloj);
-  }, [avanza, irA, pagina]);
+  }, [avanza]);
 
   // Moving it by hand means the person took over: stop advancing by itself
   const manual = (destino: number) => {
@@ -137,7 +141,7 @@ export function CarruselOfertas({ titulo, extra, children }: { titulo: ReactNode
       </ul>
 
       {pagina.total > 1 && (
-        <div className="flex items-center justify-center gap-3">
+        <div className="flex items-center justify-center">
           <div className="flex items-center gap-1.5">
             {Array.from({ length: pagina.total }, (_, i) => (
               <button
@@ -158,16 +162,6 @@ export function CarruselOfertas({ titulo, extra, children }: { titulo: ReactNode
               </button>
             ))}
           </div>
-          {!reducido && (
-            <button
-              type="button"
-              onClick={() => setPausado((actual) => !actual)}
-              className="flex size-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
-            >
-              {pausado ? <Play aria-hidden className="size-4" /> : <Pause aria-hidden className="size-4" />}
-              <span className="sr-only">{pausado ? "Pasar las ofertas solas" : "Frenar el carrusel"}</span>
-            </button>
-          )}
         </div>
       )}
     </div>

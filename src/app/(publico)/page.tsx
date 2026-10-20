@@ -5,6 +5,9 @@ import { ArrowRight, Building2, ClipboardCheck, UserRound } from "lucide-react";
 import { Escudo } from "@/components/layout/Escudo";
 import { FondoMarca } from "@/components/layout/FondoMarca";
 import { Revelar } from "@/components/layout/Revelar";
+import { PasosAnimados } from "@/components/portada/PasosAnimados";
+import { RubrosFlotantes } from "@/components/portada/RubrosFlotantes";
+import { listarCategorias } from "@/lib/categorias";
 import { CarruselOfertas } from "@/components/ofertas/CarruselOfertas";
 import { TarjetaOferta } from "@/components/ofertas/TarjetaOferta";
 import { listarOfertasPublicas, type OfertaPublica } from "@/lib/ofertas";
@@ -49,13 +52,24 @@ async function ultimasOfertas(): Promise<OfertaPublica[] | null> {
   }
 }
 
+/** Category names for the hero's floating chips; decorative, so a failure just shows none. */
+async function nombresDeRubros(): Promise<string[]> {
+  try {
+    return (await listarCategorias()).map((categoria) => categoria.nombre);
+  } catch (error) {
+    unstable_rethrow(error);
+    return [];
+  }
+}
+
 export default async function HomePage() {
-  const ofertas = await ultimasOfertas();
+  const [ofertas, rubros] = await Promise.all([ultimasOfertas(), nombresDeRubros()]);
 
   return (
     <>
       <section className="relative isolate overflow-hidden bg-primary-deep text-primary-foreground">
         <FondoMarca />
+        <RubrosFlotantes rubros={rubros} />
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8 lg:py-28">
           <div className="max-w-2xl space-y-6">
             <p className="flex items-center gap-2 text-sm font-medium text-primary-foreground/75 motion-safe:animate-entrada">
@@ -122,24 +136,7 @@ export default async function HomePage() {
       <section className="border-t border-border bg-card">
         <div className="mx-auto max-w-7xl space-y-8 px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
           <h2 className="font-heading text-2xl font-semibold sm:text-3xl">¿Cómo funciona?</h2>
-          <ol className="relative grid gap-10 md:grid-cols-3 md:gap-8">
-            {/* The path that joins the three steps (a real sequence) */}
-            <div aria-hidden className="absolute top-6 right-[16%] left-6 hidden h-px bg-gradient-to-r from-primary/40 via-border to-border md:block" />
-            {PASOS.map(({ icono: Icono, titulo, texto }, i) => (
-              <li key={titulo}>
-                <Revelar retraso={i * 140} className="space-y-3">
-                  <div className="flex items-center gap-3">
-                    <span className="relative flex size-12 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/20">
-                      <Icono aria-hidden className="size-5" />
-                    </span>
-                    <span className="relative bg-card pr-3 text-sm font-semibold text-muted-foreground">Paso {i + 1}</span>
-                  </div>
-                  <h3 className="font-heading text-lg font-semibold">{titulo}</h3>
-                  <p className="text-muted-foreground">{texto}</p>
-                </Revelar>
-              </li>
-            ))}
-          </ol>
+          <PasosAnimados pasos={PASOS.map(({ icono: Icono, ...paso }) => ({ ...paso, icono: <Icono aria-hidden className="size-5" /> }))} />
         </div>
       </section>
     </>

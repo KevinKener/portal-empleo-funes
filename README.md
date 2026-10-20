@@ -153,6 +153,7 @@ docs/             # Roadmap, guía de Next.js y material del proyecto
 | `/registro/verificar` | Confirmar el email con el código de 6 números |
 | `/ingresar` | Ingresar con DNI, CUIT o email + contraseña |
 | `/recuperar` · `/recuperar/codigo` | Recuperar la contraseña con un código por email |
+| `/terminos` · `/privacidad` | Términos y condiciones y política de privacidad (Ley 25.326), versión preliminar a revisar por la Municipalidad |
 | `/postulante` | "Mi panel": próximo paso, mis postulaciones y ofertas de mis rubros (requiere rol postulante) |
 | `/postulante/perfil` | "Mi perfil": lista de tareas con datos, rubros, CV y domicilio |
 | `/postulante/datos` · `/postulante/rubros` | Editar datos personales y elegir rubros |

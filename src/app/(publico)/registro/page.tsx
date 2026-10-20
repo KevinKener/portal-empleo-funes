@@ -50,6 +50,18 @@ export default function RegistroPage() {
           </li>
         ))}
       </ul>
+
+      <p className="text-sm text-muted-foreground">
+        Al crear tu cuenta aceptás los{" "}
+        <Link href="/terminos" className="font-medium text-primary underline-offset-4 hover:underline">
+          términos y condiciones
+        </Link>{" "}
+        y la{" "}
+        <Link href="/privacidad" className="font-medium text-primary underline-offset-4 hover:underline">
+          política de privacidad
+        </Link>
+        .
+      </p>
     </div>
   );
 }
