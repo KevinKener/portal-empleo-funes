@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 612 1350" width="612" height="1350" role="img" aria-label="Cómo funciona el portal, paso a paso">
+  <style>
+    .fondo { fill: #f7f9f7; }
+    .card { fill: #fff; stroke: #dde3df; stroke-width: 1.5; }
+    .t { font-family: 'Segoe UI','Helvetica Neue',Arial,sans-serif; }
+    .titulo { font-size: 22px; font-weight: 700; fill: #262b35; }
+    .texto { font-size: 16px; fill: #4a515c; }
+    .chip { font-size: 12.5px; font-weight: 700; }
+    .num { font-size: 17px; font-weight: 800; fill: #fff; }
+    .base { fill: none; stroke: #dde3df; stroke-width: 6; stroke-linecap: round; }
+    .trazo { fill: none; stroke: #074a1f; stroke-width: 6; stroke-linecap: round;
+             stroke-dasharray: 1; stroke-dashoffset: 1; animation: dibujar 10s ease-in-out infinite; }
+    .rama { fill: none; stroke: #074a1f; stroke-opacity: .55; stroke-width: 2.5; stroke-dasharray: 7 7;
+            animation: fluir 1s linear infinite; }
+    .nodo { fill: #c9d6cd; animation: nodo 10s ease-in-out infinite; }
+    .marco { fill: none; stroke: #074a1f; stroke-width: 2.5; opacity: 0; animation: marco 10s ease-in-out infinite; }
+    .halo { fill: #074a1f; opacity: 0; transform-box: fill-box; transform-origin: center;
+            animation: halo 10s ease-out infinite; }
+    @keyframes dibujar { 0% { stroke-dashoffset: 1; } 62% { stroke-dashoffset: 0; } 88% { stroke-dashoffset: 0; opacity: 1; } 97% { opacity: 0; } 100% { stroke-dashoffset: 1; opacity: 0; } }
+    @keyframes fluir { to { stroke-dashoffset: -14; } }
+    @keyframes nodo { 0%, 4% { fill: #c9d6cd; } 8%, 86% { fill: #074a1f; } 96%, 100% { fill: #c9d6cd; } }
+    @keyframes marco { 0%, 4% { opacity: 0; } 8%, 86% { opacity: 1; } 96%, 100% { opacity: 0; } }
+    @keyframes halo { 0%, 4% { opacity: 0; transform: scale(1); } 6% { opacity: .35; } 16%, 100% { opacity: 0; transform: scale(2.1); } }
+    @media (prefers-reduced-motion: reduce) {
+      .trazo { animation: none; stroke-dashoffset: 0; } .nodo { animation: none; fill: #074a1f; }
+      .marco { animation: none; opacity: 1; } .halo, .rama, .viajero { animation: none; display: none; }
+    }
+  </style>
+<rect class="fondo" width="612" height="1350" rx="28"/>
+<path class="base" d="M 50 115.0 L 50 1035.0"/>
+<path class="trazo" pathLength="1" d="M 50 115.0 L 50 1035.0"/>
+<rect class="card" x="96" y="40" width="476" height="150" rx="18"/>
+<rect class="marco" style="animation-delay:0.00s" x="96" y="40" width="476" height="150" rx="18"/>
+<rect x="116" y="56" width="90" height="24" rx="12" fill="#e8f1eb"/><text x="127" y="72.5" class="t chip" fill="#052f14">🏢 Empresa</text>
+<text x="116" y="108" class="t titulo">Carga una oferta</text>
+<text x="116" y="134" class="t texto">La guarda como borrador y la</text>
+<text x="116" y="155" class="t texto">envía a revisión cuando está lista.</text>
+<circle class="halo" style="animation-delay:0.00s" cx="50" cy="115.0" r="22"/>
+<circle class="nodo" style="animation-delay:0.00s" cx="50" cy="115.0" r="22" stroke="#f7f9f7" stroke-width="5"/>
+<text x="50" y="121.0" text-anchor="middle" class="t num">1</text>
+<rect class="card" x="96" y="224" width="476" height="150" rx="18"/>
+<rect class="marco" style="animation-delay:1.24s" x="96" y="224" width="476" height="150" rx="18"/>
+<rect x="116" y="240" width="174" height="24" rx="12" fill="#074a1f"/><text x="127" y="256.5" class="t chip" fill="#ffffff">🏛️ Oficina de Empleo</text>
+<text x="116" y="292" class="t titulo">La revisa y la publica</text>
+<text x="116" y="318" class="t texto">Si algo no está bien, le explica</text>
+<text x="116" y="339" class="t texto">a la empresa qué corregir.</text>
+<circle class="halo" style="animation-delay:1.24s" cx="50" cy="299.0" r="22"/>
+<circle class="nodo" style="animation-delay:1.24s" cx="50" cy="299.0" r="22" stroke="#f7f9f7" stroke-width="5"/>
+<text x="50" y="305.0" text-anchor="middle" class="t num">2</text>
+<rect class="card" x="96" y="408" width="476" height="150" rx="18"/>
+<rect class="marco" style="animation-delay:2.48s" x="96" y="408" width="476" height="150" rx="18"/>
+<rect x="116" y="424" width="83" height="24" rx="12" fill="#ffffff" stroke="#074a1f" stroke-width="1.2"/><text x="127" y="440.5" class="t chip" fill="#074a1f">🌐 Portal</text>
+<text x="116" y="476" class="t titulo">La oferta queda visible</text>
+<text x="116" y="502" class="t texto">Cualquier vecino la ve,</text>
+<text x="116" y="523" class="t texto">incluso sin tener cuenta.</text>
+<circle class="halo" style="animation-delay:2.48s" cx="50" cy="483.0" r="22"/>
+<circle class="nodo" style="animation-delay:2.48s" cx="50" cy="483.0" r="22" stroke="#f7f9f7" stroke-width="5"/>
+<text x="50" y="489.0" text-anchor="middle" class="t num">3</text>
+<rect class="card" x="96" y="592" width="476" height="150" rx="18"/>
+<rect class="marco" style="animation-delay:3.72s" x="96" y="592" width="476" height="150" rx="18"/>
+<rect x="116" y="608" width="83" height="24" rx="12" fill="#d7ebdd"/><text x="127" y="624.5" class="t chip" fill="#052f14">👤 Vecino</text>
+<text x="116" y="660" class="t titulo">Se postula</text>
+<text x="116" y="686" class="t texto">Con su CV armado en el portal</text>
+<text x="116" y="707" class="t texto">o subido, en un solo toque.</text>
+<circle class="halo" style="animation-delay:3.72s" cx="50" cy="667.0" r="22"/>
+<circle class="nodo" style="animation-delay:3.72s" cx="50" cy="667.0" r="22" stroke="#f7f9f7" stroke-width="5"/>
+<text x="50" y="673.0" text-anchor="middle" class="t num">4</text>
+<rect class="card" x="96" y="776" width="476" height="150" rx="18"/>
+<rect class="marco" style="animation-delay:4.96s" x="96" y="776" width="476" height="150" rx="18"/>
+<rect x="116" y="792" width="174" height="24" rx="12" fill="#074a1f"/><text x="127" y="808.5" class="t chip" fill="#ffffff">🏛️ Oficina de Empleo</text>
+<text x="116" y="844" class="t titulo">Preselecciona perfiles</text>
+<text x="116" y="870" class="t texto">Revisa cada postulación. Los</text>
+<text x="116" y="891" class="t texto">vecinos de Funes, primero.</text>
+<circle class="halo" style="animation-delay:4.96s" cx="50" cy="851.0" r="22"/>
+<circle class="nodo" style="animation-delay:4.96s" cx="50" cy="851.0" r="22" stroke="#f7f9f7" stroke-width="5"/>
+<text x="50" y="857.0" text-anchor="middle" class="t num">5</text>
+<rect class="card" x="96" y="960" width="476" height="150" rx="18"/>
+<rect class="marco" style="animation-delay:6.20s" x="96" y="960" width="476" height="150" rx="18"/>
+<rect x="116" y="976" width="90" height="24" rx="12" fill="#e8f1eb"/><text x="127" y="992.5" class="t chip" fill="#052f14">🏢 Empresa</text>
+<text x="116" y="1028" class="t titulo">Entrevista y contrata</text>
+<text x="116" y="1054" class="t texto">Solo ve a los preseleccionados</text>
+<text x="116" y="1075" class="t texto">y confirma su decisión.</text>
+<circle class="halo" style="animation-delay:6.20s" cx="50" cy="1035.0" r="22"/>
+<circle class="nodo" style="animation-delay:6.20s" cx="50" cy="1035.0" r="22" stroke="#f7f9f7" stroke-width="5"/>
+<text x="50" y="1041.0" text-anchor="middle" class="t num">6</text>
+<path class="rama" d="M 50 1059.0 C 50 1160, 160 1150, 190 1180"/>
+<path class="rama" d="M 50 1059.0 C 50 1140, 420 1130, 440 1180"/>
+<rect class="card" x="40" y="1180" width="260" height="130" rx="18"/>
+<rect class="marco" style="animation-delay:6.50s" x="40" y="1180" width="260" height="130" rx="18"/>
+<rect x="60" y="1196" width="83" height="24" rx="12" fill="#e8f1eb"/><text x="71" y="1212.5" class="t chip" fill="#052f14">📚 Cursos</text>
+<text x="60" y="1248" class="t titulo">Si no queda</text>
+<text x="60" y="1274" class="t texto">La Oficina lo puede</text>
+<text x="60" y="1295" class="t texto">derivar a un curso.</text>
+<rect class="card" x="316" y="1180" width="256" height="130" rx="18"/>
+<rect class="marco" style="animation-delay:6.80s" x="316" y="1180" width="256" height="130" rx="18"/>
+<rect x="336" y="1196" width="174" height="24" rx="12" fill="#074a1f"/><text x="347" y="1212.5" class="t chip" fill="#ffffff">🏛️ Oficina de Empleo</text>
+<text x="336" y="1248" class="t titulo">Si lo contratan</text>
+<text x="336" y="1274" class="t texto">Seguimiento cada</text>
+<text x="336" y="1295" class="t texto">2 meses.</text>
+<circle class="viajero" r="9" fill="#fff" stroke="#074a1f" stroke-width="4"><animateMotion dur="10s" repeatCount="indefinite" path="M 50 115.0 L 50 1035.0" keyPoints="0;1;1" keyTimes="0;0.62;1" calcMode="linear"/><animate attributeName="opacity" dur="10s" repeatCount="indefinite" values="1;1;0;0" keyTimes="0;0.62;0.66;1"/></circle>
+</svg>
