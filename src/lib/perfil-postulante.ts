@@ -24,7 +24,7 @@ export type Tarea = {
   descripcion: string
   href: string
   estado: EstadoTarea
-  /** Counts towards "ready to apply" (the proof of address never does, Rule 4). */
+  /** Counts towards "ready to apply" (categories and the proof of address never do, Rule 4). */
   requerida: boolean
 }
 
@@ -61,9 +61,12 @@ export function tieneCv({ postulante, itemsCv }: ResumenPerfil): boolean {
   return Boolean(postulante.cv_url) || (Boolean(postulante.descripcion?.trim()) && itemsCv > 0)
 }
 
-/** Minimum to apply: at least one category and a CV in either format. */
+/**
+ * Minimum to apply: a CV in either format. Categories only tune "Ofertas para
+ * vos", so they never block applying (tutor review 2026-10-20).
+ */
 export function puedePostularse(resumen: ResumenPerfil): boolean {
-  return resumen.rubros > 0 && tieneCv(resumen)
+  return tieneCv(resumen)
 }
 
 /**
@@ -84,10 +87,11 @@ export function tareasDelPerfil(resumen: ResumenPerfil): Tarea[] {
     {
       clave: "rubros",
       titulo: "Elegir rubros",
-      descripcion: "Los tipos de trabajo que te interesan. Podés elegir varios.",
+      descripcion: "Los tipos de trabajo que te interesan. Así te mostramos las ofertas que van con vos.",
       href: "/postulante/rubros",
-      estado: rubros > 0 ? "completo" : "pendiente",
-      requerida: true,
+      estado: rubros > 0 ? "completo" : "opcional",
+      // Recommended, not needed to apply (see puedePostularse)
+      requerida: false,
     },
     {
       clave: "cv",

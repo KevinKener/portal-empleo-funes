@@ -109,20 +109,20 @@ export async function nombresDeEmpresas(ofertaIds: string[]): Promise<Map<string
 
 /** The single action the panel suggests now; the first matching rule wins. */
 export function proximoPaso(resumen: ResumenPerfil, ofertasNuevas: number): ProximoPaso {
-  if (resumen.rubros === 0) {
-    return {
-      titulo: "Elegí los rubros que te interesan",
-      texto: "Así te mostramos las ofertas que van con vos.",
-      accion: "Elegir rubros",
-      href: "/postulante/rubros",
-    }
-  }
   if (!tieneCv(resumen)) {
     return {
       titulo: "Armá tu CV",
       texto: "Completalo acá en pocos pasos o subí el que ya tenés en PDF.",
       accion: "Armar mi CV",
       href: "/postulante/cv",
+    }
+  }
+  if (resumen.rubros === 0) {
+    return {
+      titulo: "Elegí los rubros que te interesan",
+      texto: "Así te mostramos las ofertas que van con vos.",
+      accion: "Elegir rubros",
+      href: "/postulante/rubros",
     }
   }
   if (resumen.postulante.localidad === "funes" && resumen.postulante.estado_domicilio === "rechazado" && resumen.postulante.comprobante_url) {

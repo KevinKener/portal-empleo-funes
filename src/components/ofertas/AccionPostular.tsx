@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { CircleCheck } from "lucide-react";
+import { abrirArchivo, eliminarArchivo, registrarArchivo } from "@/app/postulante/archivos";
+import { SubidaArchivo } from "@/components/formularios/SubidaArchivo";
 import { BotonPostularme } from "@/components/ofertas/BotonPostularme";
 import { buttonVariants } from "@/components/ui/button";
 import { obtenerSesion } from "@/lib/auth";
-import { obtenerResumenPerfil, puedePostularse, tieneCv } from "@/lib/perfil-postulante";
+import { obtenerResumenPerfil, puedePostularse } from "@/lib/perfil-postulante";
 import { yaSePostulo } from "@/lib/postulaciones";
 
 const ENLACE = "font-medium text-primary underline-offset-4 hover:underline";
@@ -11,7 +13,7 @@ const ENLACE = "font-medium text-primary underline-offset-4 hover:underline";
 /**
  * "Postularme" area of an offer, by session: visitors are sent to sign in
  * and come back here; job seekers apply, see that they already did (Rule
- * 8) or what their profile is missing; companies and the Admin cannot apply.
+ * 8) or upload the CV they are missing; companies and the Admin cannot apply.
  */
 export async function AccionPostular({ ofertaId }: { ofertaId: string }) {
   const sesion = await obtenerSesion();
@@ -60,25 +62,29 @@ export async function AccionPostular({ ofertaId }: { ofertaId: string }) {
   }
 
   if (!puedePostularse(resumen)) {
-    // Inline checklist instead of a dead end: what is missing and where to do it
-    const faltan = [
-      resumen.rubros === 0 && { href: "/postulante/rubros", texto: "Elegir al menos un rubro" },
-      !tieneCv(resumen) && { href: "/postulante/cv", texto: "Armar tu CV o subirlo en PDF" },
-    ].filter((item): item is { href: string; texto: string } => Boolean(item));
-
+    // The CV is the only thing missing: upload it right here, or build it and
+    // come back (?volver) instead of losing the offer (tutor review 2026-10-20).
+    // Once uploaded, SubidaArchivo refreshes the page and the button shows up.
     return (
-      <div className="space-y-3 border-t border-border pt-6">
-        <p className="font-medium">Para postularte, completá tu perfil:</p>
-        <ul className="space-y-2">
-          {faltan.map((item) => (
-            <li key={item.href}>
-              <Link href={item.href} className={ENLACE}>
-                {item.texto}
-              </Link>
-            </li>
-          ))}
-        </ul>
-        <p className="text-sm text-muted-foreground">Te lleva unos minutos y te sirve para todas las ofertas.</p>
+      <div className="space-y-4 border-t border-border pt-6">
+        <div className="space-y-1">
+          <p className="font-medium">Para postularte, cargá tu CV</p>
+          <p className="text-sm text-muted-foreground">Lo cargás una vez y te sirve para todas las ofertas.</p>
+        </div>
+        <SubidaArchivo
+          tipo="cv"
+          userId={sesion.userId}
+          etiqueta="CV en PDF"
+          cargado={false}
+          acciones={{ registrar: registrarArchivo, abrir: abrirArchivo, eliminar: eliminarArchivo }}
+        />
+        <p className="text-sm text-muted-foreground">
+          ¿No tenés CV en PDF?{" "}
+          <Link href={`/postulante/cv?volver=${ofertaId}`} className={ENLACE}>
+            Armalo acá en pocos pasos
+          </Link>{" "}
+          y te traemos de vuelta a esta oferta.
+        </p>
       </div>
     );
   }
