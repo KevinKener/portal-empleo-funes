@@ -1,6 +1,7 @@
 import type { CSSProperties } from "react";
 import Link from "next/link";
 import { ChevronRight, FileText, House, Tags, UserRound, type LucideIcon } from "lucide-react";
+import { AnilloProgreso } from "@/components/postulante/AnilloProgreso";
 import type { EstadoTarea, Tarea } from "@/lib/perfil-postulante";
 import { cn } from "@/lib/utils";
 
@@ -14,36 +15,6 @@ const ESTADOS: Record<EstadoTarea, { texto: string; clase: string }> = {
 };
 
 const ICONOS: Record<Tarea["clave"], LucideIcon> = { datos: UserRound, rubros: Tags, cv: FileText, domicilio: House };
-
-const RADIO = 26;
-const CIRCUNFERENCIA = 2 * Math.PI * RADIO;
-
-/** Ring that fills up to the share of required steps done (animated once on load). */
-function AnilloProgreso({ hechas, total }: { hechas: number; total: number }) {
-  const faltante = CIRCUNFERENCIA * (1 - hechas / Math.max(1, total));
-  return (
-    <div className="relative size-16 shrink-0">
-      <svg viewBox="0 0 64 64" aria-hidden className="size-full -rotate-90">
-        <circle cx="32" cy="32" r={RADIO} fill="none" strokeWidth="6" className="stroke-muted" />
-        <circle
-          cx="32"
-          cy="32"
-          r={RADIO}
-          fill="none"
-          strokeWidth="6"
-          strokeLinecap="round"
-          strokeDasharray={CIRCUNFERENCIA}
-          strokeDashoffset={faltante}
-          className="stroke-primary motion-safe:animate-anillo"
-          style={{ "--total": CIRCUNFERENCIA } as CSSProperties}
-        />
-      </svg>
-      <span aria-hidden className="absolute inset-0 flex items-center justify-center font-heading text-sm font-bold">
-        {hechas}/{total}
-      </span>
-    </div>
-  );
-}
 
 /**
  * "Completá tu perfil": tasks in any order, each with an honest status,

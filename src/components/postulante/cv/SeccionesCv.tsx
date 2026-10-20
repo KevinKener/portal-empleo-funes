@@ -5,7 +5,6 @@ import { Plus } from "lucide-react";
 import { FormularioExperiencia } from "@/components/postulante/cv/FormularioExperiencia";
 import { FormularioFormacion } from "@/components/postulante/cv/FormularioFormacion";
 import { ItemCv } from "@/components/postulante/cv/ItemCv";
-import { buttonVariants } from "@/components/ui/button";
 import { ETIQUETAS_ESTADO_FORMACION, ETIQUETAS_NIVEL_FORMACION, formatearMesAnio } from "@/lib/formato";
 import { MAXIMO_ITEMS_CV } from "@/lib/validaciones/cv";
 import type { Tables } from "@/types/database";
@@ -18,23 +17,31 @@ type PropsLista = {
   children: ReactNode;
 };
 
-/** Summary list + "Agregar otra" (GOV.UK / DWP "Add another"). */
+/** Summary list as a timeline + "Agregar otra" (GOV.UK / DWP "Add another"). */
 function ListaConAgregar({ vacio, textoAgregar, cantidad, formularioNuevo, children }: PropsLista) {
   const [agregando, setAgregando] = useState(false);
 
   return (
     <div className="space-y-3">
-      {cantidad === 0 && !agregando && <p className="text-sm text-muted-foreground">{vacio}</p>}
-      {cantidad > 0 && <ul className="divide-y divide-border">{children}</ul>}
+      {cantidad === 0 && !agregando && <p className="rounded-xl bg-muted px-4 py-3 text-sm text-muted-foreground">{vacio}</p>}
+      {cantidad > 0 && (
+        <ul className="relative space-y-3">
+          {/* Timeline line joining the items' dots */}
+          {cantidad > 1 && <span aria-hidden className="absolute top-6 bottom-6 left-[0.6875rem] w-0.5 -translate-x-1/2 rounded-full bg-border" />}
+          {children}
+        </ul>
+      )}
       {agregando ? (
         formularioNuevo(() => setAgregando(false))
       ) : cantidad < MAXIMO_ITEMS_CV ? (
         <button
           type="button"
           onClick={() => setAgregando(true)}
-          className={buttonVariants({ variant: "outline", className: "h-11 px-5 text-base" })}
+          className="group flex h-12 w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-input text-base font-semibold text-primary transition-[background-color,border-color] duration-200 hover:border-primary hover:bg-accent focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
         >
-          <Plus aria-hidden />
+          <span className="flex size-6 items-center justify-center rounded-full bg-secondary transition-[background-color,color,rotate] duration-300 group-hover:rotate-90 group-hover:bg-primary group-hover:text-primary-foreground">
+            <Plus aria-hidden className="size-4" />
+          </span>
           {textoAgregar}
         </button>
       ) : (
@@ -61,15 +68,11 @@ export function SeccionExperiencias({ experiencias }: { experiencias: Experienci
           tabla="experiencias"
           id={experiencia.id}
           titulo={experiencia.puesto}
-          detalle={
-            <>
-              {experiencia.empresa && <p>{experiencia.empresa}</p>}
-              <p>
-                {formatearMesAnio(experiencia.desde)} –{" "}
-                {experiencia.hasta ? formatearMesAnio(experiencia.hasta) : "actualidad"}
-              </p>
-            </>
-          }
+          subtitulo={experiencia.empresa}
+          etiquetas={[
+            `${formatearMesAnio(experiencia.desde)} – ${experiencia.hasta ? formatearMesAnio(experiencia.hasta) : "actualidad"}`,
+          ]}
+          destacado={experiencia.hasta === null ? "Trabajo actual" : undefined}
           formulario={(cerrar) => <FormularioExperiencia experiencia={experiencia} onListo={cerrar} />}
         />
       ))}
@@ -94,12 +97,8 @@ export function SeccionFormaciones({ formaciones }: { formaciones: Formacion[] }
           tabla="formaciones"
           id={formacion.id}
           titulo={formacion.titulo}
-          detalle={
-            <p>
-              {ETIQUETAS_NIVEL_FORMACION[formacion.nivel]} · {ETIQUETAS_ESTADO_FORMACION[formacion.estado]}
-              {formacion.institucion && ` · ${formacion.institucion}`}
-            </p>
-          }
+          subtitulo={formacion.institucion}
+          etiquetas={[ETIQUETAS_NIVEL_FORMACION[formacion.nivel], ETIQUETAS_ESTADO_FORMACION[formacion.estado]]}
           formulario={(cerrar) => <FormularioFormacion formacion={formacion} onListo={cerrar} />}
         />
       ))}
