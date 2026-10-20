@@ -1,21 +1,29 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { CircleCheck, Info } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, CircleCheck, Info } from "lucide-react";
 import { SeccionExperiencias, SeccionFormaciones } from "@/components/postulante/cv/SeccionesCv";
 import { SobreMi } from "@/components/postulante/cv/SobreMi";
 import { EncabezadoSeccion, VOLVER_A_MI_PERFIL } from "@/components/postulante/EncabezadoSeccion";
 import { abrirArchivo, eliminarArchivo, registrarArchivo } from "@/app/postulante/archivos";
 import { SubidaArchivo } from "@/components/formularios/SubidaArchivo";
 import { TarjetaSeccion } from "@/components/postulante/TarjetaSeccion";
+import { buttonVariants } from "@/components/ui/button";
 import { requerirRol } from "@/lib/auth";
 import { obtenerResumenPerfil, tieneCv } from "@/lib/perfil-postulante";
 import { createClient } from "@/lib/supabase/server";
+import { rutaDeOferta } from "@/lib/validaciones/ofertas";
 
 export const metadata: Metadata = { title: "Tu CV" };
 
-/** CV built on the platform or uploaded as a PDF; either one is enough (Rule 6). */
-export default async function CvPage() {
+/**
+ * CV built on the platform or uploaded as a PDF; either one is enough (Rule 6).
+ * Coming from an offer (`?volver=<offer id>`), it offers the way back once the
+ * CV is complete, so the person does not have to look for the offer again.
+ */
+export default async function CvPage({ searchParams }: PageProps<"/postulante/cv">) {
   const { userId } = await requerirRol("postulante");
+  const oferta = rutaDeOferta((await searchParams).volver);
   const resumen = await obtenerResumenPerfil(userId);
   if (!resumen) notFound();
 
@@ -60,6 +68,16 @@ export default async function CvPage() {
           {!completo && "."}
         </p>
       </div>
+
+      {oferta && !completo && (
+        <p className="text-sm text-muted-foreground">Cuando tu CV esté completo, te aparece acá el botón para volver a la oferta.</p>
+      )}
+      {oferta && completo && (
+        <Link href={oferta} className={buttonVariants({ className: "h-11 w-full px-6 text-base hover:bg-primary-hover sm:w-auto" })}>
+          Volver a la oferta y postularme
+          <ArrowRight aria-hidden />
+        </Link>
+      )}
 
       <TarjetaSeccion id="sobre-vos" titulo="Sobre vos">
         <SobreMi inicial={resumen.postulante.descripcion ?? ""} />

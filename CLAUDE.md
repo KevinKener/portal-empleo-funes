@@ -53,7 +53,7 @@ All code lives in `src/`. The `@/*` alias points to `src/*`.
 | `/postulante/perfil` | `src/app/postulante/perfil/page.tsx` | "Mi perfil": avatar and the "Completá tu perfil" task list linking to each section |
 | `/postulante/datos` | `src/app/postulante/datos/page.tsx` | Edit personal data (DNI and email fixed) |
 | `/postulante/rubros` | `src/app/postulante/rubros/page.tsx` | Category chips (Rule 5) |
-| `/postulante/cv` | `src/app/postulante/cv/page.tsx` | CV: "Sobre vos", experience and education (add another) or PDF (Rule 6); actions in `cv/actions.ts` |
+| `/postulante/cv` | `src/app/postulante/cv/page.tsx` | CV: "Sobre vos", experience and education (add another) or PDF (Rule 6); `?volver=<offer id>` shows the way back to the offer once complete; actions in `cv/actions.ts` |
 | `/postulante/domicilio` | `src/app/postulante/domicilio/page.tsx` | Proof of address, only for Funes residents (Rule 4) |
 | `/postulante/postulaciones` | `src/app/postulante/postulaciones/page.tsx` | "Mis postulaciones": status timeline in plain words |
 | `/empresa` | `src/app/empresa/page.tsx` | Company home: pending-review notice, "Próximo paso" and offers/candidates summary (rules in `src/lib/panel-empresa.ts`, + `loading`, `error`); `layout.tsx` requires role `empresa` and adds `NavegacionEmpresa` |
@@ -74,7 +74,7 @@ Other key files:
 - `src/hooks/useOferta.ts` → consumes `/api/ofertas/[id]` from Client Components.
 - `src/proxy.ts` → refreshes the Supabase session on every request (`src/lib/supabase/proxy.ts`) and sends visitors without one away from `/postulante`, `/empresa`, `/admin`. Role checks live in each area's layout via `requerirRol()` (`src/lib/auth.ts`, with `obtenerSesion()` and `AREA_POR_ROL`).
 - `src/lib/email-pendiente.ts` → httpOnly cookie with the email waiting for a code (`registro` / `recuperar` flows).
-- `src/lib/perfil-postulante.ts` → profile summary, task list and `puedePostularse()` (minimum: one category + a CV in either format).
+- `src/lib/perfil-postulante.ts` → profile summary, task list and `puedePostularse()` (minimum: a CV in either format; categories are recommended, never required, tutor review 2026-10-20).
 - `src/lib/panel-postulante.ts` → "Mi panel" rules and queries (`proximoPaso()`, `obtenerOfertasParaVos()`, `nombresDeEmpresas()`). `src/components/postulante/panel/VistosPanel.tsx` remembers the previous visit in `localStorage` for celebrations and "Novedad" badges (`docs/research/panel-postulante.md`).
 - `src/lib/ofertas-empresa.ts` → the signed-in company (`obtenerEmpresaActual()`) and its own offers; `validarOferta()` in `src/lib/validaciones/ofertas.ts`. `src/components/layout/NavegacionArea.tsx` is the shared area navigation (bottom bar on phones, tabs on desktop) used by `NavegacionPostulante` and `NavegacionEmpresa`.
 - `src/lib/postulaciones.ts` → the job seeker's applications (only readable columns) and `yaSePostulo()`. Applying is `postularme()` in `src/app/postulante/actions.ts`, called from `AccionPostular` on the offer detail.

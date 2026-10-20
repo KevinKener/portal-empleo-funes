@@ -131,6 +131,8 @@ Applied to the portal:
 
 Personal data (already complete from sign-up) + **at least one category** + **a CV in either format** (PDF, or "Sobre mí" plus at least one experience or education item). The proof of address is never required.
 
+> **Changed 2026-10-20 (tutor review):** categories no longer block applying; the minimum is **a CV in either format**. Categories stay recommended because they feed "Ofertas para vos". When the CV is missing, the offer itself lets the person upload a PDF or build the CV and come back (`/postulante/cv?volver=<offer id>`).
+
 ### Technical notes
 
 - Uploads: browser client → Storage (`<uid>/cv.pdf`, `<uid>/comprobante.<ext>`), `upsert` to replace, then a Server Action stores the path after checking it starts with the user's uid.

@@ -128,7 +128,7 @@ export type ResultadoPostulacion = { ok: boolean; error: string | null };
 
 /**
  * Applies to a published offer. Checked here and not only in the page: the
- * minimum profile (one category + a CV, docs/research/postulante-ux.md §3);
+ * minimum profile (a CV in either format, see puedePostularse());
  * RLS checks the offer is published (Rule 2) and the unique constraint
  * blocks applying twice (Rule 8).
  */
@@ -138,7 +138,7 @@ export async function postularme(ofertaId: string): Promise<ResultadoPostulacion
 
   const resumen = await obtenerResumenPerfil(userId);
   if (!resumen || !puedePostularse(resumen)) {
-    return { ok: false, error: "Completá tu perfil (rubros y CV) para postularte." };
+    return { ok: false, error: "Cargá tu CV para postularte." };
   }
 
   const supabase = await createClient();

@@ -24,6 +24,15 @@ export function esUuid(valor: string): boolean {
 }
 
 /**
+ * The offer a job seeker should go back to (`?volver=<offer id>` on profile
+ * pages), as its public path, or null. Only ids are accepted, never a free
+ * path, so the param cannot send anyone to another site.
+ */
+export function rutaDeOferta(volver: string | string[] | undefined): string | null {
+  return typeof volver === "string" && esUuid(volver) ? `/ofertas/${volver}` : null
+}
+
+/**
  * Validates `?categoria=<uuid>&pagina=<n>` from the offers listing.
  * Both are optional; `pagina` defaults to 1. Error messages reach the user.
  */

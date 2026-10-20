@@ -8,7 +8,7 @@ Legend: `[x]` done · `[ ]` pending · `[~]` in progress
 
 ## Current status
 
-- **Current phase:** Phase 5 — Company (all items built; in review).
+- **Current phase:** Phase 5 done (#19, #21, #22 merged). Now: tutor review 2026-10-20 fixes (see below), then Phase 6 (Admin).
 - **Latest progress:** 2026-10-20, offer CRUD for companies on `feature/crud-ofertas` (no migrations): list, new draft, edit while `borrador`, send to review / take back / close / delete draft, "Usar como base" for rejected and closed offers, company area navigation. Test company: the seed's "Empresa Demo" (CUIT 30000000007, `verificado`), password set by hand in the SQL Editor. Before that, "Mi panel" redesign and profile photo merged (PRs #16, #17) and phone fixes (#18). Earlier: public portal live on Vercel (https://portal-empleo-funes.vercel.app). Phase 2 merged in PR #7: `GET /api/ofertas` and `/api/ofertas/[id]`, landing, `/ofertas` listing with category filter and pagination, offer detail, public layout with the municipal identity from funes.gob.ar. Before that, flow corrections from the tutor review (2026-10-08) on `feature/correcciones-flujo`: offers start as `borrador` (company edits only drafts, sends and takes back), rejected applications carry `motivo_rechazo`, company selection draft (`decision_empresa` + `confirmar_seleccion()`), ARCA certificate optional. Migrations applied in Supabase, types regenerated, `estados.ts` and `AGENTS.md` §2 updated.
 - **Next step:** offer CRUD (#19) and pre-selected candidates + company home (#21, re-opened from #20, which had landed on the stacked base branch) are merged; review and merge `feature/mi-empresa` (company data, ARCA certificate, migration `20261020130000`, already applied). After that, Phase 6 (Admin). Further ideas, ranked: [`docs/research/mejoras.md`](research/mejoras.md). The tutor's corrections arrive once everything is done.
 
@@ -26,6 +26,23 @@ Legend: `[x]` done · `[ ]` pending · `[~]` in progress
 - [x] Email provider decided: **Gmail SMTP**
 - [x] Status email notifications approved for v1, sent from a demo Gmail account of the Employment Office
 - [ ] Approve installing `nodemailer` when the email task starts
+
+---
+
+## Tutor review — 2026-10-20 (functional analysis, job seeker profile)
+
+Everything built works; UX details to fix:
+
+- [x] Categories do not block applying (only the CV does)
+- [x] Do not lose the offer: upload the CV from the offer itself, or build it and come back (`?volver`)
+- [ ] CV dates: "Desde" cannot be after "Hasta"
+- [ ] Required fields marked with a red asterisk (`*`) in every form
+- [ ] Replace native `<select>` (sign-up step 3, CV dates) with a reusable component
+- [ ] Accept more CV formats: images, `.doc`, `.docx`
+- [ ] No double confirmations: one notice is enough
+- [ ] Use the available width better; single navigation (tabs) instead of header + area bar
+- [ ] Profile photo: move the image inside the frame, position saved in the database
+- [ ] Better-quality municipal logo (EliasGallay/Solicitudes-Farmacia `src/assets/brand`)
 
 ---
 
