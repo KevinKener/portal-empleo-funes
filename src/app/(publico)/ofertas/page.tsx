@@ -31,8 +31,8 @@ export default async function OfertasPage({ searchParams }: PageProps<"/ofertas"
         <FondoMarca compacto />
         <div className="max-w-2xl space-y-3 motion-safe:animate-entrada">
           <h1 className="font-heading text-3xl font-semibold tracking-tight text-balance sm:text-5xl">Ofertas de trabajo</h1>
-          <p className="flex items-center gap-2 text-primary-foreground/85 sm:text-lg">
-            <BadgeCheck aria-hidden className="size-5 shrink-0" />
+          <p className="flex items-start gap-2 text-primary-foreground/85 sm:items-center sm:text-lg">
+            <BadgeCheck aria-hidden className="mt-0.5 size-5 shrink-0 sm:mt-0" />
             Todas fueron revisadas y aprobadas por la Oficina de Empleo.
           </p>
         </div>

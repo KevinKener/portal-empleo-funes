@@ -119,64 +119,55 @@ stateDiagram-v2
   <img src="docs/readme/recorrido.gif" alt="Recorrido por el portal: portada, últimas ofertas, cómo funciona, listado de ofertas, detalle de una oferta, crear cuenta e ingresar" width="100%">
 </p>
 
-<table>
-  <tr>
-    <td width="50%"><img src="docs/readme/hero.png" alt="Portada del portal"><p align="center"><b>Portada</b>: rubros flotando y últimas ofertas en carrusel</p></td>
-    <td width="50%"><img src="docs/readme/listado.png" alt="Listado de ofertas"><p align="center"><b>Ofertas</b>: todas revisadas por la Oficina</p></td>
-  </tr>
-  <tr>
-    <td width="50%"><img src="docs/readme/detalle.png" alt="Detalle de una oferta"><p align="center"><b>Detalle</b>: tareas, requisitos y compartir por WhatsApp</p></td>
-    <td width="50%"><img src="docs/readme/ingresar.png" alt="Pantalla de ingreso"><p align="center"><b>Ingresar</b>: con DNI, CUIT o email</p></td>
-  </tr>
-</table>
-
 <p align="center">
-  <img src="docs/readme/movil-inicio.png" alt="Portada en el celular" width="260">
-  &nbsp;&nbsp;&nbsp;
-  <img src="docs/readme/movil-oferta.png" alt="Oferta en el celular" width="260">
+  <img src="docs/readme/celu-portal.png" alt="El portal en el celular: portada, listado de ofertas y detalle de una oferta" width="100%">
+</p>
+<p align="center">
+  <img src="docs/readme/celu-cuenta.png" alt="En el celular: cómo funciona, crear cuenta e ingresar" width="100%">
   <br><sub>📱 Pensado primero para el celular: la mayoría de los vecinos lo usa desde el teléfono.</sub>
 </p>
+
+<details>
+<summary><b>🖥️ Ver más capturas en la compu</b></summary>
+
+<br>
+
+<p align="center"><img src="docs/readme/hero.png" alt="Portada del portal" width="100%"><br><b>Portada</b>: rubros flotando y últimas ofertas en carrusel</p>
+<p align="center"><img src="docs/readme/listado.png" alt="Listado de ofertas" width="100%"><br><b>Ofertas</b>: todas revisadas por la Oficina</p>
+<p align="center"><img src="docs/readme/detalle.png" alt="Detalle de una oferta" width="100%"><br><b>Detalle</b>: tareas, requisitos y compartir por WhatsApp</p>
+<p align="center"><img src="docs/readme/ingresar.png" alt="Pantalla de ingreso" width="100%"><br><b>Ingresar</b>: con DNI, CUIT o email</p>
+
+</details>
 
 ---
 
 ## 🙋 Qué puede hacer cada uno
 
-<table>
-  <tr>
-    <th width="33%">👤 Vecino que busca trabajo</th>
-    <th width="33%">🏢 Empresa</th>
-    <th width="33%">🏛️ Oficina de Empleo</th>
-  </tr>
-  <tr valign="top">
-    <td>
-      ✅ Crear su cuenta con DNI en 3 pasos<br>
-      ✅ Armar el CV en el portal <b>o</b> subir el suyo (PDF, Word o foto)<br>
-      ✅ Elegir varios rubros<br>
-      ✅ Subir el comprobante de domicilio (vecinos de Funes)<br>
-      ✅ Postularse con un toque<br>
-      ✅ Ver en qué etapa está cada postulación<br>
-      ✅ Foto de perfil, que puede acomodar dentro del marco
-    </td>
-    <td>
-      ✅ Registrarse con CUIT (queda en revisión)<br>
-      ✅ Cargar ofertas como borrador y enviarlas a revisión<br>
-      ✅ Ver el motivo si una oferta no se aprueba y usarla como base<br>
-      ✅ Recibir a los candidatos que preselecciona la Oficina<br>
-      ✅ Marcar a quién entrevistar o contratar y confirmar todo junto<br>
-      ✅ Editar sus datos y subir la constancia de ARCA
-    </td>
-    <td>
-      🔜 Aprobar empresas y ofertas<br>
-      🔜 Verificar domicilios<br>
-      🔜 Preseleccionar postulantes (vecinos de Funes primero)<br>
-      🔜 Buscar perfiles por rubro, nombre o localidad<br>
-      🔜 Ver indicadores<br>
-      🔜 Seguimiento de contrataciones y derivación a cursos<br>
-      🔜 Dar de alta otros Admins<br>
-      <sub>Plan: <a href="docs/research/admin.md">Fase 6</a></sub>
-    </td>
-  </tr>
-</table>
+### 👤 Vecino que busca trabajo
+- ✅ Crear su cuenta con DNI en 3 pasos
+- ✅ Armar el CV en el portal **o** subir el suyo (PDF, Word o foto)
+- ✅ Elegir varios rubros
+- ✅ Subir el comprobante de domicilio (vecinos de Funes)
+- ✅ Postularse con un toque y ver en qué etapa está cada postulación
+- ✅ Foto de perfil, que puede acomodar dentro del marco
+
+### 🏢 Empresa
+- ✅ Registrarse con CUIT (queda en revisión hasta que la Oficina la verifica)
+- ✅ Cargar ofertas como borrador y enviarlas a revisión
+- ✅ Ver el motivo si una oferta no se aprueba, y usarla como base para corregirla
+- ✅ Recibir a los candidatos que preselecciona la Oficina
+- ✅ Marcar a quién entrevistar o contratar y confirmar todo junto
+- ✅ Editar sus datos y subir la constancia de ARCA
+
+### 🏛️ Oficina de Empleo
+- 🔜 Aprobar empresas y ofertas, y verificar domicilios
+- 🔜 Preseleccionar postulantes (vecinos de Funes primero)
+- 🔜 Buscar perfiles por rubro, nombre o localidad
+- 🔜 Ver indicadores, hacer el seguimiento de las contrataciones y derivar a cursos
+- 🔜 Dar de alta otros Admins
+
+> [!NOTE]
+> El área de la Oficina se construye en la **Fase 6**. El plan completo está en [`docs/research/admin.md`](docs/research/admin.md).
 
 ### 📜 Las reglas que siempre se cumplen
 
