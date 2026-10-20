@@ -28,14 +28,15 @@ export async function Encabezado({ navegacion }: { navegacion?: ReactNode }) {
   return (
     <header className="sticky top-0 z-20 border-b border-border bg-card/95 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-2 px-4 sm:gap-4 sm:px-6 lg:px-8">
-        <Link href="/" className="flex min-w-0 items-center gap-2 sm:gap-2.5">
+        <Link href="/" className="flex shrink-0 items-center gap-2 sm:gap-2.5">
           <Escudo className="size-8 text-primary" />
-          {/* With tabs, md has no room for the name: the shield alone links home until lg */}
+          {/* With tabs, md has no room for the name: the shield alone links home until lg.
+              Below 400px only "Portal de Empleo" shows, so it is never cut. */}
           <span className={cn("flex min-w-0 flex-col leading-tight", enArea && "md:hidden lg:flex")}>
-            <span className="truncate font-heading text-[13px] font-semibold text-primary sm:text-base">
+            <span className="font-heading text-[13px] font-semibold whitespace-nowrap text-primary sm:text-base">
               Portal de Empleo
             </span>
-            <span className="truncate text-[11px] text-muted-foreground sm:text-xs">Municipalidad de Funes</span>
+            <span className="hidden text-[11px] whitespace-nowrap text-muted-foreground min-[400px]:block sm:text-xs">Municipalidad de Funes</span>
           </span>
         </Link>
 
@@ -45,7 +46,7 @@ export async function Encabezado({ navegacion }: { navegacion?: ReactNode }) {
           <div className="flex-1" />
         )}
 
-        <nav aria-label="Principal" className="flex items-center gap-1 sm:gap-2">
+        <nav aria-label="Principal" className="flex min-w-0 items-center gap-0.5 sm:gap-2">
           {!enArea &&
             ENLACES.map((enlace) => (
               <Link

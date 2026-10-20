@@ -16,7 +16,11 @@ export function FiltroCategorias({
   const opciones = [{ id: null, nombre: "Todas" }, ...categorias];
 
   return (
-    <nav aria-label="Filtrar por categoría" className="-mx-4 overflow-x-auto px-4 pb-1">
+    <nav
+      aria-label="Filtrar por categoría"
+      // On phones the chips scroll sideways; the fading right edge shows there is more
+      className="-mx-4 overflow-x-auto px-4 pb-1 [mask-image:linear-gradient(to_right,black_85%,transparent)] [scrollbar-width:none] sm:[mask-image:none] [&::-webkit-scrollbar]:hidden"
+    >
       <ul className="flex w-max gap-2 sm:w-auto sm:flex-wrap">
         {opciones.map((categoria) => {
           const activa = categoria.id === seleccionada;
