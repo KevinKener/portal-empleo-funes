@@ -69,6 +69,16 @@ export const CAMPOS_DATOS = [
   "telefono",
 ] as const satisfies readonly CampoDatos[]
 
+/** Company data editable after signing up (CUIT and email are fixed; razon_social only while pending). */
+export type CampoDatosEmpresa = Extract<CampoEmpresa, "razon_social" | "nombre_comercial" | "telefono" | "direccion">
+
+export const CAMPOS_DATOS_EMPRESA = [
+  "razon_social",
+  "nombre_comercial",
+  "telefono",
+  "direccion",
+] as const satisfies readonly CampoDatosEmpresa[]
+
 export const LOCALIDADES = ["funes", "roldan", "rosario", "otra"] as const satisfies readonly Enums<"localidad">[]
 
 // Supabase is configured with the same minimum; 72 is the bcrypt limit it enforces.

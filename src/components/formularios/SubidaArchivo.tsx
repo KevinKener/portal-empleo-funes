@@ -3,10 +3,9 @@
 import { useId, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { CircleCheck, FileText, LoaderCircle, Upload } from "lucide-react";
-import { abrirArchivo, eliminarArchivo, registrarArchivo } from "@/app/postulante/archivos";
 import { AvisoFormulario } from "@/components/formularios/AvisoFormulario";
 import { buttonVariants } from "@/components/ui/button";
-import { ARCHIVOS, achicarImagen, errorArchivo, rutaArchivo, type TipoArchivo } from "@/lib/archivos";
+import { ARCHIVOS, achicarImagen, errorArchivo, rutaArchivo, type AccionesArchivo, type TipoArchivo } from "@/lib/archivos";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 
@@ -18,6 +17,8 @@ type PropsSubidaArchivo = {
   cargado: boolean;
   /** Whether the saved file can be removed (not a verified proof of address). */
   eliminable?: boolean;
+  /** The area's Server Actions that record, open and remove the file. */
+  acciones: AccionesArchivo;
 };
 
 /**
@@ -25,7 +26,7 @@ type PropsSubidaArchivo = {
  * server. No `capture` attribute: phones then offer both "take photo" and
  * "choose file" (GOV.UK File upload; docs/research/postulante-ux.md §2.4).
  */
-export function SubidaArchivo({ tipo, userId, etiqueta, cargado, eliminable = false }: PropsSubidaArchivo) {
+export function SubidaArchivo({ tipo, userId, etiqueta, cargado, eliminable = false, acciones }: PropsSubidaArchivo) {
   const router = useRouter();
   const idInput = useId();
   const entrada = useRef<HTMLInputElement>(null);
@@ -51,7 +52,7 @@ export function SubidaArchivo({ tipo, userId, etiqueta, cargado, eliminable = fa
         .upload(ruta, archivo, { upsert: true, contentType: archivo.type });
       if (errorSubida) throw errorSubida;
 
-      const { error: errorRegistro } = await registrarArchivo(tipo, ruta);
+      const { error: errorRegistro } = await acciones.registrar(tipo, ruta);
       if (errorRegistro) return setError(errorRegistro);
       setAviso("¡Listo! Guardamos tu archivo.");
       router.refresh();
@@ -65,7 +66,7 @@ export function SubidaArchivo({ tipo, userId, etiqueta, cargado, eliminable = fa
 
   function ver() {
     iniciar(async () => {
-      const { url, error: errorUrl } = await abrirArchivo(tipo);
+      const { url, error: errorUrl } = await acciones.abrir(tipo);
       if (url) window.open(url, "_blank", "noopener");
       else setError(errorUrl);
     });
@@ -73,7 +74,7 @@ export function SubidaArchivo({ tipo, userId, etiqueta, cargado, eliminable = fa
 
   function borrar() {
     iniciar(async () => {
-      const { error: errorBorrado } = await eliminarArchivo(tipo);
+      const { error: errorBorrado } = await acciones.eliminar(tipo);
       if (errorBorrado) return setError(errorBorrado);
       setAviso("Borramos el archivo.");
       router.refresh();

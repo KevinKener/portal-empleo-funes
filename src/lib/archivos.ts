@@ -1,11 +1,12 @@
 /**
- * Files the job seeker uploads (CV in PDF, proof of address, profile photo). Shared by
+ * Files people upload: the job seeker's CV in PDF, proof of address and
+ * profile photo, and the company's ARCA certificate (Rule 12). Shared by
  * the browser (checks before uploading) and the Server Actions (path
  * checks). Buckets enforce the same limits in Storage (20261006120100_storage.sql,
  * 20261013150000_foto_perfil.sql).
  */
 
-export type TipoArchivo = "cv" | "comprobante" | "foto"
+export type TipoArchivo = "cv" | "comprobante" | "foto" | "arca"
 
 export const TAMANIO_MAXIMO = 5 * 1024 * 1024 // bucket file_size_limit
 
@@ -18,6 +19,14 @@ export const ARCHIVOS: Record<TipoArchivo, { bucket: string; tipos: Record<strin
   },
   // Always stored as JPEG: the browser crops and converts it first (recortarFoto)
   foto: { bucket: "fotos-perfil", tipos: { "image/jpeg": "jpg" }, formatos: "JPG o PNG" },
+  arca: { bucket: "constancias-arca", tipos: { "application/pdf": "pdf" }, formatos: "PDF" },
+}
+
+/** Server Actions behind an upload field, so the same field serves every area. */
+export type AccionesArchivo = {
+  registrar: (tipo: string, ruta: string) => Promise<{ error: string | null }>
+  abrir: (tipo: string) => Promise<{ url: string | null; error: string | null }>
+  eliminar: (tipo: string) => Promise<{ error: string | null }>
 }
 
 /** Storage path of a file: always inside the owner's folder ("<auth uid>/..."). */

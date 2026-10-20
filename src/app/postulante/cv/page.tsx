@@ -4,7 +4,8 @@ import { CircleCheck, Info } from "lucide-react";
 import { SeccionExperiencias, SeccionFormaciones } from "@/components/postulante/cv/SeccionesCv";
 import { SobreMi } from "@/components/postulante/cv/SobreMi";
 import { EncabezadoSeccion, VOLVER_A_MI_PERFIL } from "@/components/postulante/EncabezadoSeccion";
-import { SubidaArchivo } from "@/components/postulante/SubidaArchivo";
+import { abrirArchivo, eliminarArchivo, registrarArchivo } from "@/app/postulante/archivos";
+import { SubidaArchivo } from "@/components/formularios/SubidaArchivo";
 import { TarjetaSeccion } from "@/components/postulante/TarjetaSeccion";
 import { requerirRol } from "@/lib/auth";
 import { obtenerResumenPerfil, tieneCv } from "@/lib/perfil-postulante";
@@ -74,7 +75,14 @@ export default async function CvPage() {
         titulo="¿Ya tenés tu CV en PDF?"
         descripcion="Subilo y la Oficina de Empleo lo va a ver junto con tu perfil."
       >
-        <SubidaArchivo tipo="cv" userId={userId} etiqueta="CV en PDF" cargado={Boolean(resumen.postulante.cv_url)} eliminable />
+        <SubidaArchivo
+          tipo="cv"
+          userId={userId}
+          etiqueta="CV en PDF"
+          cargado={Boolean(resumen.postulante.cv_url)}
+          eliminable
+          acciones={{ registrar: registrarArchivo, abrir: abrirArchivo, eliminar: eliminarArchivo }}
+        />
       </TarjetaSeccion>
     </div>
   );

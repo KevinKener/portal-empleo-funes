@@ -3,7 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CircleCheck, Clock, TriangleAlert } from "lucide-react";
 import { EncabezadoSeccion, VOLVER_A_MI_PERFIL } from "@/components/postulante/EncabezadoSeccion";
-import { SubidaArchivo } from "@/components/postulante/SubidaArchivo";
+import { abrirArchivo, eliminarArchivo, registrarArchivo } from "@/app/postulante/archivos";
+import { SubidaArchivo } from "@/components/formularios/SubidaArchivo";
 import { TarjetaSeccion } from "@/components/postulante/TarjetaSeccion";
 import { requerirRol } from "@/lib/auth";
 import { obtenerResumenPerfil } from "@/lib/perfil-postulante";
@@ -79,6 +80,7 @@ export default async function DomicilioPage() {
           cargado={Boolean(comprobante_url)}
           // A verified proof is only replaced, never removed (see eliminarArchivo)
           eliminable={estado_domicilio !== "verificado"}
+          acciones={{ registrar: registrarArchivo, abrir: abrirArchivo, eliminar: eliminarArchivo }}
         />
       </TarjetaSeccion>
     </div>

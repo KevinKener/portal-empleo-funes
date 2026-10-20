@@ -1,6 +1,6 @@
 import type { ResumenCandidatos } from "@/lib/candidatos-empresa"
-import type { EstadoOferta, EstadoVerificacion } from "@/lib/estados"
-import type { OfertaEmpresa } from "@/lib/ofertas-empresa"
+import type { EstadoOferta } from "@/lib/estados"
+import type { EmpresaActual, OfertaEmpresa } from "@/lib/ofertas-empresa"
 import type { ProximoPaso } from "@/lib/panel-postulante"
 
 /**
@@ -49,15 +49,23 @@ function ofertaConMas(ofertas: OfertaEmpresa[], candidatos: Candidatos, campo: k
 /**
  * The single most useful thing to do now. People waiting on the company come
  * first (unconfirmed decisions, then candidates and interviews), then the
- * company's own offers. Null while the company is not verified: the notice
- * already says what happens.
+ * company's own offers. While pending, the only useful step is the optional
+ * ARCA certificate (Rule 12), which helps the Office verify faster.
  */
 export function proximoPasoEmpresa(
-  estado: EstadoVerificacion,
+  empresa: EmpresaActual,
   ofertas: OfertaEmpresa[],
   candidatos: Candidatos,
 ): ProximoPaso | null {
-  if (estado !== "verificado") return null
+  if (empresa.estado === "pendiente" && !empresa.constancia_arca_url) {
+    return {
+      titulo: "Ayudanos a verificar tu empresa",
+      texto: "Subí tu constancia de inscripción en ARCA. No es obligatoria, pero la Oficina de Empleo te puede habilitar más rápido.",
+      accion: "Subir constancia",
+      href: "/empresa/datos",
+    }
+  }
+  if (empresa.estado !== "verificado") return null
   const candidatosDe = (id: string) => `/empresa/ofertas/${id}/candidatos`
 
   const sinConfirmar = ofertaConMas(ofertas, candidatos, "sinConfirmar")
