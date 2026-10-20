@@ -183,6 +183,8 @@ Everything built works; UX details to fix:
 
 ## Phase 6 — Administrator (Employment Office)
 
+Plan (pending approval): [`docs/research/admin.md`](research/admin.md) — work-queue home, branches A–I, decisions D1–D6.
+
 **Goal:** the office controls the whole flow.
 
 - [ ] Approve/reject company sign-ups
