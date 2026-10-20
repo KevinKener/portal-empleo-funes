@@ -478,6 +478,9 @@ export type Database = {
           dni: string
           estado_domicilio: Database["public"]["Enums"]["estado_verificacion"]
           foto_url: string | null
+          foto_x: number
+          foto_y: number
+          foto_zoom: number
           id: string
           localidad: Database["public"]["Enums"]["localidad"]
           nombre: string
@@ -495,6 +498,9 @@ export type Database = {
           dni: string
           estado_domicilio?: Database["public"]["Enums"]["estado_verificacion"]
           foto_url?: string | null
+          foto_x?: number
+          foto_y?: number
+          foto_zoom?: number
           id?: string
           localidad: Database["public"]["Enums"]["localidad"]
           nombre: string
@@ -512,6 +518,9 @@ export type Database = {
           dni?: string
           estado_domicilio?: Database["public"]["Enums"]["estado_verificacion"]
           foto_url?: string | null
+          foto_x?: number
+          foto_y?: number
+          foto_zoom?: number
           id?: string
           localidad?: Database["public"]["Enums"]["localidad"]
           nombre?: string

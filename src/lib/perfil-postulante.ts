@@ -10,7 +10,18 @@ import type { Tables } from "@/types/database"
 export type ResumenPerfil = {
   postulante: Pick<
     Tables<"postulantes">,
-    "id" | "nombre" | "apellido" | "localidad" | "descripcion" | "cv_url" | "comprobante_url" | "estado_domicilio" | "foto_url"
+    | "id"
+    | "nombre"
+    | "apellido"
+    | "localidad"
+    | "descripcion"
+    | "cv_url"
+    | "comprobante_url"
+    | "estado_domicilio"
+    | "foto_url"
+    | "foto_x"
+    | "foto_y"
+    | "foto_zoom"
   >
   rubros: number
   itemsCv: number
@@ -33,7 +44,7 @@ export async function obtenerResumenPerfil(userId: string): Promise<ResumenPerfi
   const supabase = await createClient()
   const { data: postulante, error } = await supabase
     .from("postulantes")
-    .select("id, nombre, apellido, localidad, descripcion, cv_url, comprobante_url, estado_domicilio, foto_url")
+    .select("id, nombre, apellido, localidad, descripcion, cv_url, comprobante_url, estado_domicilio, foto_url, foto_x, foto_y, foto_zoom")
     .eq("perfil_id", userId)
     .maybeSingle()
   if (error) throw error

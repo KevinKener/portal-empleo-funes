@@ -2,7 +2,7 @@
 
 import { useId, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { CircleCheck, FileText, LoaderCircle, Upload } from "lucide-react";
+import { CircleCheck, FileText, LoaderCircle, Trash2, Upload } from "lucide-react";
 import { AvisoFormulario } from "@/components/formularios/AvisoFormulario";
 import { buttonVariants } from "@/components/ui/button";
 import { ARCHIVOS, aceptados, achicarImagen, conTipo, errorArchivo, rutaArchivo, type AccionesArchivo, type TipoArchivo } from "@/lib/archivos";
@@ -102,8 +102,13 @@ export function SubidaArchivo({ tipo, userId, etiqueta, cargado, eliminable = fa
               type="button"
               onClick={borrar}
               disabled={pendiente}
-              className={buttonVariants({ variant: "ghost", size: "lg", className: "text-destructive" })}
+              className={buttonVariants({
+                variant: "outline",
+                size: "lg",
+                className: "border-destructive/30 bg-card text-destructive hover:border-destructive/50 hover:bg-destructive/10 hover:text-destructive",
+              })}
             >
+              <Trash2 aria-hidden />
               Borrar
             </button>
           )}
