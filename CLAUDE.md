@@ -56,7 +56,9 @@ All code lives in `src/`. The `@/*` alias points to `src/*`.
 | `/postulante/cv` | `src/app/postulante/cv/page.tsx` | CV: "Sobre vos", experience and education (add another) or PDF (Rule 6); actions in `cv/actions.ts` |
 | `/postulante/domicilio` | `src/app/postulante/domicilio/page.tsx` | Proof of address, only for Funes residents (Rule 4) |
 | `/postulante/postulaciones` | `src/app/postulante/postulaciones/page.tsx` | "Mis postulaciones": status timeline in plain words |
-| `/empresa` | `src/app/empresa/page.tsx` | Company home with pending-review notice; `layout.tsx` requires role `empresa` |
+| `/empresa` | `src/app/empresa/page.tsx` | Company home with pending-review notice; `layout.tsx` requires role `empresa` and adds `NavegacionEmpresa` |
+| `/empresa/ofertas` | `src/app/empresa/ofertas/page.tsx` | "Mis ofertas": every own offer with its status and rejection reason (+ `loading`, `error`); Server Actions in `actions.ts` |
+| `/empresa/ofertas/nueva`, `/empresa/ofertas/[id]`, `/empresa/ofertas/[id]/editar` | `src/app/empresa/ofertas/*/page.tsx` | New draft (verified companies only), offer page with status actions (`AccionesOferta`: send, take back, close, delete draft, "Usar como base" for rejected/closed), edit while `borrador` |
 | `/admin` | `src/app/admin/page.tsx` | Admin home (skeleton); `layout.tsx` requires role `admin` |
 
 Other key files:
@@ -72,6 +74,7 @@ Other key files:
 - `src/lib/email-pendiente.ts` → httpOnly cookie with the email waiting for a code (`registro` / `recuperar` flows).
 - `src/lib/perfil-postulante.ts` → profile summary, task list and `puedePostularse()` (minimum: one category + a CV in either format).
 - `src/lib/panel-postulante.ts` → "Mi panel" rules and queries (`proximoPaso()`, `obtenerOfertasParaVos()`, `nombresDeEmpresas()`). `src/components/postulante/panel/VistosPanel.tsx` remembers the previous visit in `localStorage` for celebrations and "Novedad" badges (`docs/research/panel-postulante.md`).
+- `src/lib/ofertas-empresa.ts` → the signed-in company (`obtenerEmpresaActual()`) and its own offers; `validarOferta()` in `src/lib/validaciones/ofertas.ts`. `src/components/layout/NavegacionArea.tsx` is the shared area navigation (bottom bar on phones, tabs on desktop) used by `NavegacionPostulante` and `NavegacionEmpresa`.
 - `src/lib/postulaciones.ts` → the job seeker's applications (only readable columns) and `yaSePostulo()`. Applying is `postularme()` in `src/app/postulante/actions.ts`, called from `AccionPostular` on the offer detail.
 - `src/lib/archivos.ts` → upload limits, Storage paths (`<uid>/cv.pdf`, `<uid>/comprobante.<ext>`, `<uid>/foto.jpg`), phone photo shrinking and the square profile photo crop. Files go browser → Storage directly (Vercel caps bodies at 4.5 MB); `src/app/postulante/archivos.ts` records, opens (signed URL, 60 s) or removes them; `src/lib/foto-perfil.ts` signs the profile photo for display (1 h; owner and Admin only, never companies).
 - `src/components/formularios/` → shared form fields (`Campo`, `CampoTexto`, `CampoContrasena`, `CampoLocalidad`, `AvisoFormulario`).

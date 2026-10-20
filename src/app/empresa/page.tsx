@@ -1,39 +1,28 @@
 import type { Metadata } from "next";
-import { Clock } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import { AvisoEmpresaSinVerificar } from "@/components/empresa/AvisoEmpresaSinVerificar";
 import { PanelBienvenida } from "@/components/layout/PanelBienvenida";
-import { createClient } from "@/lib/supabase/server";
+import { buttonVariants } from "@/components/ui/button";
+import { requerirRol } from "@/lib/auth";
+import { obtenerEmpresaActual } from "@/lib/ofertas-empresa";
 
 export const metadata: Metadata = { title: "Mi empresa" };
 
-/** Company home. Offers and candidates arrive in Phase 5. */
+/** Company home. Pre-selected candidates arrive later in Phase 5. */
 export default async function EmpresaPage() {
-  const supabase = await createClient();
-  // RLS returns only the signed-in company's own row
-  const { data: empresa } = await supabase.from("empresas").select("nombre_comercial, estado").maybeSingle();
+  const { userId } = await requerirRol("empresa");
+  const empresa = await obtenerEmpresaActual(userId);
 
   return (
     <PanelBienvenida
       saludo={empresa ? `¡Hola, ${empresa.nombre_comercial}!` : "¡Hola!"}
       descripcion="Desde acá vas a poder publicar ofertas y ver los candidatos que te preselecciona la Oficina de Empleo."
     >
-      {empresa?.estado === "pendiente" && (
-        // Rule 3: a pending company can sign in but cannot post offers yet
-        <div className="flex gap-3 rounded-xl border border-border bg-secondary p-5 text-secondary-foreground">
-          <Clock aria-hidden className="mt-0.5 size-5 shrink-0" />
-          <div>
-            <p className="font-medium">Estamos revisando los datos de tu empresa.</p>
-            <p className="mt-1 text-sm">
-              La Oficina de Empleo te va a habilitar para publicar ofertas cuando termine la verificación.
-            </p>
-          </div>
-        </div>
-      )}
-      {empresa?.estado === "rechazado" && (
-        <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-5 text-destructive">
-          <p className="font-medium">No pudimos verificar los datos de tu empresa.</p>
-          <p className="mt-1 text-sm">Comunicate con la Oficina de Empleo de la Municipalidad de Funes.</p>
-        </div>
-      )}
+      {empresa && <AvisoEmpresaSinVerificar estado={empresa.estado} />}
+      <Link href="/empresa/ofertas" className={buttonVariants({ className: "h-11 px-5 text-base hover:bg-primary-hover" })}>
+        Ver mis ofertas <ArrowRight aria-hidden />
+      </Link>
     </PanelBienvenida>
   );
 }
