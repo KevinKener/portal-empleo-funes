@@ -12,8 +12,8 @@ const capa = (factor: number): CSSProperties => ({
 
 /**
  * Moving brand background for the dark-green panels (landing hero, account
- * screens, area homes): slow seal-like rings, two drifting Funes shields
- * and a soft light; on desktop the layers also lean towards the pointer.
+ * screens, area homes): slow seal-like rings, two drifting Funes shields,
+ * a soft light and a periodic sweep; on desktop the layers also lean towards the pointer.
  * Decorative, behind the content (-z-10 inside an `isolate` parent), and
  * completely still with reduced motion (WCAG 2.2.2 / C39).
  */
@@ -53,6 +53,8 @@ export function FondoMarca({ className, compacto = false }: { className?: string
   return (
     <div ref={raiz} aria-hidden className={cn("pointer-events-none absolute inset-0 -z-10 overflow-hidden", className)}>
       <div className="absolute -top-1/3 -left-1/4 size-[70%] rounded-full bg-primary/60 blur-3xl motion-safe:animate-luz" />
+      {/* Every few seconds a soft light crosses the banner */}
+      <div className="absolute inset-y-0 left-0 w-1/4 -translate-x-full bg-gradient-to-r from-transparent via-primary-foreground/[0.09] to-transparent motion-safe:animate-destello" />
 
       {/* Seal rings around the big shield, turning very slowly */}
       <div className="absolute -right-[18%] -bottom-[55%] aspect-square w-[52rem] max-w-none" style={capa(-10)}>

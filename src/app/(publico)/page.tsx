@@ -72,9 +72,13 @@ export default async function HomePage() {
         <RubrosFlotantes rubros={rubros} />
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8 lg:py-28">
           <div className="max-w-2xl space-y-6">
-            <p className="flex items-center gap-2 text-sm font-medium text-primary-foreground/75 motion-safe:animate-entrada">
-              <Escudo className="size-5" />
+            {/* Speech bubble: the Municipality speaking to the neighbour */}
+            <p className="relative inline-flex items-center gap-2.5 rounded-2xl rounded-bl-md bg-primary-foreground py-2 pr-4 pl-2 text-sm font-semibold text-primary-deep shadow-xl shadow-black/25 motion-safe:animate-entrada">
+              <span className="flex size-8 items-center justify-center rounded-xl bg-secondary">
+                <Escudo className="size-6 text-primary" />
+              </span>
               Oficina de Empleo de la Municipalidad de Funes
+              <span aria-hidden className="absolute -bottom-1.5 left-3 size-3 rotate-45 rounded-[2px] bg-primary-foreground" />
             </p>
             <h1
               className="font-heading text-4xl leading-[1.05] font-semibold tracking-tight text-balance motion-safe:animate-entrada sm:text-6xl"
@@ -134,9 +138,24 @@ export default async function HomePage() {
       </section>
 
       <section className="border-t border-border bg-card">
-        <div className="mx-auto max-w-7xl space-y-8 px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-          <h2 className="font-heading text-2xl font-semibold sm:text-3xl">¿Cómo funciona?</h2>
-          <PasosAnimados pasos={PASOS.map(({ icono: Icono, ...paso }) => ({ ...paso, icono: <Icono aria-hidden className="size-5" /> }))} />
+        <div className="mx-auto max-w-7xl space-y-12 px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
+          <div className="space-y-3 md:text-center">
+            <h2 className="font-heading text-2xl font-semibold sm:text-4xl">¿Cómo funciona?</h2>
+            <p className="text-muted-foreground md:mx-auto md:max-w-xl">
+              Tres pasos, con la Oficina de Empleo acompañándote en el medio.
+            </p>
+          </div>
+          <PasosAnimados pasos={PASOS.map(({ icono: Icono, ...paso }) => ({ ...paso, icono: <Icono aria-hidden className="size-7" /> }))} />
+          {/* The step that comes after reading how it works */}
+          <div className="flex md:justify-center">
+            <Link
+              href="/registro"
+              className="group inline-flex h-12 items-center gap-2 rounded-lg bg-primary px-6 text-base font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-[background-color,transform] duration-150 hover:bg-primary-hover focus-visible:ring-4 focus-visible:ring-ring/40 focus-visible:outline-none active:scale-[0.98]"
+            >
+              Crear mi cuenta
+              <ArrowRight aria-hidden className="size-5 transition-transform duration-150 group-hover:translate-x-1" />
+            </Link>
+          </div>
         </div>
       </section>
     </>

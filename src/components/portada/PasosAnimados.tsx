@@ -6,14 +6,14 @@ import { cn } from "@/lib/utils";
 /** The icon comes rendered: components cannot cross from the server to a Client Component. */
 export type Paso = { icono: ReactNode; titulo: string; texto: string };
 
-const DURACION = 1800; // ms for the path to go from step 1 to the last one
+const DURACION = 1800; // ms for the path to go from the first step to the last one
 
 /**
- * "¿Cómo funciona?" as a path that fills from the first step to the last
- * when it scrolls into view: each step lights up as the line reaches it,
- * then a light keeps travelling along the finished path. A real sequence,
- * so the numbers carry meaning. Shown complete and still with reduced motion
- * or without JavaScript.
+ * "¿Cómo funciona?" as a path: centred columns on desktop (the line runs
+ * exactly through the icons' centres) and a vertical timeline on phones.
+ * When it scrolls into view the path fills from step 1 to the last, each
+ * step lights up as the line reaches it, then a light keeps travelling.
+ * Shown complete and still with reduced motion or without JavaScript.
  */
 export function PasosAnimados({ pasos }: { pasos: readonly Paso[] }) {
   const caja = useRef<HTMLOListElement>(null);
@@ -41,29 +41,29 @@ export function PasosAnimados({ pasos }: { pasos: readonly Paso[] }) {
 
   return (
     <ol ref={caja} className="relative grid gap-10 md:grid-cols-3 md:gap-8">
-      {/* Desktop path: from the first icon's centre to the last one's */}
+      {/* Desktop path, from the centre of the first column to the centre of the last one */}
       <div
         aria-hidden
-        className="absolute top-6 left-6 hidden h-0.5 overflow-hidden rounded-full bg-border md:block"
-        style={{ right: "calc((100% - 4rem) / 3 - 1.5rem)" }}
+        className="absolute top-8 hidden h-1 -translate-y-1/2 overflow-hidden rounded-full bg-border md:block"
+        style={{ left: "calc((100% - 4rem) / 6)", right: "calc((100% - 4rem) / 6)" }}
       >
         <div
-          className="h-full origin-left rounded-full bg-primary transition-transform ease-in-out"
+          className="h-full origin-left rounded-full bg-gradient-to-r from-primary/70 to-primary transition-transform ease-in-out"
           style={{ transform: `scaleX(${lleno ? 1 : 0})`, transitionDuration: `${DURACION}ms` }}
         />
         {estado !== "espera" && (
           <div
-            className="absolute inset-y-0 w-24 bg-gradient-to-r from-transparent via-primary-foreground to-transparent opacity-70 motion-safe:animate-recorrido"
+            className="absolute inset-y-0 w-28 bg-gradient-to-r from-transparent via-primary-foreground/90 to-transparent motion-safe:animate-recorrido"
             style={{ "--retraso": estado === "dibujando" ? `${DURACION}ms` : "0ms" } as CSSProperties}
           />
         )}
       </div>
 
       {pasos.map(({ icono, titulo, texto }, i) => (
-        <li key={titulo} className="relative space-y-3">
-          {/* Phone path: a segment down to the next step */}
+        <li key={titulo} className="relative flex gap-5 md:flex-col md:items-center md:gap-6 md:text-center">
+          {/* Phone path: from this icon down to the next one */}
           {i < pasos.length - 1 && (
-            <div aria-hidden className="absolute top-14 -bottom-8 left-6 w-0.5 overflow-hidden rounded-full bg-border md:hidden">
+            <div aria-hidden className="absolute top-16 -bottom-10 left-8 w-1 -translate-x-1/2 overflow-hidden rounded-full bg-border md:hidden">
               <div
                 className="h-full origin-top bg-primary transition-transform ease-in-out"
                 style={{
@@ -74,32 +74,40 @@ export function PasosAnimados({ pasos }: { pasos: readonly Paso[] }) {
               />
             </div>
           )}
-          <div className="flex items-center gap-3">
-            <span
-              className={cn(
-                "relative flex size-12 items-center justify-center rounded-2xl transition-[background-color,color,box-shadow,scale] duration-500",
-                lleno
-                  ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
-                  : "scale-90 bg-secondary text-secondary-foreground",
-              )}
-              style={{ transitionDelay: demora(i) }}
-            >
-              {icono}
-              {estado === "dibujando" && (
-                <span
-                  aria-hidden
-                  className="absolute inset-0 rounded-2xl ring-2 ring-primary motion-safe:animate-onda"
-                  style={{ "--retraso": demora(i) } as CSSProperties}
-                />
-              )}
-            </span>
-            <span className="relative -ml-3 bg-card px-3 text-sm font-semibold text-muted-foreground">Paso {i + 1}</span>
-          </div>
-          <div
-            className={cn("space-y-2 transition-[opacity,translate] duration-500", !lleno && "translate-y-3 opacity-0")}
+
+          <span
+            className={cn(
+              "relative z-[1] flex size-16 shrink-0 items-center justify-center rounded-2xl ring-8 ring-card transition-[background-color,color,box-shadow,scale] duration-500",
+              lleno
+                ? "bg-primary text-primary-foreground shadow-xl shadow-primary/30"
+                : "scale-90 bg-secondary text-secondary-foreground",
+            )}
             style={{ transitionDelay: demora(i) }}
           >
-            <h3 className="font-heading text-lg font-semibold">{titulo}</h3>
+            {icono}
+            <span
+              aria-hidden
+              className="absolute -top-2 -right-2 flex size-7 items-center justify-center rounded-full border-2 border-card bg-primary-deep font-heading text-xs font-bold text-primary-foreground"
+            >
+              {i + 1}
+            </span>
+            {estado === "dibujando" && (
+              <span
+                aria-hidden
+                className="absolute inset-0 rounded-2xl ring-2 ring-primary motion-safe:animate-onda"
+                style={{ "--retraso": demora(i) } as CSSProperties}
+              />
+            )}
+          </span>
+
+          <div
+            className={cn("space-y-2 pt-1 transition-[opacity,translate] duration-500 md:max-w-xs md:pt-0", !lleno && "translate-y-3 opacity-0")}
+            style={{ transitionDelay: demora(i) }}
+          >
+            <h3 className="font-heading text-lg font-semibold">
+              <span className="sr-only">Paso {i + 1}: </span>
+              {titulo}
+            </h3>
             <p className="text-muted-foreground">{texto}</p>
           </div>
         </li>

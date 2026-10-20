@@ -30,6 +30,15 @@
   --color-input: #dde3df;
   --color-ring: #074a1f;
 
+  /* Category accents (tonoRubro in src/lib/formato.ts): six hues that sit next to the brand
+     green, each AA as text on white, so offer cards are told apart at a glance. */
+  --color-rubro-1: #0f766e;
+  --color-rubro-2: #b45309;
+  --color-rubro-3: #1d4ed8;
+  --color-rubro-4: #9f1239;
+  --color-rubro-5: #6d28d9;
+  --color-rubro-6: #4d7c0f;
+
   /* Celebrations in the job seeker panel (docs/research/panel-postulante.md §3.5); always used
      behind motion-safe: so reduced motion shows the message without movement. */
   --animate-festejo-pop: festejo-pop 400ms ease-out both;
@@ -105,6 +114,14 @@
 
   @keyframes anillo {
     from { stroke-dashoffset: var(--total); }
+  }
+
+  /* Green banners (FondoMarca): a light sweeps across every few seconds, then rests */
+  --animate-destello: destello 7s ease-in-out 1.5s infinite;
+
+  @keyframes destello {
+    0% { transform: translateX(-100%) skewX(-18deg); }
+    22%, 100% { transform: translateX(450%) skewX(-18deg); }
   }
 
   /* A shine that crosses a card once on hover (TarjetaOferta) */

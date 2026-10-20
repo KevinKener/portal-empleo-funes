@@ -116,3 +116,25 @@ export function textoEstadoPostulacion(
 ): { titulo: string; detalle: string } {
   return ESTADO_POSTULACION_PARA_POSTULANTE[estado === "rechazado" && motivo ? motivo : estado]
 }
+
+/** Tailwind classes of one category accent (literal names so Tailwind generates them). */
+export type TonoRubro = { barra: string; suave: string; texto: string; borde: string }
+
+const TONOS: readonly TonoRubro[] = [
+  { barra: "bg-rubro-1", suave: "bg-rubro-1/10", texto: "text-rubro-1", borde: "hover:border-rubro-1/40" },
+  { barra: "bg-rubro-2", suave: "bg-rubro-2/10", texto: "text-rubro-2", borde: "hover:border-rubro-2/40" },
+  { barra: "bg-rubro-3", suave: "bg-rubro-3/10", texto: "text-rubro-3", borde: "hover:border-rubro-3/40" },
+  { barra: "bg-rubro-4", suave: "bg-rubro-4/10", texto: "text-rubro-4", borde: "hover:border-rubro-4/40" },
+  { barra: "bg-rubro-5", suave: "bg-rubro-5/10", texto: "text-rubro-5", borde: "hover:border-rubro-5/40" },
+  { barra: "bg-rubro-6", suave: "bg-rubro-6/10", texto: "text-rubro-6", borde: "hover:border-rubro-6/40" },
+]
+
+/**
+ * The accent of a category, stable for its name (same category, same color
+ * on every page). Offers without a category get the first one.
+ */
+export function tonoRubro(nombre: string | null | undefined): TonoRubro {
+  let suma = 0
+  for (const letra of nombre ?? "") suma = (suma * 31 + letra.charCodeAt(0)) >>> 0
+  return TONOS[suma % TONOS.length]
+}

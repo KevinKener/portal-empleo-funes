@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { ArrowRight, BriefcaseBusiness, SearchX } from "lucide-react";
+import { tonoRubro } from "@/lib/formato";
 import type { OfertaParaVos } from "@/lib/panel-postulante";
+import { cn } from "@/lib/utils";
 
 /**
  * "Ofertas para vos": newest published offers in the job seeker's categories
@@ -29,9 +31,15 @@ export function OfertasParaVos({ ofertas }: { ofertas: OfertaParaVos[] }) {
             <li key={oferta.id}>
               <Link
                 href={`/ofertas/${oferta.id}`}
-                className="group -mx-2 flex items-center gap-3 rounded-lg px-2 py-3 transition-colors hover:bg-accent focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+                className="group -mx-2 flex items-center gap-3 rounded-xl px-2 py-3 transition-[background-color,translate] duration-200 hover:bg-accent focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none motion-safe:hover:translate-x-1"
               >
-                <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-secondary text-secondary-foreground">
+                <span
+                  className={cn(
+                    "flex size-10 shrink-0 items-center justify-center rounded-xl transition-transform duration-300 motion-safe:group-hover:-rotate-6",
+                    tonoRubro(oferta.categoria).suave,
+                    tonoRubro(oferta.categoria).texto,
+                  )}
+                >
                   <BriefcaseBusiness aria-hidden className="size-5" />
                 </span>
                 <span className="min-w-0 flex-1">

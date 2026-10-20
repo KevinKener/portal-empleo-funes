@@ -2,7 +2,8 @@ import { ViewTransition } from "react";
 import Link from "next/link";
 import { ArrowRight, CalendarDays, Clock } from "lucide-react";
 import type { OfertaPublica } from "@/lib/ofertas";
-import { ETIQUETAS_JORNADA, formatearFecha } from "@/lib/formato";
+import { ETIQUETAS_JORNADA, formatearFecha, tonoRubro } from "@/lib/formato";
+import { cn } from "@/lib/utils";
 
 const DIAS_NUEVA = 3;
 
@@ -24,11 +25,19 @@ export const nombreTransicionOferta = (id: string | null) => `oferta-${id}`;
  */
 export function TarjetaOferta({ oferta }: { oferta: OfertaPublica }) {
   const empresa = oferta.empresa_nombre ?? "";
+  const tono = tonoRubro(oferta.categoria_nombre);
 
   return (
-    <article className="group relative flex h-full w-full flex-col gap-4 rounded-2xl border border-border bg-card p-5 transition-[border-color,box-shadow,translate] duration-200 ease-out focus-within:ring-3 focus-within:ring-ring/50 hover:border-primary/30 hover:shadow-xl hover:shadow-primary/[0.07] motion-safe:hover:-translate-y-1 sm:p-6">
+    <article
+      className={cn(
+        "group relative flex h-full w-full flex-col gap-4 overflow-hidden rounded-2xl border border-border bg-card p-5 pt-6 shadow-sm shadow-primary/[0.04] transition-[border-color,box-shadow,translate] duration-200 ease-out focus-within:ring-3 focus-within:ring-ring/50 hover:shadow-xl hover:shadow-primary/[0.08] motion-safe:hover:-translate-y-1 sm:p-6 sm:pt-7",
+        tono.borde,
+      )}
+    >
+      {/* Category color on top: cards of different kinds of work read apart at a glance */}
+      <span aria-hidden className={cn("absolute inset-x-0 top-0 h-1.5 origin-left transition-transform duration-300 group-hover:scale-y-150", tono.barra)} />
       {/* A shine crosses the card once on hover */}
-      <span aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl">
+      <span aria-hidden className="pointer-events-none absolute inset-0 rounded-2xl">
         <span className="absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-transparent via-primary/[0.07] to-transparent opacity-0 group-hover:opacity-100 motion-safe:group-hover:animate-brillo" />
       </span>
 
@@ -36,13 +45,17 @@ export function TarjetaOferta({ oferta }: { oferta: OfertaPublica }) {
         {/* Company monogram: a quick visual anchor when scanning many cards */}
         <span
           aria-hidden
-          className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-secondary font-heading text-lg font-semibold text-secondary-foreground transition-[background-color,color,rotate] duration-300 group-hover:bg-primary group-hover:text-primary-foreground motion-safe:group-hover:-rotate-6"
+          className={cn(
+            "flex size-11 shrink-0 items-center justify-center rounded-xl font-heading text-lg font-semibold transition-[rotate,scale] duration-300 motion-safe:group-hover:scale-105 motion-safe:group-hover:-rotate-6",
+            tono.suave,
+            tono.texto,
+          )}
         >
           {empresa.trim().charAt(0).toLocaleUpperCase("es-AR") || "?"}
         </span>
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-medium text-foreground">{empresa}</p>
-          {oferta.categoria_nombre && <p className="truncate text-sm text-muted-foreground">{oferta.categoria_nombre}</p>}
+          {oferta.categoria_nombre && <p className={cn("truncate text-sm font-medium", tono.texto)}>{oferta.categoria_nombre}</p>}
         </div>
         {esNueva(oferta.fecha_publicacion) && (
           <span className="shrink-0 rounded-full bg-primary px-2.5 py-0.5 text-xs font-semibold text-primary-foreground">Nueva</span>

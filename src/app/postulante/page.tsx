@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight, CircleCheck, Lightbulb } from "lucide-react";
+import { FondoMarca } from "@/components/layout/FondoMarca";
 import { BandaBienvenida } from "@/components/layout/PanelBienvenida";
 import { Avatar } from "@/components/postulante/Avatar";
 import { ListaTareas } from "@/components/postulante/ListaTareas";
@@ -78,12 +79,22 @@ export default async function PostulantePage() {
 
           <aside className="space-y-6">
             {listo && <PerfilCompleto domicilio={tareas.find((t) => t.clave === "domicilio")} />}
-            <section aria-labelledby="titulo-consejo" className="space-y-2 rounded-2xl bg-secondary p-5 text-secondary-foreground sm:p-6">
-              <h2 id="titulo-consejo" className="flex items-center gap-2 font-heading font-semibold">
-                <Lightbulb aria-hidden className="size-5" />
-                Consejo
-              </h2>
-              <p className="text-sm">{consejoDelDia()}</p>
+            <section
+              aria-labelledby="titulo-consejo"
+              className="relative isolate space-y-3 overflow-hidden rounded-2xl bg-primary-deep p-5 text-primary-foreground sm:p-6"
+            >
+              <FondoMarca compacto />
+              <div className="flex items-center gap-3">
+                {/* The bulb glows: the one moving thing in the side column */}
+                <span className="relative flex size-11 items-center justify-center rounded-xl bg-primary-foreground text-primary-deep">
+                  <span aria-hidden className="absolute inset-0 rounded-xl bg-primary-foreground/60 motion-safe:animate-ping" />
+                  <Lightbulb aria-hidden className="relative size-5" />
+                </span>
+                <h2 id="titulo-consejo" className="font-heading text-lg font-semibold">
+                  Consejo del día
+                </h2>
+              </div>
+              <p className="text-primary-foreground/85">{consejoDelDia()}</p>
             </section>
           </aside>
         </div>
