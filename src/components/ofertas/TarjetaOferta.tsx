@@ -27,11 +27,16 @@ export function TarjetaOferta({ oferta }: { oferta: OfertaPublica }) {
 
   return (
     <article className="group relative flex h-full w-full flex-col gap-4 rounded-2xl border border-border bg-card p-5 transition-[border-color,box-shadow,translate] duration-200 ease-out focus-within:ring-3 focus-within:ring-ring/50 hover:border-primary/30 hover:shadow-xl hover:shadow-primary/[0.07] motion-safe:hover:-translate-y-1 sm:p-6">
+      {/* A shine crosses the card once on hover */}
+      <span aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl">
+        <span className="absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-transparent via-primary/[0.07] to-transparent opacity-0 group-hover:opacity-100 motion-safe:group-hover:animate-brillo" />
+      </span>
+
       <div className="flex items-start gap-3">
         {/* Company monogram: a quick visual anchor when scanning many cards */}
         <span
           aria-hidden
-          className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-secondary font-heading text-lg font-semibold text-secondary-foreground"
+          className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-secondary font-heading text-lg font-semibold text-secondary-foreground transition-[background-color,color,rotate] duration-300 group-hover:bg-primary group-hover:text-primary-foreground motion-safe:group-hover:-rotate-6"
         >
           {empresa.trim().charAt(0).toLocaleUpperCase("es-AR") || "?"}
         </span>

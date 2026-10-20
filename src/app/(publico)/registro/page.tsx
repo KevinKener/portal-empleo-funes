@@ -33,9 +33,9 @@ export default function RegistroPage() {
           <li key={href}>
             <Link
               href={href}
-              className="group flex items-center gap-4 rounded-xl border border-border p-4 transition-all hover:border-primary hover:bg-accent focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none motion-safe:hover:-translate-y-0.5"
+              className="group flex items-center gap-4 rounded-xl border border-border p-4 transition-[border-color,background-color,box-shadow,translate] duration-200 hover:border-primary hover:bg-accent hover:shadow-lg hover:shadow-primary/[0.08] focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none motion-safe:hover:-translate-y-0.5"
             >
-              <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-secondary text-primary">
+              <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-secondary text-primary transition-[background-color,color,scale] duration-300 group-hover:bg-primary group-hover:text-primary-foreground motion-safe:group-hover:scale-110">
                 <Icono aria-hidden className="size-6" />
               </span>
               <span className="min-w-0 flex-1">

@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Escudo } from "@/components/layout/Escudo";
+import { FondoMarca } from "@/components/layout/FondoMarca";
 
 type PropsBandaBienvenida = {
   saludo: string;
@@ -17,8 +17,8 @@ type PropsBandaBienvenida = {
 export function BandaBienvenida({ saludo, descripcion, inicio }: PropsBandaBienvenida) {
   return (
     <div className="relative isolate overflow-hidden rounded-2xl bg-primary-deep px-5 py-7 text-primary-foreground sm:px-8 sm:py-9">
-      <Escudo className="absolute -right-10 -bottom-16 -z-10 size-64 text-primary-foreground/[0.07] sm:right-6 sm:-bottom-24 sm:size-80" />
-      <div className="flex items-center gap-4 sm:gap-5">
+      <FondoMarca compacto />
+      <div className="flex items-center gap-4 motion-safe:animate-entrada sm:gap-5">
         {inicio}
         <div className="min-w-0 space-y-1.5">
           <h1 className="font-heading text-2xl font-bold text-balance sm:text-4xl">{saludo}</h1>

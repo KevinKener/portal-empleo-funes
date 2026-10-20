@@ -58,6 +58,20 @@
     100% { transform: translate(-4%, 6%) rotate(4deg) scale(1.08); }
   }
 
+  --animate-giro: giro 140s linear infinite;
+
+  @keyframes giro {
+    to { transform: rotate(1turn); }
+  }
+
+  /* A shine that crosses a card once on hover (TarjetaOferta) */
+  --animate-brillo: brillo 900ms ease-out both;
+
+  @keyframes brillo {
+    from { transform: translateX(-120%) skewX(-20deg); }
+    to { transform: translateX(220%) skewX(-20deg); }
+  }
+
   @keyframes luz {
     0% { transform: translate(-20%, -10%); opacity: 0.55; }
     100% { transform: translate(25%, 15%); opacity: 0.9; }

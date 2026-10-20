@@ -4,6 +4,7 @@ import { unstable_rethrow } from "next/navigation";
 import { ArrowRight, Building2, ClipboardCheck, UserRound } from "lucide-react";
 import { Escudo } from "@/components/layout/Escudo";
 import { FondoMarca } from "@/components/layout/FondoMarca";
+import { Revelar } from "@/components/layout/Revelar";
 import { CarruselOfertas } from "@/components/ofertas/CarruselOfertas";
 import { TarjetaOferta } from "@/components/ofertas/TarjetaOferta";
 import { listarOfertasPublicas, type OfertaPublica } from "@/lib/ofertas";
@@ -99,11 +100,13 @@ export default async function HomePage() {
 
       <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
         {ofertas && ofertas.length > 0 ? (
-          <CarruselOfertas titulo={TITULO_OFERTAS} extra={VER_TODAS}>
-            {ofertas.map((oferta) => (
-              <TarjetaOferta key={oferta.id} oferta={oferta} />
-            ))}
-          </CarruselOfertas>
+          <Revelar>
+            <CarruselOfertas titulo={TITULO_OFERTAS} extra={VER_TODAS}>
+              {ofertas.map((oferta) => (
+                <TarjetaOferta key={oferta.id} oferta={oferta} />
+              ))}
+            </CarruselOfertas>
+          </Revelar>
         ) : (
           <div className="space-y-6">
             {TITULO_OFERTAS}
@@ -119,17 +122,21 @@ export default async function HomePage() {
       <section className="border-t border-border bg-card">
         <div className="mx-auto max-w-7xl space-y-8 px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
           <h2 className="font-heading text-2xl font-semibold sm:text-3xl">¿Cómo funciona?</h2>
-          <ol className="grid gap-6 md:grid-cols-3">
+          <ol className="relative grid gap-10 md:grid-cols-3 md:gap-8">
+            {/* The path that joins the three steps (a real sequence) */}
+            <div aria-hidden className="absolute top-6 right-[16%] left-6 hidden h-px bg-gradient-to-r from-primary/40 via-border to-border md:block" />
             {PASOS.map(({ icono: Icono, titulo, texto }, i) => (
-              <li key={titulo} className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <span className="flex size-10 items-center justify-center rounded-full bg-secondary text-secondary-foreground">
-                    <Icono aria-hidden className="size-5" />
-                  </span>
-                  <span className="text-sm font-semibold text-muted-foreground">Paso {i + 1}</span>
-                </div>
-                <h3 className="font-heading text-lg font-semibold">{titulo}</h3>
-                <p className="text-muted-foreground">{texto}</p>
+              <li key={titulo}>
+                <Revelar retraso={i * 140} className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <span className="relative flex size-12 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/20">
+                      <Icono aria-hidden className="size-5" />
+                    </span>
+                    <span className="relative bg-card pr-3 text-sm font-semibold text-muted-foreground">Paso {i + 1}</span>
+                  </div>
+                  <h3 className="font-heading text-lg font-semibold">{titulo}</h3>
+                  <p className="text-muted-foreground">{texto}</p>
+                </Revelar>
               </li>
             ))}
           </ol>
