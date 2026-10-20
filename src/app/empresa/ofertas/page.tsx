@@ -6,6 +6,7 @@ import { AvisoEmpresaSinVerificar } from "@/components/empresa/AvisoEmpresaSinVe
 import { TarjetaOfertaEmpresa } from "@/components/empresa/TarjetaOfertaEmpresa";
 import { buttonVariants } from "@/components/ui/button";
 import { requerirRol } from "@/lib/auth";
+import { resumirCandidatosPorOferta } from "@/lib/candidatos-empresa";
 import { listarOfertasEmpresa, obtenerEmpresaActual } from "@/lib/ofertas-empresa";
 
 export const metadata: Metadata = { title: "Mis ofertas" };
@@ -16,7 +17,7 @@ export default async function OfertasEmpresaPage() {
   const empresa = await obtenerEmpresaActual(userId);
   if (!empresa) notFound();
 
-  const ofertas = await listarOfertasEmpresa(empresa.id);
+  const [ofertas, candidatos] = await Promise.all([listarOfertasEmpresa(empresa.id), resumirCandidatosPorOferta()]);
   const verificada = empresa.estado === "verificado";
 
   return (
@@ -54,7 +55,7 @@ export default async function OfertasEmpresaPage() {
         <ul className="grid gap-4 lg:grid-cols-2">
           {ofertas.map((oferta) => (
             <li key={oferta.id}>
-              <TarjetaOfertaEmpresa oferta={oferta} />
+              <TarjetaOfertaEmpresa oferta={oferta} candidatos={candidatos.get(oferta.id)} />
             </li>
           ))}
         </ul>

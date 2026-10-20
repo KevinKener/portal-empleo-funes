@@ -159,9 +159,10 @@ docs/             # Roadmap, guía de Next.js y material del proyecto
 | `/postulante/cv` | Armar el CV (sobre vos, experiencia, estudios) o subirlo en PDF |
 | `/postulante/domicilio` | Subir el comprobante de domicilio (solo vecinos de Funes) |
 | `/postulante/postulaciones` | Mis postulaciones, con el estado de cada una |
-| `/empresa` | Panel de empresa, con aviso mientras está en revisión (requiere rol empresa) |
+| `/empresa` | Inicio de la empresa: aviso mientras está en revisión, "Próximo paso" (candidatos por revisar, selección sin confirmar, ofertas rechazadas o en borrador) y resumen de ofertas y candidatos (requiere rol empresa) |
 | `/empresa/ofertas` | Mis ofertas: borradores, en revisión, publicadas, rechazadas (con motivo) y cerradas |
 | `/empresa/ofertas/nueva` · `/empresa/ofertas/[id]` · `/empresa/ofertas/[id]/editar` | Cargar una oferta como borrador, ver su estado (enviar a revisión, volver a borrador, cerrar, usar como base) y editarla mientras es borrador |
+| `/empresa/ofertas/[id]/candidatos` | Candidatos preseleccionados por la Oficina: CV, borrador entrevistar/contratar/descartar y "Confirmar selección"; teléfono y email solo desde la entrevista |
 | `/admin` | Panel de la Oficina de Empleo (requiere rol admin) |
 
 Las páginas públicas viven en el grupo `src/app/(publico)/`, que comparte encabezado y pie. Las áreas privadas (`/postulante`, `/empresa`, `/admin`) están protegidas en dos niveles: `src/proxy.ts` manda a `/ingresar` a quien no tiene sesión, y el `layout.tsx` de cada área verifica el rol; los datos los sigue protegiendo RLS en la base. La identidad visual (verde `#074A1F`, tipografías Sora y Be Vietnam Pro, escudo y logo en `public/marca/`) es la de [funes.gob.ar](https://funes.gob.ar/).

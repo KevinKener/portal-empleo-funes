@@ -99,6 +99,13 @@ export type Database = {
             foreignKeyName: "derivaciones_postulante_id_fkey"
             columns: ["postulante_id"]
             isOneToOne: false
+            referencedRelation: "candidatos_empresa"
+            referencedColumns: ["postulante_id"]
+          },
+          {
+            foreignKeyName: "derivaciones_postulante_id_fkey"
+            columns: ["postulante_id"]
+            isOneToOne: false
             referencedRelation: "postulantes"
             referencedColumns: ["id"]
           },
@@ -193,6 +200,13 @@ export type Database = {
             foreignKeyName: "experiencias_postulante_id_fkey"
             columns: ["postulante_id"]
             isOneToOne: false
+            referencedRelation: "candidatos_empresa"
+            referencedColumns: ["postulante_id"]
+          },
+          {
+            foreignKeyName: "experiencias_postulante_id_fkey"
+            columns: ["postulante_id"]
+            isOneToOne: false
             referencedRelation: "postulantes"
             referencedColumns: ["id"]
           },
@@ -230,6 +244,13 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "formaciones_postulante_id_fkey"
+            columns: ["postulante_id"]
+            isOneToOne: false
+            referencedRelation: "candidatos_empresa"
+            referencedColumns: ["postulante_id"]
+          },
           {
             foreignKeyName: "formaciones_postulante_id_fkey"
             columns: ["postulante_id"]
@@ -388,6 +409,13 @@ export type Database = {
             foreignKeyName: "postulaciones_postulante_id_fkey"
             columns: ["postulante_id"]
             isOneToOne: false
+            referencedRelation: "candidatos_empresa"
+            referencedColumns: ["postulante_id"]
+          },
+          {
+            foreignKeyName: "postulaciones_postulante_id_fkey"
+            columns: ["postulante_id"]
+            isOneToOne: false
             referencedRelation: "postulantes"
             referencedColumns: ["id"]
           },
@@ -422,6 +450,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "categorias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "postulante_categorias_postulante_id_fkey"
+            columns: ["postulante_id"]
+            isOneToOne: false
+            referencedRelation: "candidatos_empresa"
+            referencedColumns: ["postulante_id"]
           },
           {
             foreignKeyName: "postulante_categorias_postulante_id_fkey"
@@ -554,6 +589,7 @@ export type Database = {
             | Database["public"]["Enums"]["decision_empresa"]
             | null
           descripcion: string | null
+          email: string | null
           estado: Database["public"]["Enums"]["estado_postulacion"] | null
           fecha_preseleccion: string | null
           localidad: Database["public"]["Enums"]["localidad"] | null
@@ -563,6 +599,8 @@ export type Database = {
           nombre: string | null
           oferta_id: string | null
           postulacion_id: string | null
+          postulante_id: string | null
+          telefono: string | null
         }
         Relationships: [
           {
@@ -671,6 +709,13 @@ export type Database = {
             foreignKeyName: "postulaciones_postulante_id_fkey"
             columns: ["postulante_id"]
             isOneToOne: false
+            referencedRelation: "candidatos_empresa"
+            referencedColumns: ["postulante_id"]
+          },
+          {
+            foreignKeyName: "postulaciones_postulante_id_fkey"
+            columns: ["postulante_id"]
+            isOneToOne: false
             referencedRelation: "postulantes"
             referencedColumns: ["id"]
           },
@@ -683,6 +728,10 @@ export type Database = {
       empresa_actual_id: { Args: never; Returns: string }
       empresa_actual_ve_postulante: {
         Args: { p_perfil_postulante: string }
+        Returns: boolean
+      }
+      empresa_actual_ve_postulante_id: {
+        Args: { p_postulante_id: string }
         Returns: boolean
       }
       empresa_actual_verificada: { Args: never; Returns: boolean }

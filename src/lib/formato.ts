@@ -33,6 +33,17 @@ export const ESTADO_OFERTA_PARA_EMPRESA: Record<Enums<"estado_oferta">, { titulo
   cerrada: { titulo: "Cerrada", detalle: "Ya no se ve en el portal ni recibe postulaciones." },
 }
 
+/**
+ * Company's selection stages (Rule 11): the label of each group and what
+ * "tomar" means in it. Rejected and hired candidates are read-only.
+ */
+export const ETAPAS_SELECCION = [
+  { estado: "preseleccionado", titulo: "Preseleccionados por la Oficina", tomar: "Entrevistar" },
+  { estado: "entrevista", titulo: "En entrevista", tomar: "Contratar" },
+  { estado: "contratado", titulo: "Contratados", tomar: null },
+  { estado: "rechazado", titulo: "No seleccionados", tomar: null },
+] as const satisfies readonly { estado: Enums<"estado_postulacion">; titulo: string; tomar: string | null }[]
+
 /** UI labels for the localidad enum. */
 export const ETIQUETAS_LOCALIDAD: Record<Enums<"localidad">, string> = {
   funes: "Funes",

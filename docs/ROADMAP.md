@@ -10,7 +10,7 @@ Legend: `[x]` done · `[ ]` pending · `[~]` in progress
 
 - **Current phase:** Phase 5 — Company.
 - **Latest progress:** 2026-10-20, offer CRUD for companies on `feature/crud-ofertas` (no migrations): list, new draft, edit while `borrador`, send to review / take back / close / delete draft, "Usar como base" for rejected and closed offers, company area navigation. Test company: the seed's "Empresa Demo" (CUIT 30000000007, `verificado`), password set by hand in the SQL Editor. Before that, "Mi panel" redesign and profile photo merged (PRs #16, #17) and phone fixes (#18). Earlier: public portal live on Vercel (https://portal-empleo-funes.vercel.app). Phase 2 merged in PR #7: `GET /api/ofertas` and `/api/ofertas/[id]`, landing, `/ofertas` listing with category filter and pagination, offer detail, public layout with the municipal identity from funes.gob.ar. Before that, flow corrections from the tutor review (2026-10-08) on `feature/correcciones-flujo`: offers start as `borrador` (company edits only drafts, sends and takes back), rejected applications carry `motivo_rechazo`, company selection draft (`decision_empresa` + `confirmar_seleccion()`), ARCA certificate optional. Migrations applied in Supabase, types regenerated, `estados.ts` and `AGENTS.md` §2 updated.
-- **Next step:** review and merge `feature/crud-ofertas`; then pre-selected candidates with the tomar/descartar draft (`confirmar_seleccion`), hires, and company data with the ARCA certificate (adds "Mi empresa" to the navigation). The tutor's corrections arrive once everything is done.
+- **Next step:** review and merge `feature/crud-ofertas` and then `feature/candidatos-empresa` (stacked; pre-selected candidates, selection draft, hires, company home; migration `20261020120000`); then company data with the ARCA certificate (adds "Mi empresa" to the navigation). Further ideas, ranked: [`docs/research/mejoras.md`](research/mejoras.md). The tutor's corrections arrive once everything is done.
 
 > Update this section at the end of every work session.
 
@@ -154,8 +154,9 @@ Legend: `[x]` done · `[ ]` pending · `[~]` in progress
 - [x] Send an offer for review and take it back while `pendiente`; close a published one
 - [x] See the status of my offers (draft / pending / published / rejected + reason)
 - [x] Company area navigation (Inicio · Mis ofertas · Portal), shared component with the job seeker's (`NavegacionArea`)
-- [ ] See **pre-selected** candidates, draft tomar/descartar and confirm in bulk (`confirmar_seleccion`)
-- [ ] Record a hire
+- [x] See **pre-selected** candidates, draft tomar/descartar and confirm in bulk (`confirmar_seleccion`) — `/empresa/ofertas/[id]/candidatos`; migration `20261020120000_candidatos_empresa.sql` lets companies read the CV built on the platform and shows phone/email only from `entrevista` on (decisions 2026-10-20)
+- [x] Record a hire ("Contratar" on a candidate in `entrevista`, then confirm)
+- [x] Company home with "Próximo paso" and an offers/candidates summary; candidate counts on each offer card ([improvement ideas](research/mejoras.md) #3)
 - [ ] Edit company data (includes uploading the optional ARCA certificate)
 
 **Demo:** a company posts an offer and sees the flow through to the hire.

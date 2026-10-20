@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { cache } from "react";
-import { ArrowLeft, CalendarDays, Clock, Tag } from "lucide-react";
+import { ArrowLeft, CalendarDays, Clock, Tag, Users } from "lucide-react";
 import { AccionesOferta } from "@/components/empresa/AccionesOferta";
 import { EtiquetaEstadoOferta } from "@/components/empresa/EtiquetaEstadoOferta";
+import { buttonVariants } from "@/components/ui/button";
 import { requerirRol } from "@/lib/auth";
+import { contarCandidatos } from "@/lib/candidatos-empresa";
 import { ESTADO_OFERTA_PARA_EMPRESA, ETIQUETAS_JORNADA, formatearFecha } from "@/lib/formato";
 import { obtenerEmpresaActual, obtenerOfertaEmpresa } from "@/lib/ofertas-empresa";
 import { esUuid } from "@/lib/validaciones/ofertas";
@@ -27,6 +29,9 @@ export async function generateMetadata({ params }: PageProps<"/empresa/ofertas/[
 export default async function OfertaEmpresaPage({ params }: PageProps<"/empresa/ofertas/[id]">) {
   const { empresa, oferta } = await cargar((await params).id);
   if (!empresa || !oferta) notFound();
+  // Applications only exist once the offer was published (Rule 2).
+  const conPostulaciones = oferta.estado === "publicada" || oferta.estado === "cerrada";
+  const candidatos = conPostulaciones ? await contarCandidatos(oferta.id) : 0;
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
@@ -47,6 +52,22 @@ export default async function OfertaEmpresaPage({ params }: PageProps<"/empresa/
         </div>
         <AccionesOferta id={oferta.id} estado={oferta.estado} puedeCrear={empresa.estado === "verificado"} />
       </section>
+
+      {conPostulaciones && (
+        <section aria-label="Candidatos" className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+          <p className="text-sm text-muted-foreground">
+            {candidatos === 0
+              ? "La Oficina de Empleo todavía no te preseleccionó candidatos."
+              : `La Oficina de Empleo te preseleccionó ${candidatos === 1 ? "1 candidato" : `${candidatos} candidatos`}.`}
+          </p>
+          <Link
+            href={`/empresa/ofertas/${oferta.id}/candidatos`}
+            className={buttonVariants({ className: "h-11 shrink-0 px-5 text-base hover:bg-primary-hover" })}
+          >
+            <Users aria-hidden /> Ver candidatos ({candidatos})
+          </Link>
+        </section>
+      )}
 
       <article className="space-y-6 rounded-2xl border border-border bg-card p-5 sm:p-8">
         <header className="space-y-3">
