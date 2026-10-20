@@ -160,6 +160,8 @@ docs/             # Roadmap, guía de Next.js y material del proyecto
 | `/postulante/domicilio` | Subir el comprobante de domicilio (solo vecinos de Funes) |
 | `/postulante/postulaciones` | Mis postulaciones, con el estado de cada una |
 | `/empresa` | Panel de empresa, con aviso mientras está en revisión (requiere rol empresa) |
+| `/empresa/ofertas` | Mis ofertas: borradores, en revisión, publicadas, rechazadas (con motivo) y cerradas |
+| `/empresa/ofertas/nueva` · `/empresa/ofertas/[id]` · `/empresa/ofertas/[id]/editar` | Cargar una oferta como borrador, ver su estado (enviar a revisión, volver a borrador, cerrar, usar como base) y editarla mientras es borrador |
 | `/admin` | Panel de la Oficina de Empleo (requiere rol admin) |
 
 Las páginas públicas viven en el grupo `src/app/(publico)/`, que comparte encabezado y pie. Las áreas privadas (`/postulante`, `/empresa`, `/admin`) están protegidas en dos niveles: `src/proxy.ts` manda a `/ingresar` a quien no tiene sesión, y el `layout.tsx` de cada área verifica el rol; los datos los sigue protegiendo RLS en la base. La identidad visual (verde `#074A1F`, tipografías Sora y Be Vietnam Pro, escudo y logo en `public/marca/`) es la de [funes.gob.ar](https://funes.gob.ar/).

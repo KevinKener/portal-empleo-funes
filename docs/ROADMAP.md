@@ -9,8 +9,8 @@ Legend: `[x]` done · `[ ]` pending · `[~]` in progress
 ## Current status
 
 - **Current phase:** Phase 5 — Company.
-- **Latest progress:** public portal live on Vercel (https://portal-empleo-funes.vercel.app). Phase 2 merged in PR #7: `GET /api/ofertas` and `/api/ofertas/[id]`, landing, `/ofertas` listing with category filter and pagination, offer detail, public layout with the municipal identity from funes.gob.ar. Before that, flow corrections from the tutor review (2026-10-08) on `feature/correcciones-flujo`: offers start as `borrador` (company edits only drafts, sends and takes back), rejected applications carry `motivo_rechazo`, company selection draft (`decision_empresa` + `confirmar_seleccion()`), ARCA certificate optional. Migrations applied in Supabase, types regenerated, `estados.ts` and `AGENTS.md` §2 updated.
-- **Next step:** "Mi panel" redesign (`feature/panel-postulante`) and profile photo (`feature/postulante-foto`, stacked, migration `20261013150000`) in review (2026-10-13); then Phase 5 (company) with the offer CRUD.
+- **Latest progress:** 2026-10-20, offer CRUD for companies on `feature/crud-ofertas` (no migrations): list, new draft, edit while `borrador`, send to review / take back / close / delete draft, "Usar como base" for rejected and closed offers, company area navigation. Test company: the seed's "Empresa Demo" (CUIT 30000000007, `verificado`), password set by hand in the SQL Editor. Before that, "Mi panel" redesign and profile photo merged (PRs #16, #17) and phone fixes (#18). Earlier: public portal live on Vercel (https://portal-empleo-funes.vercel.app). Phase 2 merged in PR #7: `GET /api/ofertas` and `/api/ofertas/[id]`, landing, `/ofertas` listing with category filter and pagination, offer detail, public layout with the municipal identity from funes.gob.ar. Before that, flow corrections from the tutor review (2026-10-08) on `feature/correcciones-flujo`: offers start as `borrador` (company edits only drafts, sends and takes back), rejected applications carry `motivo_rechazo`, company selection draft (`decision_empresa` + `confirmar_seleccion()`), ARCA certificate optional. Migrations applied in Supabase, types regenerated, `estados.ts` and `AGENTS.md` §2 updated.
+- **Next step:** review and merge `feature/crud-ofertas`; then pre-selected candidates with the tomar/descartar draft (`confirmar_seleccion`), hires, and company data with the ARCA certificate (adds "Mi empresa" to the navigation). The tutor's corrections arrive once everything is done.
 
 > Update this section at the end of every work session.
 
@@ -150,9 +150,10 @@ Legend: `[x]` done · `[ ]` pending · `[~]` in progress
 **Goal:** the company posts offers and receives pre-selected candidates.
 
 - [x] Pending-verification notice (no offer posting) — on `/empresa`
-- [ ] Offer CRUD (created as `borrador`, editable only as draft)
-- [ ] Send an offer for review and take it back while `pendiente`
-- [ ] See the status of my offers (draft / pending / published / rejected + reason)
+- [x] Offer CRUD (created as `borrador`, editable only as draft) — `/empresa/ofertas`, plus "Usar como base" to copy a rejected or closed offer into a new draft (decision 2026-10-20: never live offers, to avoid duplicates on the portal)
+- [x] Send an offer for review and take it back while `pendiente`; close a published one
+- [x] See the status of my offers (draft / pending / published / rejected + reason)
+- [x] Company area navigation (Inicio · Mis ofertas · Portal), shared component with the job seeker's (`NavegacionArea`)
 - [ ] See **pre-selected** candidates, draft tomar/descartar and confirm in bulk (`confirmar_seleccion`)
 - [ ] Record a hire
 - [ ] Edit company data (includes uploading the optional ARCA certificate)

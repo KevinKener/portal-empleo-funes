@@ -21,6 +21,18 @@ export function formatearFecha(iso: string | null): string {
   return iso ? FORMATO_FECHA.format(new Date(iso)) : ""
 }
 
+/**
+ * How the company reads each offer status, with what happens next.
+ * "pendiente" reads "En revisión": the Employment Office is looking at it (Rule 2).
+ */
+export const ESTADO_OFERTA_PARA_EMPRESA: Record<Enums<"estado_oferta">, { titulo: string; detalle: string }> = {
+  borrador: { titulo: "Borrador", detalle: "Solo la ves vos. Cuando esté lista, enviala a revisión." },
+  pendiente: { titulo: "En revisión", detalle: "La Oficina de Empleo la está revisando antes de publicarla." },
+  publicada: { titulo: "Publicada", detalle: "Se ve en el portal y recibe postulaciones." },
+  rechazada: { titulo: "Rechazada", detalle: "La Oficina de Empleo no la aprobó. Podés usarla como base para una nueva." },
+  cerrada: { titulo: "Cerrada", detalle: "Ya no se ve en el portal ni recibe postulaciones." },
+}
+
 /** UI labels for the localidad enum. */
 export const ETIQUETAS_LOCALIDAD: Record<Enums<"localidad">, string> = {
   funes: "Funes",
