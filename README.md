@@ -20,7 +20,7 @@ Un portal digital con tres roles, donde **cada uno tiene una función clara** y 
 
 | Rol | Puede |
 |-----|-------|
-| 👤 **Postulante** | Registrarse, armar su CV (en la plataforma o subiendo un PDF), elegir varios rubros, verificar su domicilio en Funes, postularse y seguir el estado de sus postulaciones. |
+| 👤 **Postulante** | Registrarse, armar su CV (en la plataforma o subiendo un PDF, un Word o una foto), elegir varios rubros, verificar su domicilio en Funes, postularse y seguir el estado de sus postulaciones. |
 | 🏢 **Empresa** | Registrarse (queda pendiente de verificación), cargar ofertas, recibir candidatos preseleccionados y registrar contrataciones. |
 | 🏛️ **Admin** (Oficina de Empleo) | Aprobar empresas, ofertas y domicilios; preseleccionar postulantes; buscar perfiles; ver indicadores; hacer seguimiento, derivar a cursos y dar de alta otros admins. |
 
@@ -156,7 +156,7 @@ docs/             # Roadmap, guía de Next.js y material del proyecto
 | `/postulante` | "Mi panel": próximo paso, mis postulaciones y ofertas de mis rubros (requiere rol postulante) |
 | `/postulante/perfil` | "Mi perfil": lista de tareas con datos, rubros, CV y domicilio |
 | `/postulante/datos` · `/postulante/rubros` | Editar datos personales y elegir rubros |
-| `/postulante/cv` | Armar el CV (sobre vos, experiencia, estudios) o subirlo en PDF |
+| `/postulante/cv` | Armar el CV (sobre vos, experiencia, estudios) o subirlo en PDF, Word o foto |
 | `/postulante/domicilio` | Subir el comprobante de domicilio (solo vecinos de Funes) |
 | `/postulante/postulaciones` | Mis postulaciones, con el estado de cada una |
 | `/empresa` | Inicio de la empresa: aviso mientras está en revisión, "Próximo paso" (candidatos por revisar, selección sin confirmar, ofertas rechazadas o en borrador) y resumen de ofertas y candidatos (requiere rol empresa) |

@@ -4,7 +4,7 @@ import { useActionState, useState, startTransition } from "react";
 import Link from "next/link";
 import { LoaderCircle, MailCheck } from "lucide-react";
 import { reenviarCodigo, verificarCodigo, type EstadoCodigo } from "@/app/(publico)/registro/actions";
-import { ESTILO_CONTROL } from "@/components/formularios/Campo";
+import { ESTILO_CONTROL, MarcaRequerido } from "@/components/formularios/Campo";
 import { CuentaConfirmada } from "@/components/auth/CuentaConfirmada";
 import { buttonVariants } from "@/components/ui/button";
 import { useCuentaRegresiva } from "@/hooks/useCuentaRegresiva";
@@ -57,8 +57,10 @@ export function FormularioCodigo({ email }: { email: string }) {
         <div className="space-y-1.5">
           <label htmlFor="codigo" className="block text-sm font-medium">
             Código de confirmación
+            <MarcaRequerido />
           </label>
           <input
+            aria-required
             id="codigo"
             name="codigo"
             type="text"

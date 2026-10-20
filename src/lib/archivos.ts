@@ -1,5 +1,5 @@
 /**
- * Files people upload: the job seeker's CV in PDF, proof of address and
+ * Files people upload: the job seeker's CV (PDF, Word or a photo), proof of address and
  * profile photo, and the company's ARCA certificate (Rule 12). Shared by
  * the browser (checks before uploading) and the Server Actions (path
  * checks). Buckets enforce the same limits in Storage (20261006120100_storage.sql,
@@ -11,7 +11,18 @@ export type TipoArchivo = "cv" | "comprobante" | "foto" | "arca"
 export const TAMANIO_MAXIMO = 5 * 1024 * 1024 // bucket file_size_limit
 
 export const ARCHIVOS: Record<TipoArchivo, { bucket: string; tipos: Record<string, string>; formatos: string }> = {
-  cv: { bucket: "cvs", tipos: { "application/pdf": "pdf" }, formatos: "PDF" },
+  // Word and photos too (tutor review 2026-10-20): many people have their CV as a .doc or on paper
+  cv: {
+    bucket: "cvs",
+    tipos: {
+      "application/pdf": "pdf",
+      "application/msword": "doc",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document": "docx",
+      "image/jpeg": "jpg",
+      "image/png": "png",
+    },
+    formatos: "PDF, Word, JPG o PNG",
+  },
   comprobante: {
     bucket: "comprobantes-domicilio",
     tipos: { "application/pdf": "pdf", "image/jpeg": "jpg", "image/png": "png" },
@@ -37,6 +48,23 @@ export function rutaArchivo(tipo: TipoArchivo, userId: string, extension: string
 /** Whether `ruta` is a valid path for this user and file type (checked on the server). */
 export function rutaValida(tipo: TipoArchivo, userId: string, ruta: string): boolean {
   return Object.values(ARCHIVOS[tipo].tipos).some((extension) => ruta === rutaArchivo(tipo, userId, extension))
+}
+
+/** Value for the file input's accept: MIME types plus extensions (some systems report no type for .doc). */
+export function aceptados(tipo: TipoArchivo): string {
+  const { tipos } = ARCHIVOS[tipo]
+  return [...Object.keys(tipos), ...Object.values(tipos).map((extension) => `.${extension}`)].join(",")
+}
+
+/**
+ * The file with its MIME type taken from the extension when the browser
+ * left it empty (common for Word files), so the checks and the upload agree.
+ */
+export function conTipo(tipo: TipoArchivo, archivo: File): File {
+  if (archivo.type) return archivo
+  const extension = archivo.name.split(".").pop()?.toLowerCase()
+  const mime = Object.entries(ARCHIVOS[tipo].tipos).find(([, ext]) => ext === extension)?.[0]
+  return mime ? new File([archivo], archivo.name, { type: mime }) : archivo
 }
 
 /** Error message for a file before uploading it, or null when it can go. */

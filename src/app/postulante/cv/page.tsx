@@ -17,7 +17,7 @@ import { rutaDeOferta } from "@/lib/validaciones/ofertas";
 export const metadata: Metadata = { title: "Tu CV" };
 
 /**
- * CV built on the platform or uploaded as a PDF; either one is enough (Rule 6).
+ * CV built on the platform or uploaded as a file (PDF, Word or photo); either one is enough (Rule 6).
  * Coming from an offer (`?volver=<offer id>`), it offers the way back once the
  * CV is complete, so the person does not have to look for the offer again.
  */
@@ -45,7 +45,7 @@ export default async function CvPage({ searchParams }: PageProps<"/postulante/cv
     <div className="mx-auto max-w-3xl space-y-6">
       <EncabezadoSeccion volver={VOLVER_A_MI_PERFIL}
         titulo="Tu CV"
-        descripcion="Armalo acá completando las secciones, o subí tu CV en PDF. Con cualquiera de los dos ya podés postularte."
+        descripcion="Armalo acá completando las secciones, o subí el CV que ya tenés. Con cualquiera de los dos ya podés postularte."
       />
 
       <div
@@ -62,7 +62,7 @@ export default async function CvPage({ searchParams }: PageProps<"/postulante/cv
             : "Para completar tu CV: escribí unas líneas sobre vos y cargá al menos una experiencia o un estudio, o "}
           {!completo && (
             <a href="#pdf" className="font-medium text-primary underline underline-offset-4">
-              subí tu CV en PDF
+              subí el CV que ya tenés
             </a>
           )}
           {!completo && "."}
@@ -90,13 +90,13 @@ export default async function CvPage({ searchParams }: PageProps<"/postulante/cv
       </TarjetaSeccion>
       <TarjetaSeccion
         id="pdf"
-        titulo="¿Ya tenés tu CV en PDF?"
-        descripcion="Subilo y la Oficina de Empleo lo va a ver junto con tu perfil."
+        titulo="¿Ya tenés tu CV hecho?"
+        descripcion="Subilo en PDF o Word, o sacale una foto si lo tenés en papel. La Oficina de Empleo lo va a ver junto con tu perfil."
       >
         <SubidaArchivo
           tipo="cv"
           userId={userId}
-          etiqueta="CV en PDF"
+          etiqueta="tu CV"
           cargado={Boolean(resumen.postulante.cv_url)}
           eliminable
           acciones={{ registrar: registrarArchivo, abrir: abrirArchivo, eliminar: eliminarArchivo }}

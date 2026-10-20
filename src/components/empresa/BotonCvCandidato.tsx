@@ -5,7 +5,7 @@ import { FileText, LoaderCircle } from "lucide-react";
 import { abrirCvCandidato } from "@/app/empresa/ofertas/[id]/candidatos/actions";
 import { buttonVariants } from "@/components/ui/button";
 
-/** Opens a candidate's PDF CV through a short-lived signed link. */
+/** Opens (or downloads, for Word files) a candidate's uploaded CV through a short-lived signed link. */
 export function BotonCvCandidato({ postulacionId }: { postulacionId: string }) {
   const [error, setError] = useState<string | null>(null);
   const [abriendo, iniciar] = useTransition();
@@ -23,7 +23,7 @@ export function BotonCvCandidato({ postulacionId }: { postulacionId: string }) {
     <div className="space-y-1">
       <button type="button" onClick={abrir} disabled={abriendo} className={buttonVariants({ variant: "outline", className: "h-11 px-4 text-base" })}>
         {abriendo ? <LoaderCircle aria-hidden className="animate-spin" /> : <FileText aria-hidden />}
-        Ver CV en PDF
+        Ver CV adjunto
       </button>
       {error && (
         <p role="alert" className="text-sm text-destructive">

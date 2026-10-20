@@ -6,6 +6,7 @@ import { LoaderCircle } from "lucide-react";
 import { guardarOferta, type EstadoFormularioOferta } from "@/app/empresa/ofertas/actions";
 import { AvisoFormulario } from "@/components/formularios/AvisoFormulario";
 import { Campo, ESTILO_AREA } from "@/components/formularios/Campo";
+import { Selector } from "@/components/formularios/Selector";
 import { buttonVariants } from "@/components/ui/button";
 import type { Categoria } from "@/lib/categorias";
 import { ETIQUETAS_JORNADA } from "@/lib/formato";
@@ -13,6 +14,7 @@ import type { OfertaEmpresa } from "@/lib/ofertas-empresa";
 import { JORNADAS, MAXIMO_DESCRIPCION, MAXIMO_REQUISITOS, MAXIMO_TITULO } from "@/lib/validaciones/ofertas";
 
 const VACIO: EstadoFormularioOferta = { errores: {}, mensaje: null };
+const OPCIONES_JORNADA = JORNADAS.map((jornada) => ({ valor: jornada, texto: ETIQUETAS_JORNADA[jornada] }));
 
 type PropsFormularioOferta = {
   categorias: Categoria[];
@@ -44,38 +46,23 @@ export function FormularioOferta({ categorias, oferta, volver }: PropsFormulario
       {oferta && <input type="hidden" name="id" value={oferta.id} />}
       <AvisoFormulario error={estado.mensaje} />
 
-      <Campo nombre="titulo" etiqueta="Puesto" ayuda="Por ejemplo: cajero/a, ayudante de cocina, chofer." error={errores.titulo}>
+      <Campo nombre="titulo" etiqueta="Puesto" ayuda="Por ejemplo: cajero/a, ayudante de cocina, chofer." error={errores.titulo} requerido>
         {(control) => <input {...control} defaultValue={oferta?.titulo} maxLength={MAXIMO_TITULO} />}
       </Campo>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <Campo nombre="categoria_id" etiqueta="Rubro" error={errores.categoria_id}>
+        <Campo nombre="categoria_id" etiqueta="Rubro" error={errores.categoria_id} requerido>
           {(control) => (
-            <select {...control} defaultValue={oferta?.categoria_id ?? ""}>
-              <option value="" disabled>
-                Elegí un rubro
-              </option>
-              {categorias.map((categoria) => (
-                <option key={categoria.id} value={categoria.id}>
-                  {categoria.nombre}
-                </option>
-              ))}
-            </select>
+            <Selector
+              control={control}
+              opciones={categorias.map((categoria) => ({ valor: categoria.id, texto: categoria.nombre }))}
+              inicial={oferta?.categoria_id}
+              placeholder="Elegí un rubro"
+            />
           )}
         </Campo>
-        <Campo nombre="jornada" etiqueta="Jornada" error={errores.jornada}>
-          {(control) => (
-            <select {...control} defaultValue={oferta?.jornada ?? ""}>
-              <option value="" disabled>
-                Elegí la jornada
-              </option>
-              {JORNADAS.map((jornada) => (
-                <option key={jornada} value={jornada}>
-                  {ETIQUETAS_JORNADA[jornada]}
-                </option>
-              ))}
-            </select>
-          )}
+        <Campo nombre="jornada" etiqueta="Jornada" error={errores.jornada} requerido>
+          {(control) => <Selector control={control} opciones={OPCIONES_JORNADA} inicial={oferta?.jornada} placeholder="Elegí la jornada" />}
         </Campo>
       </div>
 
@@ -84,6 +71,7 @@ export function FormularioOferta({ categorias, oferta, volver }: PropsFormulario
         etiqueta="Descripción"
         ayuda="Contá las tareas, el horario, el lugar de trabajo y lo que ofrecen."
         error={errores.descripcion}
+        requerido
       >
         {(control) => (
           <textarea {...control} className={ESTILO_AREA} defaultValue={oferta?.descripcion} maxLength={MAXIMO_DESCRIPCION} />

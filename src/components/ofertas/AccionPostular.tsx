@@ -74,12 +74,12 @@ export async function AccionPostular({ ofertaId }: { ofertaId: string }) {
         <SubidaArchivo
           tipo="cv"
           userId={sesion.userId}
-          etiqueta="CV en PDF"
+          etiqueta="tu CV"
           cargado={false}
           acciones={{ registrar: registrarArchivo, abrir: abrirArchivo, eliminar: eliminarArchivo }}
         />
         <p className="text-sm text-muted-foreground">
-          ¿No tenés CV en PDF?{" "}
+          ¿No tenés tu CV en un archivo?{" "}
           <Link href={`/postulante/cv?volver=${ofertaId}`} className={ENLACE}>
             Armalo acá en pocos pasos
           </Link>{" "}

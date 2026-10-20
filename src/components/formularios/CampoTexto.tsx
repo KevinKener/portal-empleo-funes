@@ -17,6 +17,8 @@ type PropsCampoTexto = PropsEstadoCampo & {
   inputMode?: "text" | "numeric" | "tel" | "email";
   autoComplete?: HTMLInputAutoCompleteAttribute;
   maxLength?: number;
+  /** Every sign-up and profile text field is required; pass false for optional ones. */
+  requerido?: boolean;
 };
 
 /** Text input wired to a form state (see useFormularioPorPasos). */
@@ -29,11 +31,12 @@ export function CampoTexto({
   valido,
   onCambiar,
   onSalir,
+  requerido = true,
   type = "text",
   ...props
 }: PropsCampoTexto) {
   return (
-    <Campo nombre={nombre} etiqueta={etiqueta} ayuda={ayuda} error={error} valido={valido}>
+    <Campo nombre={nombre} etiqueta={etiqueta} ayuda={ayuda} error={error} requerido={requerido} valido={valido}>
       {(control) => (
         <input
           {...control}
