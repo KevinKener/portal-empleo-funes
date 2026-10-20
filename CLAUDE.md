@@ -56,9 +56,10 @@ All code lives in `src/`. The `@/*` alias points to `src/*`.
 | `/postulante/cv` | `src/app/postulante/cv/page.tsx` | CV: "Sobre vos", experience and education (add another) or PDF (Rule 6); actions in `cv/actions.ts` |
 | `/postulante/domicilio` | `src/app/postulante/domicilio/page.tsx` | Proof of address, only for Funes residents (Rule 4) |
 | `/postulante/postulaciones` | `src/app/postulante/postulaciones/page.tsx` | "Mis postulaciones": status timeline in plain words |
-| `/empresa` | `src/app/empresa/page.tsx` | Company home with pending-review notice; `layout.tsx` requires role `empresa` and adds `NavegacionEmpresa` |
+| `/empresa` | `src/app/empresa/page.tsx` | Company home: pending-review notice, "Próximo paso" and offers/candidates summary (rules in `src/lib/panel-empresa.ts`, + `loading`, `error`); `layout.tsx` requires role `empresa` and adds `NavegacionEmpresa` |
 | `/empresa/ofertas` | `src/app/empresa/ofertas/page.tsx` | "Mis ofertas": every own offer with its status and rejection reason (+ `loading`, `error`); Server Actions in `actions.ts` |
 | `/empresa/ofertas/nueva`, `/empresa/ofertas/[id]`, `/empresa/ofertas/[id]/editar` | `src/app/empresa/ofertas/*/page.tsx` | New draft (verified companies only), offer page with status actions (`AccionesOferta`: send, take back, close, delete draft, "Usar como base" for rejected/closed), edit while `borrador` |
+| `/empresa/ofertas/[id]/candidatos` | `src/app/empresa/ofertas/[id]/candidatos/page.tsx` | Pre-selected candidates by stage (`candidatos_empresa` view, `src/lib/candidatos-empresa.ts`), draft decisions (`DecisionCandidato`) applied with `confirmar_seleccion()` (`ResumenSeleccion`), CV PDF via signed URL; actions in `actions.ts` |
 | `/admin` | `src/app/admin/page.tsx` | Admin home (skeleton); `layout.tsx` requires role `admin` |
 
 Other key files:
