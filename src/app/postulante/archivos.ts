@@ -14,16 +14,19 @@ import type { TablesUpdate } from "@/types/database";
 
 type Resultado = { error: string | null };
 
+// The company's ARCA certificate has its own actions (src/app/empresa/archivos.ts).
+type TipoPostulante = Exclude<TipoArchivo, "arca">;
+
 const COLUMNA = { cv: "cv_url", comprobante: "comprobante_url", foto: "foto_url" } as const;
 
 /** The postulantes update that stores (or clears) a file path. */
-function cambio(tipo: TipoArchivo, ruta: string | null): TablesUpdate<"postulantes"> {
+function cambio(tipo: TipoPostulante, ruta: string | null): TablesUpdate<"postulantes"> {
   if (tipo === "cv") return { cv_url: ruta };
   if (tipo === "comprobante") return { comprobante_url: ruta };
   return { foto_url: ruta };
 }
 
-function esTipo(tipo: string): tipo is TipoArchivo {
+function esTipo(tipo: string): tipo is TipoPostulante {
   return tipo === "cv" || tipo === "comprobante" || tipo === "foto";
 }
 

@@ -11,7 +11,7 @@ import { resumirCandidatosPorOferta } from "@/lib/candidatos-empresa";
 import { listarOfertasEmpresa, obtenerEmpresaActual } from "@/lib/ofertas-empresa";
 import { proximoPasoEmpresa, resumirEmpresa } from "@/lib/panel-empresa";
 
-export const metadata: Metadata = { title: "Mi empresa" };
+export const metadata: Metadata = { title: "Inicio" };
 
 /** Company home: the next step, then offers and candidates at a glance. */
 export default async function EmpresaPage() {
@@ -20,7 +20,7 @@ export default async function EmpresaPage() {
   if (!empresa) notFound();
 
   const [ofertas, candidatos] = await Promise.all([listarOfertasEmpresa(empresa.id), resumirCandidatosPorOferta()]);
-  const paso = proximoPasoEmpresa(empresa.estado, ofertas, candidatos);
+  const paso = proximoPasoEmpresa(empresa, ofertas, candidatos);
   const verificada = empresa.estado === "verificado";
 
   return (

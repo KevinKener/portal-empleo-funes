@@ -160,6 +160,7 @@ docs/             # Roadmap, guía de Next.js y material del proyecto
 | `/postulante/domicilio` | Subir el comprobante de domicilio (solo vecinos de Funes) |
 | `/postulante/postulaciones` | Mis postulaciones, con el estado de cada una |
 | `/empresa` | Inicio de la empresa: aviso mientras está en revisión, "Próximo paso" (candidatos por revisar, selección sin confirmar, ofertas rechazadas o en borrador) y resumen de ofertas y candidatos (requiere rol empresa) |
+| `/empresa/datos` | Mi empresa: editar nombre comercial, teléfono y dirección (la razón social solo hasta que la Oficina verifica la empresa) y subir la constancia de ARCA (opcional) |
 | `/empresa/ofertas` | Mis ofertas: borradores, en revisión, publicadas, rechazadas (con motivo) y cerradas |
 | `/empresa/ofertas/nueva` · `/empresa/ofertas/[id]` · `/empresa/ofertas/[id]/editar` | Cargar una oferta como borrador, ver su estado (enviar a revisión, volver a borrador, cerrar, usar como base) y editarla mientras es borrador |
 | `/empresa/ofertas/[id]/candidatos` | Candidatos preseleccionados por la Oficina: CV, borrador entrevistar/contratar/descartar y "Confirmar selección"; teléfono y email solo desde la entrevista |
