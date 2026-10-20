@@ -21,10 +21,11 @@ function plural(cantidad: number, singular: string, varios: string) {
 /**
  * Pending selection draft and the button that applies it all at once with
  * confirmar_seleccion() (Rule 11). Until then the job seekers see nothing.
+ * One tap: that it cannot be undone is said before, next to the button
+ * (tutor review 2026-10-20).
  */
 export function ResumenSeleccion({ ofertaId, entrevistas, contrataciones, descartes }: PropsResumenSeleccion) {
   const router = useRouter();
-  const [confirmando, setConfirmando] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [aviso, setAviso] = useState<string | null>(null);
   const [enviando, iniciar] = useTransition();
@@ -40,7 +41,6 @@ export function ResumenSeleccion({ ofertaId, entrevistas, contrataciones, descar
     setError(null);
     iniciar(async () => {
       const resultado = await confirmarSeleccion(ofertaId);
-      setConfirmando(false);
       if (resultado.error) return setError(resultado.error);
       setAviso(`Listo: actualizamos ${plural(resultado.cambiados, "candidato", "candidatos")}. Los postulantes ya ven el cambio.`);
       router.refresh();
@@ -59,33 +59,17 @@ export function ResumenSeleccion({ ofertaId, entrevistas, contrataciones, descar
         <span className="font-medium">
           Tenés {plural(total, "decisión", "decisiones")} sin confirmar:
         </span>{" "}
-        {partes.join(", ")}. Los postulantes no ven nada hasta que confirmes.
+        {partes.join(", ")}. Los postulantes no ven nada hasta que confirmes, y una vez confirmada no se puede deshacer.
       </p>
-      {confirmando ? (
-        <div className="flex flex-col-reverse gap-2 sm:flex-row">
-          <button type="button" onClick={() => setConfirmando(false)} className={buttonVariants({ variant: "ghost", className: "h-11 px-5 text-base" })}>
-            Revisar de nuevo
-          </button>
-          <button
-            type="button"
-            autoFocus
-            disabled={enviando}
-            onClick={confirmar}
-            className={buttonVariants({ className: "h-11 px-5 text-base hover:bg-primary-hover" })}
-          >
-            {enviando && <LoaderCircle aria-hidden className="animate-spin" />}
-            Sí, confirmar. No se puede deshacer
-          </button>
-        </div>
-      ) : (
-        <button
-          type="button"
-          onClick={() => setConfirmando(true)}
-          className={buttonVariants({ className: "h-11 w-full px-5 text-base hover:bg-primary-hover sm:w-auto" })}
-        >
-          Confirmar selección
-        </button>
-      )}
+      <button
+        type="button"
+        disabled={enviando}
+        onClick={confirmar}
+        className={buttonVariants({ className: "h-11 w-full px-5 text-base hover:bg-primary-hover sm:w-auto" })}
+      >
+        {enviando && <LoaderCircle aria-hidden className="animate-spin" />}
+        {enviando ? "Confirmando…" : "Confirmar selección"}
+      </button>
     </section>
   );
 }
