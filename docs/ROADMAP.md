@@ -35,10 +35,10 @@ Everything built works; UX details to fix:
 
 - [x] Categories do not block applying (only the CV does)
 - [x] Do not lose the offer: upload the CV from the offer itself, or build it and come back (`?volver`)
-- [ ] CV dates: "Desde" cannot be after "Hasta"
-- [ ] Required fields marked with a red asterisk (`*`) in every form
-- [ ] Replace native `<select>` (sign-up step 3, CV dates) with a reusable component
-- [ ] Accept more CV formats: images, `.doc`, `.docx`
+- [x] CV dates: "Desde" cannot be after "Hasta" (checked while picking; "Hasta" cleared when "Trabajo ahí actualmente" is ticked)
+- [x] Required fields marked with a red asterisk (`*`) in every form (`requerido` on `Campo`, `aria-required`)
+- [x] Replace native `<select>` (sign-up step 3, CV dates) with a reusable component (`Selector` on shadcn/Base UI `select`)
+- [x] Accept more CV formats: images, `.doc`, `.docx` (migration `20261020140000_formatos_cv.sql`)
 - [ ] No double confirmations: one notice is enough
 - [ ] Use the available width better; single navigation (tabs) instead of header + area bar
 - [ ] Profile photo: move the image inside the frame, position saved in the database

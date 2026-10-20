@@ -70,7 +70,7 @@ export async function confirmarSeleccion(ofertaId: string): Promise<ResultadoCon
 }
 
 /**
- * Short-lived link (60 s) to a candidate's PDF CV. The Storage policy only
+ * Short-lived link (60 s) to a candidate's uploaded CV. The Storage policy only
  * lets a company read CVs of candidates pre-selected for its offers (Rule 1).
  */
 export async function abrirCvCandidato(postulacionId: string): Promise<ResultadoCv> {

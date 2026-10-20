@@ -9,7 +9,7 @@ import {
   type EstadoRecuperacion,
 } from "@/app/(publico)/recuperar/actions";
 import { AvisoFormulario } from "@/components/formularios/AvisoFormulario";
-import { ESTILO_CONTROL } from "@/components/formularios/Campo";
+import { ESTILO_CONTROL, MarcaRequerido } from "@/components/formularios/Campo";
 import { CampoContrasena } from "@/components/formularios/CampoContrasena";
 import { buttonVariants } from "@/components/ui/button";
 import { useCuentaRegresiva } from "@/hooks/useCuentaRegresiva";
@@ -60,8 +60,10 @@ export function FormularioNuevaContrasena() {
         <div className="space-y-1.5">
           <label htmlFor="codigo" className="block text-sm font-medium">
             Código del email
+            <MarcaRequerido />
           </label>
           <input
+            aria-required
             id="codigo"
             name="codigo"
             type="text"

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { CircleCheck, FileText, LoaderCircle, Upload } from "lucide-react";
 import { AvisoFormulario } from "@/components/formularios/AvisoFormulario";
 import { buttonVariants } from "@/components/ui/button";
-import { ARCHIVOS, achicarImagen, errorArchivo, rutaArchivo, type AccionesArchivo, type TipoArchivo } from "@/lib/archivos";
+import { ARCHIVOS, aceptados, achicarImagen, conTipo, errorArchivo, rutaArchivo, type AccionesArchivo, type TipoArchivo } from "@/lib/archivos";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 
@@ -37,7 +37,8 @@ export function SubidaArchivo({ tipo, userId, etiqueta, cargado, eliminable = fa
   const [pendiente, iniciar] = useTransition();
   const { bucket, tipos, formatos } = ARCHIVOS[tipo];
 
-  async function subir(original: File) {
+  async function subir(elegido: File) {
+    const original = conTipo(tipo, elegido);
     setError(null);
     setAviso(null);
     const problema = errorArchivo(tipo, original);
@@ -134,13 +135,13 @@ export function SubidaArchivo({ tipo, userId, etiqueta, cargado, eliminable = fa
         )}
         <span className="font-medium">{subiendo ? "Subiendo…" : cargado ? `Reemplazar ${etiqueta}` : `Subir ${etiqueta}`}</span>
         <span className="text-sm text-muted-foreground">
-          {formatos}, hasta 5 MB.{tipo === "comprobante" && " Desde el celular podés sacar una foto."}
+          {formatos}, hasta 5 MB.{tipo !== "arca" && " Desde el celular podés sacar una foto."}
         </span>
         <input
           ref={entrada}
           id={idInput}
           type="file"
-          accept={Object.keys(tipos).join(",")}
+          accept={aceptados(tipo)}
           disabled={subiendo}
           onChange={(evento) => {
             const archivo = evento.target.files?.[0];

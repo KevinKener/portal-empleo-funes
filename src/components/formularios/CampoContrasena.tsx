@@ -9,6 +9,8 @@ type PropsCampoContrasena = PropsEstadoCampo & {
   etiqueta: string;
   ayuda?: string;
   autoComplete: "new-password" | "current-password";
+  /** Every sign-up and profile text field is required; pass false for optional ones. */
+  requerido?: boolean;
 };
 
 /**
@@ -24,12 +26,13 @@ export function CampoContrasena({
   error,
   onCambiar,
   onSalir,
+  requerido = true,
   autoComplete,
 }: PropsCampoContrasena) {
   const [visible, setVisible] = useState(false);
 
   return (
-    <Campo nombre={nombre} etiqueta={etiqueta} ayuda={ayuda} error={error}>
+    <Campo nombre={nombre} etiqueta={etiqueta} ayuda={ayuda} error={error} requerido={requerido}>
       {(control) => (
         <>
           <input

@@ -56,7 +56,7 @@ export async function obtenerResumenPerfil(userId: string): Promise<ResumenPerfi
   }
 }
 
-/** A CV counts when there is a PDF, or "Sobre mí" plus at least one experience or education item (Rule 6). */
+/** A CV counts when there is an uploaded file, or "Sobre mí" plus at least one experience or education item (Rule 6). */
 export function tieneCv({ postulante, itemsCv }: ResumenPerfil): boolean {
   return Boolean(postulante.cv_url) || (Boolean(postulante.descripcion?.trim()) && itemsCv > 0)
 }
@@ -96,7 +96,7 @@ export function tareasDelPerfil(resumen: ResumenPerfil): Tarea[] {
     {
       clave: "cv",
       titulo: "Armar tu CV",
-      descripcion: "Completalo acá o subí tu CV en PDF.",
+      descripcion: "Completalo acá o subí el que ya tenés.",
       href: "/postulante/cv",
       estado: tieneCv(resumen) ? "completo" : "pendiente",
       requerida: true,

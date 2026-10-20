@@ -15,8 +15,21 @@ export type PropsControl = {
   name: string;
   "aria-invalid": boolean;
   "aria-describedby"?: string;
+  "aria-required"?: boolean;
   className: string;
 };
+
+/**
+ * Red asterisk for required fields (tutor review 2026-10-20). Screen readers
+ * get "obligatorio" from aria-required on the control instead.
+ */
+export function MarcaRequerido() {
+  return (
+    <span aria-hidden className="ml-0.5 text-destructive">
+      *
+    </span>
+  );
+}
 
 type PropsCampo = {
   nombre: string;
@@ -24,6 +37,8 @@ type PropsCampo = {
   ayuda?: string;
   error?: string;
   valido?: boolean;
+  /** Shows the red asterisk and sets aria-required. */
+  requerido?: boolean;
   /** Receives the props that tie the control to its label, hint and error. */
   children: (control: PropsControl) => ReactNode;
 };
@@ -33,7 +48,7 @@ type PropsCampo = {
  * valid values (positive validation). Errors fade in, unless the person
  * asked the system for reduced motion.
  */
-export function Campo({ nombre, etiqueta, ayuda, error, valido, children }: PropsCampo) {
+export function Campo({ nombre, etiqueta, ayuda, error, valido, requerido = false, children }: PropsCampo) {
   const idAyuda = ayuda ? `${nombre}-ayuda` : undefined;
   const idError = error ? `${nombre}-error` : undefined;
   const descripcion = [idError, idAyuda].filter(Boolean).join(" ") || undefined;
@@ -42,6 +57,7 @@ export function Campo({ nombre, etiqueta, ayuda, error, valido, children }: Prop
     <div className="space-y-1.5">
       <label htmlFor={nombre} className="block text-sm font-medium text-foreground">
         {etiqueta}
+        {requerido && <MarcaRequerido />}
       </label>
       <div className="relative">
         {children({
@@ -49,6 +65,7 @@ export function Campo({ nombre, etiqueta, ayuda, error, valido, children }: Prop
           name: nombre,
           "aria-invalid": Boolean(error),
           "aria-describedby": descripcion,
+          "aria-required": requerido || undefined,
           className: ESTILO_CONTROL,
         })}
         {valido && (

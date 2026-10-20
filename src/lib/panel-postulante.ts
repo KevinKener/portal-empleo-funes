@@ -112,7 +112,7 @@ export function proximoPaso(resumen: ResumenPerfil, ofertasNuevas: number): Prox
   if (!tieneCv(resumen)) {
     return {
       titulo: "Armá tu CV",
-      texto: "Completalo acá en pocos pasos o subí el que ya tenés en PDF.",
+      texto: "Completalo acá en pocos pasos o subí el que ya tenés.",
       accion: "Armar mi CV",
       href: "/postulante/cv",
     }
@@ -176,7 +176,7 @@ const CONSEJOS = [
   "Revisá que tu teléfono esté al día: es la forma más rápida de que la Oficina te contacte.",
   "Elegir varios rubros te muestra más ofertas. Sumá los que de verdad te interesan.",
   "Los cursos y changas también cuentan como experiencia. Agregalos a tu CV.",
-  "Si subiste tu CV en PDF, fijate que se lea bien desde el celular.",
+  "Si subiste tu CV, fijate que se lea bien desde el celular.",
 ]
 
 /** A tip that changes once a day (same for everyone, so it renders the same on every visit that day). */

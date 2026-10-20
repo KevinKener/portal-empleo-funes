@@ -44,6 +44,14 @@ export function fechaDeMesAnio(mes: string, anio: string): string | null {
   return `${anio}-${String(m).padStart(2, "0")}-01`
 }
 
+/**
+ * "Hasta" before "Desde" (both "YYYY-MM-01"), or null. The experience form
+ * also runs it while the person picks the dates, not only on save.
+ */
+export function errorOrdenFechas(desde: string | null, hasta: string | null): string | null {
+  return desde && hasta && hasta < desde ? "No puede ser anterior a la fecha de inicio." : null
+}
+
 /** Validates the experience form (fields: puesto, empresa, desde_mes, desde_anio, actual, hasta_mes, hasta_anio, tareas). */
 export function validarExperiencia(formData: FormData): Resultado<DatosExperiencia> {
   const errores: Record<string, string> = {}
@@ -61,7 +69,8 @@ export function validarExperiencia(formData: FormData): Resultado<DatosExperienc
   if (!desde) errores.desde = "Elegí el mes y el año en que empezaste."
   const hasta = actual ? null : fechaDeMesAnio(texto(formData.get("hasta_mes")), texto(formData.get("hasta_anio")))
   if (!actual && !hasta) errores.hasta = "Elegí el mes y el año en que terminaste, o marcá que trabajás ahí."
-  if (desde && hasta && hasta < desde) errores.hasta = "La fecha de fin tiene que ser posterior al inicio."
+  const orden = errorOrdenFechas(desde, hasta)
+  if (orden) errores.hasta = orden
 
   if (Object.keys(errores).length > 0) return { ok: false, errores }
   return { ok: true, datos: { puesto, empresa: empresa || null, desde: desde!, hasta, tareas: tareas || null } }

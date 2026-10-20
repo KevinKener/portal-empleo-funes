@@ -10,7 +10,7 @@ const PASOS = [
   {
     icono: UserRound,
     titulo: "Te registrás y armás tu perfil",
-    texto: "Cargá tus datos y tu CV, o subilo en PDF. Elegí los rubros en los que te gustaría trabajar.",
+    texto: "Cargá tus datos y tu CV, o subí el que ya tenés. Elegí los rubros en los que te gustaría trabajar.",
   },
   {
     icono: ClipboardCheck,
