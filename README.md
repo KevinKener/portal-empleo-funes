@@ -64,52 +64,21 @@ Junta en un solo lugar a **vecinos que buscan trabajo**, **empresas de la ciudad
 
 ## 🔄 Cómo funciona
 
-```mermaid
-flowchart LR
-    E["🏢 Empresa<br/>carga una oferta"]:::empresa --> O1["🏛️ Oficina<br/>la revisa y la publica"]:::oficina
-    O1 --> P["🌐 Portal<br/>la oferta queda visible"]:::portal
-    P --> U["👤 Vecino<br/>se postula"]:::vecino
-    U --> O2["🏛️ Oficina<br/>preselecciona perfiles"]:::oficina
-    O2 --> E2["🏢 Empresa<br/>entrevista y contrata"]:::empresa
-    E2 --> S["🤝 Oficina<br/>hace el seguimiento"]:::oficina
-    O2 -. no seleccionados .-> C["📚 Cursos<br/>de capacitación"]:::portal
-
-    classDef empresa fill:#E8F1EB,stroke:#074A1F,color:#052F14
-    classDef oficina fill:#074A1F,stroke:#052F14,color:#FFFFFF
-    classDef portal fill:#FFFFFF,stroke:#074A1F,color:#052F14
-    classDef vecino fill:#D7EBDD,stroke:#074A1F,color:#052F14
-```
+<p align="center">
+  <img src="docs/readme/flujo.svg" alt="Cómo funciona: 1. la empresa carga una oferta; 2. la Oficina de Empleo la revisa y la publica; 3. la oferta queda visible en el portal; 4. el vecino se postula; 5. la Oficina preselecciona perfiles, vecinos de Funes primero; 6. la empresa entrevista y contrata. Si no queda, la Oficina lo puede derivar a un curso; si lo contratan, hay seguimiento cada 2 meses." width="560">
+</p>
 
 ### El camino de una postulación
 
-```mermaid
-stateDiagram-v2
-    direction LR
-    state "No seleccionada" as NoSeleccionada
-    [*] --> Enviada: el vecino se postula
-    Enviada --> Preseleccionada: la Oficina la recomienda
-    Preseleccionada --> Entrevista: la empresa quiere conocerlo
-    Entrevista --> Contratado: 🎉
-    Enviada --> NoSeleccionada: cupo completo o no seleccionado
-    Preseleccionada --> NoSeleccionada
-    Entrevista --> NoSeleccionada
-    NoSeleccionada --> [*]: puede ir a un curso
-    Contratado --> [*]: seguimiento cada 2 meses
-```
+<p align="center">
+  <img src="docs/readme/postulacion.svg" alt="El camino de una postulación: enviada, preseleccionada, entrevista y contratado. Desde cualquiera de las tres primeras etapas puede quedar no seleccionada, siempre con motivo (cupo completo o no seleccionado), y la persona puede ir a un curso." width="620">
+</p>
 
 ### El camino de una oferta
 
-```mermaid
-stateDiagram-v2
-    direction LR
-    state "En revisión" as EnRevision
-    [*] --> Borrador: la empresa la carga
-    Borrador --> EnRevision: la envía
-    EnRevision --> Borrador: la retira para editarla
-    EnRevision --> Publicada: la Oficina la aprueba
-    EnRevision --> Rechazada: la Oficina explica el motivo
-    Publicada --> Cerrada: se completó o se cerró
-```
+<p align="center">
+  <img src="docs/readme/oferta.svg" alt="El camino de una oferta: borrador, en revisión, publicada y cerrada. Mientras está en revisión la empresa la puede retirar; si la Oficina la rechaza, explica el motivo y la empresa la puede usar como base para corregirla." width="620">
+</p>
 
 ---
 
