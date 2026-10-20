@@ -125,7 +125,7 @@
   }
 
   /* A shine that crosses a card once on hover (TarjetaOferta) */
-  --animate-brillo: brillo 900ms ease-out both;
+  --animate-brillo: brillo 1.6s cubic-bezier(0.4, 0, 0.2, 1) both;
 
   @keyframes brillo {
     from { transform: translateX(-120%) skewX(-20deg); }

@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { FondoMarca } from "@/components/layout/FondoMarca";
 
 type PropsBandaBienvenida = {
@@ -7,6 +7,8 @@ type PropsBandaBienvenida = {
   descripcion: ReactNode;
   /** Shown before the greeting (the job seeker's avatar). */
   inicio?: ReactNode;
+  /** Row under the greeting: figures at a glance and quick actions. */
+  extra?: ReactNode;
 };
 
 /**
@@ -14,7 +16,7 @@ type PropsBandaBienvenida = {
  * shield as a watermark: the one bold piece of the private areas, so a
  * signed-in person always knows this is the municipal portal.
  */
-export function BandaBienvenida({ saludo, descripcion, inicio }: PropsBandaBienvenida) {
+export function BandaBienvenida({ saludo, descripcion, inicio, extra }: PropsBandaBienvenida) {
   return (
     <div className="relative isolate overflow-hidden rounded-2xl bg-primary-deep px-5 py-7 text-primary-foreground sm:px-8 sm:py-9">
       <FondoMarca compacto />
@@ -33,6 +35,11 @@ export function BandaBienvenida({ saludo, descripcion, inicio }: PropsBandaBienv
           <div className="max-w-2xl text-base text-primary-foreground/90 sm:text-lg">{descripcion}</div>
         </div>
       </div>
+      {extra && (
+        <div className="mt-6 border-t border-primary-foreground/15 pt-5 motion-safe:animate-entrada" style={{ "--retraso": "180ms" } as CSSProperties}>
+          {extra}
+        </div>
+      )}
     </div>
   );
 }

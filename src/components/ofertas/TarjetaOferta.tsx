@@ -34,7 +34,7 @@ export function TarjetaOferta({ oferta }: { oferta: OfertaPublica }) {
       />
       {/* A shine crosses the card once on hover */}
       <span aria-hidden className="pointer-events-none absolute inset-0 rounded-2xl">
-        <span className="absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-transparent via-primary/[0.07] to-transparent opacity-0 group-hover:opacity-100 motion-safe:group-hover:animate-brillo" />
+        <span className="absolute inset-y-0 left-0 w-1/2 bg-gradient-to-r from-transparent via-primary/[0.035] to-transparent opacity-0 group-hover:opacity-100 motion-safe:group-hover:animate-brillo" />
       </span>
 
       <div className="flex items-start gap-3">
