@@ -46,6 +46,45 @@
     0% { transform: translate(0, 0) scale(1); opacity: 1; }
     100% { transform: translate(var(--x), var(--y)) scale(0.4); opacity: 0; }
   }
+
+  /* Brand backgrounds (FondoMarca): the shield drifts and a soft light sweeps, slow enough
+     to read as texture, not as content. Only behind motion-safe:. */
+  --animate-deriva: deriva 40s ease-in-out infinite alternate;
+  --animate-deriva-lenta: deriva 60s ease-in-out infinite alternate-reverse;
+  --animate-luz: luz 18s ease-in-out infinite alternate;
+
+  @keyframes deriva {
+    0% { transform: translate(0, 0) rotate(-6deg) scale(1); }
+    100% { transform: translate(-4%, 6%) rotate(4deg) scale(1.08); }
+  }
+
+  @keyframes luz {
+    0% { transform: translate(-20%, -10%); opacity: 0.55; }
+    100% { transform: translate(25%, 15%); opacity: 0.9; }
+  }
+
+  /* The landing's one orchestrated moment: hero lines arrive in sequence (--retraso per line) */
+  --animate-entrada: entrada 600ms cubic-bezier(0.2, 0.7, 0.2, 1) var(--retraso, 0ms) both;
+
+  @keyframes entrada {
+    from { transform: translateY(14px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+}
+
+/* Offer title morphs from its card into the detail page (React <ViewTransition share="morph">,
+   node_modules/next/dist/docs/01-app/02-guides/view-transitions.md). */
+::view-transition-group(.morph) {
+  animation-duration: 350ms;
+  animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
 }
 
 /* Fonts from funes.gob.ar, loaded with next/font in the root layout. inline: they point at

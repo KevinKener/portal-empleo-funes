@@ -1,7 +1,7 @@
 "use client";
 
 import { Building2, FileText, Globe, House } from "lucide-react";
-import { NavegacionArea, type EnlaceArea } from "@/components/layout/NavegacionArea";
+import { NavegacionArea, type EnlaceArea, type VarianteNavegacion } from "@/components/layout/NavegacionArea";
 
 const ENLACES: readonly EnlaceArea[] = [
   { href: "/empresa", texto: "Inicio", Icono: House, activo: (ruta) => ruta === "/empresa" },
@@ -12,6 +12,6 @@ const ENLACES: readonly EnlaceArea[] = [
 ];
 
 /** Company area navigation: Inicio · Mis ofertas · Mi empresa · Portal. */
-export function NavegacionEmpresa() {
-  return <NavegacionArea enlaces={ENLACES} />;
+export function NavegacionEmpresa({ variante }: { variante: VarianteNavegacion }) {
+  return <NavegacionArea enlaces={ENLACES} variante={variante} />;
 }

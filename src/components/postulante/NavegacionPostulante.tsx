@@ -1,7 +1,7 @@
 "use client";
 
 import { BriefcaseBusiness, House, Send, UserRound } from "lucide-react";
-import { NavegacionArea, type EnlaceArea } from "@/components/layout/NavegacionArea";
+import { NavegacionArea, type EnlaceArea, type VarianteNavegacion } from "@/components/layout/NavegacionArea";
 
 // Profile sub-pages light up "Mi perfil".
 const SECCIONES_PERFIL = ["/postulante/perfil", "/postulante/datos", "/postulante/rubros", "/postulante/cv", "/postulante/domicilio"];
@@ -14,6 +14,6 @@ const ENLACES: readonly EnlaceArea[] = [
 ];
 
 /** Job seeker area navigation: Inicio · Mi perfil · Postulaciones · Ofertas. */
-export function NavegacionPostulante() {
-  return <NavegacionArea enlaces={ENLACES} />;
+export function NavegacionPostulante({ variante }: { variante: VarianteNavegacion }) {
+  return <NavegacionArea enlaces={ENLACES} variante={variante} />;
 }

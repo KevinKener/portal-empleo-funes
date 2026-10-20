@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { EncabezadoSeccion, VOLVER_A_MI_PERFIL } from "@/components/postulante/EncabezadoSeccion";
+import { NotaLateral, PaginaArea } from "@/components/layout/PaginaArea";
+import { VOLVER_A_MI_PERFIL } from "@/components/postulante/volver";
 import { FormularioDatos } from "@/components/postulante/FormularioDatos";
 import { requerirRol } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
@@ -23,11 +24,29 @@ export default async function DatosPage() {
 
   const { dni, ...iniciales } = postulante;
   return (
-    <div className="mx-auto max-w-2xl space-y-6">
-      <EncabezadoSeccion volver={VOLVER_A_MI_PERFIL} titulo="Tus datos" descripcion="Mantené tus datos al día para que la Oficina de Empleo pueda contactarte." />
-      <div className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+    <PaginaArea
+      volver={VOLVER_A_MI_PERFIL}
+      titulo="Tus datos"
+      descripcion="Mantené tus datos al día para que la Oficina de Empleo pueda contactarte."
+      aside={<QuienVeTusDatos />}
+    >
+      <div className="max-w-2xl rounded-2xl border border-border bg-card p-5 sm:p-6">
         <FormularioDatos iniciales={iniciales} dni={dni} email={usuario.user?.email ?? ""} />
       </div>
-    </div>
+    </PaginaArea>
+  );
+}
+
+/** Who sees what (Rule 1 and 20261020120000_candidatos_empresa.sql), so people know why each field matters. */
+function QuienVeTusDatos() {
+  return (
+    <NotaLateral titulo="¿Quién ve tus datos?">
+      <p>La Oficina de Empleo ve todo tu perfil para acompañarte en cada postulación.</p>
+      <p>
+        Una empresa solo ve tu nombre, tu localidad, tus rubros y tu CV cuando la Oficina te preselecciona para una de sus ofertas. Tu
+        teléfono y tu email los ve recién cuando te elige para una entrevista.
+      </p>
+      <p>Tu DNI, tu dirección y tu comprobante de domicilio nunca llegan a las empresas.</p>
+    </NotaLateral>
   );
 }

@@ -1,7 +1,17 @@
 import Link from "next/link";
 import { formatearFecha, textoEstadoPostulacion } from "@/lib/formato";
 import type { MiPostulacion } from "@/lib/postulaciones";
+import { cn } from "@/lib/utils";
 import { SeguimientoPostulacion } from "./SeguimientoPostulacion";
+
+// Left stripe by stage: in review is soft, with the company or hired is the brand green
+const FRANJA: Record<MiPostulacion["estado"], string> = {
+  pendiente: "border-l-primary/40",
+  preseleccionado: "border-l-primary",
+  entrevista: "border-l-primary",
+  contratado: "border-l-primary",
+  rechazado: "border-l-border",
+};
 
 /**
  * One application with its status in plain words. Active ones show a
@@ -15,7 +25,7 @@ export function TarjetaPostulacion({ postulacion }: { postulacion: MiPostulacion
 
   return (
     // The panel links here with #postulacion-<id>
-    <article id={`postulacion-${postulacion.id}`} className="scroll-mt-24 space-y-4 rounded-2xl border border-border bg-card p-5 motion-safe:animate-in motion-safe:fade-in">
+    <article id={`postulacion-${postulacion.id}`} className={cn("scroll-mt-24 space-y-4 rounded-2xl border border-l-4 border-border bg-card p-5", FRANJA[estado])}>
       <header className="flex flex-wrap items-start justify-between gap-2">
         <div className="min-w-0 space-y-1">
           <h3 className="font-heading text-lg font-semibold">

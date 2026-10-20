@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { abrirArchivo, eliminarArchivo, registrarArchivo } from "@/app/empresa/archivos";
 import { FormularioEmpresa } from "@/components/empresa/FormularioEmpresa";
 import { SubidaArchivo } from "@/components/formularios/SubidaArchivo";
-import { EncabezadoSeccion } from "@/components/postulante/EncabezadoSeccion";
+import { NotaLateral, PaginaArea } from "@/components/layout/PaginaArea";
 import { TarjetaSeccion } from "@/components/postulante/TarjetaSeccion";
 import { requerirRol } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
@@ -26,12 +26,11 @@ export default async function DatosEmpresaPage() {
 
   const { cuit, constancia_arca_url, estado, ...iniciales } = empresa;
   return (
-    <div className="mx-auto max-w-2xl space-y-6">
-      <EncabezadoSeccion
-        volver={{ href: "/empresa", texto: "Inicio" }}
-        titulo="Mi empresa"
-        descripcion="Mantené tus datos al día para que la Oficina de Empleo pueda contactarte."
-      />
+    <PaginaArea
+      titulo="Mi empresa"
+      descripcion="Mantené tus datos al día para que la Oficina de Empleo pueda contactarte."
+      aside={<QueVenLosPostulantes verificada={estado === "verificado"} />}
+    >
 
       <TarjetaSeccion titulo="Datos de la empresa">
         <FormularioEmpresa iniciales={iniciales} cuit={cuit} email={usuario.user?.email ?? ""} verificada={estado === "verificado"} />
@@ -50,6 +49,16 @@ export default async function DatosEmpresaPage() {
           acciones={{ registrar: registrarArchivo, abrir: abrirArchivo, eliminar: eliminarArchivo }}
         />
       </TarjetaSeccion>
-    </div>
+    </PaginaArea>
+  );
+}
+
+/** What is public and what only the Office sees (public views never carry the CUIT, AGENTS.md §3). */
+function QueVenLosPostulantes({ verificada }: { verificada: boolean }) {
+  return (
+    <NotaLateral titulo="¿Qué ven los postulantes?">
+      <p>En tus ofertas publicadas aparece tu nombre comercial. El resto de tus datos y la constancia solo los ve la Oficina de Empleo.</p>
+      {!verificada && <p>Mientras la Oficina verifica tu empresa, podés corregir la razón social si la cargaste mal.</p>}
+    </NotaLateral>
   );
 }

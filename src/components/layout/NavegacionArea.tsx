@@ -12,23 +12,57 @@ export type EnlaceArea = {
   activo: (ruta: string) => boolean;
 };
 
+/**
+ * "barra": bottom bar on phones and small tablets, always within thumb reach.
+ * "pestanias": tabs inside the site header from md, so there is a single
+ * navigation bar instead of two (tutor review 2026-10-20).
+ */
+export type VarianteNavegacion = "barra" | "pestanias";
+
 // Static class names: Tailwind only generates classes it can read in the source.
 const COLUMNAS: Record<number, string> = { 2: "grid-cols-2", 3: "grid-cols-3", 4: "grid-cols-4", 5: "grid-cols-5" };
 
 /**
- * Navigation of a private area: a bottom bar on phones (always within thumb
- * reach) and tabs under the header from sm (docs/research/panel-postulante.md §3.6).
- * Material Design recommends 3–5 destinations for the bottom bar.
+ * Navigation of a private area (docs/research/panel-postulante.md §3.6).
+ * MarcoArea renders both variants; each one hides itself at the other's
+ * sizes, so only one is ever visible or announced.
  */
-export function NavegacionArea({ enlaces }: { enlaces: readonly EnlaceArea[] }) {
+export function NavegacionArea({ enlaces, variante }: { enlaces: readonly EnlaceArea[]; variante: VarianteNavegacion }) {
   const ruta = usePathname();
+
+  if (variante === "pestanias") {
+    return (
+      <nav aria-label="Tu área" className="hidden self-stretch md:flex">
+        <ul className="flex">
+          {enlaces.map(({ href, texto, Icono, activo }) => {
+            const actual = activo(ruta);
+            return (
+              <li key={href} className="flex">
+                <Link
+                  href={href}
+                  aria-current={actual ? "page" : undefined}
+                  className={cn(
+                    "flex items-center gap-2 border-b-2 px-3 text-sm font-medium whitespace-nowrap transition-colors focus-visible:bg-accent focus-visible:outline-none lg:px-4",
+                    actual ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  <Icono aria-hidden className="size-4" />
+                  {texto}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
+    );
+  }
 
   return (
     <nav
       aria-label="Tu área"
-      className="fixed inset-x-0 bottom-0 z-10 border-t border-border bg-card/95 pb-[env(safe-area-inset-bottom)] backdrop-blur sm:static sm:border-t-0 sm:border-b sm:bg-card sm:pb-0 sm:backdrop-blur-none"
+      className="fixed inset-x-0 bottom-0 z-10 border-t border-border bg-card/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden"
     >
-      <ul className={cn("mx-auto grid max-w-6xl sm:flex sm:gap-1 sm:px-4", COLUMNAS[enlaces.length])}>
+      <ul className={cn("grid", COLUMNAS[enlaces.length])}>
         {enlaces.map(({ href, texto, Icono, activo }) => {
           const actual = activo(ruta);
           return (
@@ -38,13 +72,10 @@ export function NavegacionArea({ enlaces }: { enlaces: readonly EnlaceArea[] }) 
                 aria-current={actual ? "page" : undefined}
                 className={cn(
                   "flex h-14 flex-col items-center justify-center gap-0.5 px-1 text-xs font-medium transition-colors focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none",
-                  "sm:h-auto sm:flex-row sm:gap-2 sm:border-b-2 sm:px-3 sm:py-3 sm:text-sm",
-                  actual
-                    ? "text-primary sm:border-primary"
-                    : "text-muted-foreground hover:text-foreground sm:border-transparent",
+                  actual ? "text-primary" : "text-muted-foreground hover:text-foreground",
                 )}
               >
-                <Icono aria-hidden className="size-5 sm:size-4" />
+                <Icono aria-hidden className="size-5" />
                 {texto}
               </Link>
             </li>

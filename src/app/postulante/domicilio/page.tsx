@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CircleCheck, Clock, TriangleAlert } from "lucide-react";
-import { EncabezadoSeccion, VOLVER_A_MI_PERFIL } from "@/components/postulante/EncabezadoSeccion";
+import { NotaLateral, PaginaArea } from "@/components/layout/PaginaArea";
+import { VOLVER_A_MI_PERFIL } from "@/components/postulante/volver";
 import { abrirArchivo, eliminarArchivo, registrarArchivo } from "@/app/postulante/archivos";
 import { SubidaArchivo } from "@/components/formularios/SubidaArchivo";
 import { TarjetaSeccion } from "@/components/postulante/TarjetaSeccion";
@@ -41,26 +42,32 @@ export default async function DomicilioPage() {
 
   if (localidad !== "funes") {
     return (
-      <div className="mx-auto max-w-2xl space-y-6">
-        <EncabezadoSeccion volver={VOLVER_A_MI_PERFIL} titulo="Comprobante de domicilio" descripcion="Solo se pide a quienes viven en Funes." />
-        <p className="rounded-xl border border-border bg-muted p-4 text-sm">
+      <PaginaArea volver={VOLVER_A_MI_PERFIL} titulo="Comprobante de domicilio" descripcion="Solo se pide a quienes viven en Funes.">
+        <p className="max-w-2xl rounded-xl border border-border bg-muted p-4 text-sm">
           Según tus datos no vivís en Funes, así que no necesitás subir nada. Si te mudaste,{" "}
           <Link href="/postulante/datos" className="font-medium text-primary underline underline-offset-4">
             actualizá tus datos
           </Link>
           .
         </p>
-      </div>
+      </PaginaArea>
     );
   }
 
   const estado = comprobante_url ? ESTADOS[estado_domicilio] : null;
   return (
-    <div className="mx-auto max-w-2xl space-y-6">
-      <EncabezadoSeccion volver={VOLVER_A_MI_PERFIL}
-        titulo="Comprobante de domicilio"
-        descripcion="Es opcional y no te impide postularte. La Oficina de Empleo prioriza a los vecinos de Funes y tiene en cuenta el comprobante al revisar tu perfil."
-      />
+    <PaginaArea
+      volver={VOLVER_A_MI_PERFIL}
+      titulo="Comprobante de domicilio"
+      descripcion="Es opcional y no te impide postularte."
+      aside={
+        <NotaLateral titulo="¿Para qué sirve?">
+          <p>La Oficina de Empleo prioriza a los vecinos de Funes y tiene en cuenta el comprobante al revisar tu perfil.</p>
+          <p>Lo revisa una persona de la Oficina. Las empresas nunca lo ven.</p>
+          <p>Si subís uno nuevo o cambiás tu dirección, vuelve a quedar en revisión.</p>
+        </NotaLateral>
+      }
+    >
 
       {estado && (
         <div className={`flex gap-3 rounded-xl p-4 ${estado.clase}`}>
@@ -83,6 +90,6 @@ export default async function DomicilioPage() {
           acciones={{ registrar: registrarArchivo, abrir: abrirArchivo, eliminar: eliminarArchivo }}
         />
       </TarjetaSeccion>
-    </div>
+    </PaginaArea>
   );
 }

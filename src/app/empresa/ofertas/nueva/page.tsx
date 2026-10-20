@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { FormularioOferta } from "@/components/empresa/FormularioOferta";
-import { EncabezadoSeccion } from "@/components/postulante/EncabezadoSeccion";
+import { PasosOferta } from "@/components/empresa/PasosOferta";
+import { PaginaArea } from "@/components/layout/PaginaArea";
 import { requerirRol } from "@/lib/auth";
 import { listarCategorias } from "@/lib/categorias";
 import { obtenerEmpresaActual } from "@/lib/ofertas-empresa";
@@ -19,15 +20,15 @@ export default async function NuevaOfertaPage() {
 
   const categorias = await listarCategorias();
   return (
-    <div className="mx-auto max-w-2xl space-y-6">
-      <EncabezadoSeccion
-        volver={VOLVER}
-        titulo="Nueva oferta"
-        descripcion="Se guarda como borrador. Después la revisás y la enviás a la Oficina de Empleo."
-      />
-      <div className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+    <PaginaArea
+      volver={VOLVER}
+      titulo="Nueva oferta"
+      descripcion="Se guarda como borrador. Después la revisás y la enviás a la Oficina de Empleo."
+      aside={<PasosOferta />}
+    >
+      <div className="max-w-3xl rounded-2xl border border-border bg-card p-5 sm:p-6">
         <FormularioOferta categorias={categorias} volver={VOLVER.href} />
       </div>
-    </div>
+    </PaginaArea>
   );
 }

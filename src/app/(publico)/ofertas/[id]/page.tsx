@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { cache } from "react";
+import { cache, ViewTransition } from "react";
 import { ArrowLeft, BriefcaseBusiness, CalendarDays, Clock } from "lucide-react";
 import { AccionPostular } from "@/components/ofertas/AccionPostular";
+import { nombreTransicionOferta } from "@/components/ofertas/TarjetaOferta";
 import { obtenerOfertaPublica } from "@/lib/ofertas";
 import { ETIQUETAS_JORNADA, formatearFecha } from "@/lib/formato";
 import { esUuid } from "@/lib/validaciones/ofertas";
@@ -35,7 +36,11 @@ export default async function OfertaDetallePage({ params }: PageProps<"/ofertas/
               {oferta.categoria_nombre}
             </span>
           )}
-          <h1 className="font-heading text-2xl font-semibold leading-tight sm:text-3xl">{oferta.titulo}</h1>
+          <h1 className="font-heading text-2xl font-semibold leading-tight sm:text-3xl">
+            <ViewTransition name={nombreTransicionOferta(oferta.id)} share="morph" default="none">
+              <span>{oferta.titulo}</span>
+            </ViewTransition>
+          </h1>
           <dl className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
               <dt className="sr-only">Empresa</dt>

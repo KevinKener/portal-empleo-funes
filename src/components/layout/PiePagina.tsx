@@ -4,7 +4,7 @@ import Image from "next/image";
 export function PiePagina() {
   return (
     <footer className="mt-auto bg-primary-deep text-primary-foreground">
-      <div className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-10 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-10 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
         <Image
           src="/marca/logo-blanco.png"
           alt="Gobierno de la Ciudad de Funes"
