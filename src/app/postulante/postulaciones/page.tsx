@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Inbox } from "lucide-react";
-import { EncabezadoSeccion } from "@/components/postulante/EncabezadoSeccion";
+import { PaginaArea } from "@/components/layout/PaginaArea";
 import { TarjetaPostulacion } from "@/components/postulante/TarjetaPostulacion";
 import { buttonVariants } from "@/components/ui/button";
 import { requerirRol } from "@/lib/auth";
@@ -19,11 +19,10 @@ export default async function PostulacionesPage() {
   const postulaciones = await listarMisPostulaciones(resumen.postulante.id);
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6">
-      <EncabezadoSeccion
-        titulo="Mis postulaciones"
-        descripcion="Seguí en qué etapa está cada postulación. La Oficina de Empleo revisa tu perfil antes de enviarlo a la empresa."
-      />
+    <PaginaArea
+      titulo="Mis postulaciones"
+      descripcion="Seguí en qué etapa está cada postulación. La Oficina de Empleo revisa tu perfil antes de enviarlo a la empresa."
+    >
       {postulaciones.length === 0 ? (
         <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-border px-4 py-12 text-center">
           <Inbox aria-hidden className="size-10 text-muted-foreground" />
@@ -33,12 +32,12 @@ export default async function PostulacionesPage() {
           </Link>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="grid gap-4 lg:grid-cols-2">
           {postulaciones.map((postulacion) => (
             <TarjetaPostulacion key={postulacion.id} postulacion={postulacion} />
           ))}
         </div>
       )}
-    </div>
+    </PaginaArea>
   );
 }

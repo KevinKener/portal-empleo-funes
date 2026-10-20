@@ -34,79 +34,84 @@ export default async function OfertaEmpresaPage({ params }: PageProps<"/empresa/
   const candidatos = conPostulaciones ? await contarCandidatos(oferta.id) : 0;
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6">
+    <div className="space-y-6">
       <Link href="/empresa/ofertas" className="inline-flex items-center gap-1 text-sm font-medium text-primary underline-offset-4 hover:underline">
         <ArrowLeft aria-hidden className="size-4" /> Mis ofertas
       </Link>
 
-      <section aria-label="Estado de la oferta" className="space-y-4 rounded-2xl border border-border bg-card p-5 sm:p-6">
-        <div className="space-y-2">
-          <EtiquetaEstadoOferta estado={oferta.estado} />
-          <p className="text-sm text-muted-foreground">{ESTADO_OFERTA_PARA_EMPRESA[oferta.estado].detalle}</p>
-          {oferta.estado === "rechazada" && oferta.motivo_rechazo && (
-            <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive">
-              <p className="font-medium">Motivo de la Oficina de Empleo</p>
-              <p className="mt-1 whitespace-pre-line">{oferta.motivo_rechazo}</p>
+      {/* Status and actions go first on phones and to the side from lg, so the offer text gets the width */}
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start">
+        <aside className="space-y-4 lg:sticky lg:top-24 lg:order-last">
+          <section aria-label="Estado de la oferta" className="space-y-4 rounded-2xl border border-border bg-card p-5 sm:p-6">
+            <div className="space-y-2">
+              <EtiquetaEstadoOferta estado={oferta.estado} />
+              <p className="text-sm text-muted-foreground">{ESTADO_OFERTA_PARA_EMPRESA[oferta.estado].detalle}</p>
+              {oferta.estado === "rechazada" && oferta.motivo_rechazo && (
+                <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive">
+                  <p className="font-medium">Motivo de la Oficina de Empleo</p>
+                  <p className="mt-1 whitespace-pre-line">{oferta.motivo_rechazo}</p>
+                </div>
+              )}
             </div>
-          )}
-        </div>
-        <AccionesOferta id={oferta.id} estado={oferta.estado} puedeCrear={empresa.estado === "verificado"} />
-      </section>
-
-      {conPostulaciones && (
-        <section aria-label="Candidatos" className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
-          <p className="text-sm text-muted-foreground">
-            {candidatos === 0
-              ? "La Oficina de Empleo todavía no te preseleccionó candidatos."
-              : `La Oficina de Empleo te preseleccionó ${candidatos === 1 ? "1 candidato" : `${candidatos} candidatos`}.`}
-          </p>
-          <Link
-            href={`/empresa/ofertas/${oferta.id}/candidatos`}
-            className={buttonVariants({ className: "h-11 shrink-0 px-5 text-base hover:bg-primary-hover" })}
-          >
-            <Users aria-hidden /> Ver candidatos ({candidatos})
-          </Link>
-        </section>
-      )}
-
-      <article className="space-y-6 rounded-2xl border border-border bg-card p-5 sm:p-8">
-        <header className="space-y-3">
-          <h1 className="font-heading text-2xl font-semibold leading-tight sm:text-3xl">{oferta.titulo}</h1>
-          <dl className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted-foreground">
-            {oferta.categoria_nombre && (
-              <div className="flex items-center gap-2">
-                <dt className="sr-only">Rubro</dt>
-                <Tag aria-hidden className="size-4" />
-                <dd>{oferta.categoria_nombre}</dd>
-              </div>
-            )}
-            <div className="flex items-center gap-2">
-              <dt className="sr-only">Jornada</dt>
-              <Clock aria-hidden className="size-4" />
-              <dd>{ETIQUETAS_JORNADA[oferta.jornada]}</dd>
-            </div>
-            {oferta.fecha_publicacion && (
-              <div className="flex items-center gap-2">
-                <dt className="sr-only">Publicada</dt>
-                <CalendarDays aria-hidden className="size-4" />
-                <dd>Publicada el {formatearFecha(oferta.fecha_publicacion)}</dd>
-              </div>
-            )}
-          </dl>
-        </header>
-
-        <section className="space-y-2">
-          <h2 className="font-heading text-lg font-semibold">Descripción</h2>
-          <p className="whitespace-pre-line text-foreground/90">{oferta.descripcion}</p>
-        </section>
-
-        {oferta.requisitos && (
-          <section className="space-y-2">
-            <h2 className="font-heading text-lg font-semibold">Requisitos</h2>
-            <p className="whitespace-pre-line text-foreground/90">{oferta.requisitos}</p>
+            <AccionesOferta id={oferta.id} estado={oferta.estado} puedeCrear={empresa.estado === "verificado"} />
           </section>
-        )}
-      </article>
+
+          {conPostulaciones && (
+            <section aria-label="Candidatos" className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6 lg:flex-col lg:items-stretch">
+              <p className="text-sm text-muted-foreground">
+                {candidatos === 0
+                  ? "La Oficina de Empleo todavía no te preseleccionó candidatos."
+                  : `La Oficina de Empleo te preseleccionó ${candidatos === 1 ? "1 candidato" : `${candidatos} candidatos`}.`}
+              </p>
+              <Link
+                href={`/empresa/ofertas/${oferta.id}/candidatos`}
+                className={buttonVariants({ className: "h-11 shrink-0 px-5 text-base hover:bg-primary-hover" })}
+              >
+                <Users aria-hidden /> Ver candidatos ({candidatos})
+              </Link>
+            </section>
+          )}
+        </aside>
+
+        <article className="space-y-6 rounded-2xl border border-border bg-card p-5 sm:p-8">
+          <header className="space-y-3">
+            <h1 className="font-heading text-2xl font-semibold leading-tight sm:text-3xl">{oferta.titulo}</h1>
+            <dl className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted-foreground">
+              {oferta.categoria_nombre && (
+                <div className="flex items-center gap-2">
+                  <dt className="sr-only">Rubro</dt>
+                  <Tag aria-hidden className="size-4" />
+                  <dd>{oferta.categoria_nombre}</dd>
+                </div>
+              )}
+              <div className="flex items-center gap-2">
+                <dt className="sr-only">Jornada</dt>
+                <Clock aria-hidden className="size-4" />
+                <dd>{ETIQUETAS_JORNADA[oferta.jornada]}</dd>
+              </div>
+              {oferta.fecha_publicacion && (
+                <div className="flex items-center gap-2">
+                  <dt className="sr-only">Publicada</dt>
+                  <CalendarDays aria-hidden className="size-4" />
+                  <dd>Publicada el {formatearFecha(oferta.fecha_publicacion)}</dd>
+                </div>
+              )}
+            </dl>
+          </header>
+
+          <section className="space-y-2">
+            <h2 className="font-heading text-lg font-semibold">Descripción</h2>
+            <p className="whitespace-pre-line text-foreground/90">{oferta.descripcion}</p>
+          </section>
+
+          {oferta.requisitos && (
+            <section className="space-y-2">
+              <h2 className="font-heading text-lg font-semibold">Requisitos</h2>
+              <p className="whitespace-pre-line text-foreground/90">{oferta.requisitos}</p>
+            </section>
+          )}
+        </article>
+      </div>
     </div>
   );
 }

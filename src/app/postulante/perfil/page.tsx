@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { EncabezadoSeccion } from "@/components/postulante/EncabezadoSeccion";
+import { PaginaArea } from "@/components/layout/PaginaArea";
 import { FotoPerfil } from "@/components/postulante/FotoPerfil";
 import { ListaTareas } from "@/components/postulante/ListaTareas";
 import { requerirRol } from "@/lib/auth";
@@ -19,19 +19,17 @@ export default async function PerfilPage() {
   const foto = await urlFotoPerfil(postulante.foto_url);
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6">
-      <EncabezadoSeccion
-        titulo="Mi perfil"
-        descripcion="Lo que ve la Oficina de Empleo cuando revisa tus postulaciones. Mantenelo al día."
-      />
-      <FotoPerfil
-        userId={userId}
-        nombre={postulante.nombre}
-        apellido={postulante.apellido}
-        localidad={ETIQUETAS_LOCALIDAD[postulante.localidad]}
-        foto={foto}
-      />
-      <ListaTareas tareas={tareasDelPerfil(resumen)} />
-    </div>
+    <PaginaArea titulo="Mi perfil" descripcion="Lo que ve la Oficina de Empleo cuando revisa tus postulaciones. Mantenelo al día.">
+      <div className="grid gap-6 lg:grid-cols-[22rem_minmax(0,1fr)] lg:items-start">
+        <FotoPerfil
+          userId={userId}
+          nombre={postulante.nombre}
+          apellido={postulante.apellido}
+          localidad={ETIQUETAS_LOCALIDAD[postulante.localidad]}
+          foto={foto}
+        />
+        <ListaTareas tareas={tareasDelPerfil(resumen)} />
+      </div>
+    </PaginaArea>
   );
 }

@@ -4,7 +4,9 @@ import Link from "next/link";
 import { ArrowRight, CircleCheck, Info } from "lucide-react";
 import { SeccionExperiencias, SeccionFormaciones } from "@/components/postulante/cv/SeccionesCv";
 import { SobreMi } from "@/components/postulante/cv/SobreMi";
-import { EncabezadoSeccion, VOLVER_A_MI_PERFIL } from "@/components/postulante/EncabezadoSeccion";
+import { PaginaArea } from "@/components/layout/PaginaArea";
+import { IndiceCv } from "@/components/postulante/cv/IndiceCv";
+import { VOLVER_A_MI_PERFIL } from "@/components/postulante/volver";
 import { abrirArchivo, eliminarArchivo, registrarArchivo } from "@/app/postulante/archivos";
 import { SubidaArchivo } from "@/components/formularios/SubidaArchivo";
 import { TarjetaSeccion } from "@/components/postulante/TarjetaSeccion";
@@ -42,11 +44,21 @@ export default async function CvPage({ searchParams }: PageProps<"/postulante/cv
 
   const completo = tieneCv(resumen);
   return (
-    <div className="mx-auto max-w-3xl space-y-6">
-      <EncabezadoSeccion volver={VOLVER_A_MI_PERFIL}
-        titulo="Tu CV"
-        descripcion="Armalo acá completando las secciones, o subí el CV que ya tenés. Con cualquiera de los dos ya podés postularte."
-      />
+    <PaginaArea
+      volver={VOLVER_A_MI_PERFIL}
+      titulo="Tu CV"
+      descripcion="Armalo acá completando las secciones, o subí el CV que ya tenés. Con cualquiera de los dos ya podés postularte."
+      aside={
+        <IndiceCv
+          secciones={[
+            { id: "sobre-vos", titulo: "Sobre vos", hecho: Boolean(resumen.postulante.descripcion?.trim()) },
+            { id: "experiencia", titulo: "Experiencia laboral", hecho: (experiencias ?? []).length > 0 },
+            { id: "estudios", titulo: "Estudios y cursos", hecho: (formaciones ?? []).length > 0 },
+            { id: "archivo", titulo: "CV adjunto", hecho: Boolean(resumen.postulante.cv_url) },
+          ]}
+        />
+      }
+    >
 
       <div
         className={
@@ -61,7 +73,7 @@ export default async function CvPage({ searchParams }: PageProps<"/postulante/cv
             ? "Tu CV está listo. Podés seguir sumando información cuando quieras."
             : "Para completar tu CV: escribí unas líneas sobre vos y cargá al menos una experiencia o un estudio, o "}
           {!completo && (
-            <a href="#pdf" className="font-medium text-primary underline underline-offset-4">
+            <a href="#archivo" className="font-medium text-primary underline underline-offset-4">
               subí el CV que ya tenés
             </a>
           )}
@@ -89,7 +101,7 @@ export default async function CvPage({ searchParams }: PageProps<"/postulante/cv
         <SeccionFormaciones formaciones={formaciones ?? []} />
       </TarjetaSeccion>
       <TarjetaSeccion
-        id="pdf"
+        id="archivo"
         titulo="¿Ya tenés tu CV hecho?"
         descripcion="Subilo en PDF o Word, o sacale una foto si lo tenés en papel. La Oficina de Empleo lo va a ver junto con tu perfil."
       >
@@ -102,6 +114,6 @@ export default async function CvPage({ searchParams }: PageProps<"/postulante/cv
           acciones={{ registrar: registrarArchivo, abrir: abrirArchivo, eliminar: eliminarArchivo }}
         />
       </TarjetaSeccion>
-    </div>
+    </PaginaArea>
   );
 }

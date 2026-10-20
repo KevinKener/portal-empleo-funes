@@ -30,7 +30,7 @@ export default async function CandidatosPage({ params }: PageProps<"/empresa/ofe
     candidatos.filter((c) => c.estado === estado && c.decision === decision).length;
 
   return (
-    <div className="mx-auto max-w-5xl space-y-6">
+    <div className="space-y-6">
       <div className="space-y-2">
         <Link
           href={`/empresa/ofertas/${id}`}

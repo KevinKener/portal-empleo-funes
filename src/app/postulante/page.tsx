@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight, CircleCheck, Lightbulb } from "lucide-react";
+import { BandaBienvenida } from "@/components/layout/PanelBienvenida";
 import { Avatar } from "@/components/postulante/Avatar";
 import { ListaTareas } from "@/components/postulante/ListaTareas";
 import { OfertasParaVos } from "@/components/postulante/panel/OfertasParaVos";
@@ -44,14 +45,14 @@ export default async function PostulantePage() {
       actual={{ perfilListo: listo, estados: Object.fromEntries(postulaciones.map((p) => [p.id, p.estado])) }}
     >
       <div className="space-y-6">
-        <div className="flex items-center gap-4">
-          <Avatar nombre={postulante.nombre} apellido={postulante.apellido} foto={foto} />
-          <div className="min-w-0">
-            <h1 className="truncate font-heading text-2xl font-bold sm:text-3xl">¡Hola, {postulante.nombre}!</h1>
-            <p className="flex items-center gap-1.5 text-muted-foreground">
+        <BandaBienvenida
+          inicio={<Avatar nombre={postulante.nombre} apellido={postulante.apellido} foto={foto} tamanio="lg" />}
+          saludo={`¡Hola, ${postulante.nombre}!`}
+          descripcion={
+            <p className="flex items-center gap-1.5">
               {listo ? (
                 <>
-                  <CircleCheck aria-hidden className="size-4 text-primary" />
+                  <CircleCheck aria-hidden className="size-4 shrink-0" />
                   Tu perfil está listo para postularte
                 </>
               ) : faltan === 1 ? (
@@ -60,8 +61,8 @@ export default async function PostulantePage() {
                 `Te faltan ${faltan} pasos para poder postularte`
               )}
             </p>
-          </div>
-        </div>
+          }
+        />
 
         <div className="grid gap-6 lg:grid-cols-[2fr_1fr] lg:items-start">
           <div className="space-y-6">

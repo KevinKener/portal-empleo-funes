@@ -39,10 +39,11 @@ Everything built works; UX details to fix:
 - [x] Required fields marked with a red asterisk (`*`) in every form (`requerido` on `Campo`, `aria-required`)
 - [x] Replace native `<select>` (sign-up step 3, CV dates) with a reusable component (`Selector` on shadcn/Base UI `select`)
 - [x] Accept more CV formats: images, `.doc`, `.docx` (migration `20261020140000_formatos_cv.sql`)
-- [ ] No double confirmations: one notice is enough
-- [ ] Use the available width better; single navigation (tabs) instead of header + area bar
+- [ ] No double confirmations: one notice is enough (next: `fix/confirmaciones`)
+- [x] Use the available width better; single navigation (tabs) instead of header + area bar (`max-w-7xl`, `PaginaArea` with side column, area tabs inside the header from md)
+- [x] Visual polish (beyond the review): moving brand background on the landing and account screens, latest-offers carousel, offer title morph into its page, status stripes on cards, two-column account screens; fixed the unreadable hover of `secondary` buttons (undefined CSS variable)
 - [ ] Profile photo: move the image inside the frame, position saved in the database
-- [ ] Better-quality municipal logo (EliasGallay/Solicitudes-Farmacia `src/assets/brand`)
+- [x] Better-quality municipal logo (EliasGallay/Solicitudes-Farmacia `src/assets/brand`): `escudo-blanco.png` via `Escudo`, also the watermark of the area homes' greeting band
 
 ---
 

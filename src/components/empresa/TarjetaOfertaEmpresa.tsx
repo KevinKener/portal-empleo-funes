@@ -4,6 +4,16 @@ import { EtiquetaEstadoOferta } from "@/components/empresa/EtiquetaEstadoOferta"
 import { ETIQUETAS_JORNADA, formatearFecha } from "@/lib/formato";
 import type { ResumenCandidatos } from "@/lib/candidatos-empresa";
 import type { OfertaEmpresa } from "@/lib/ofertas-empresa";
+import { cn } from "@/lib/utils";
+
+// Left stripe by status: the list reads at a glance (live = brand green, rejected = red)
+const FRANJA: Record<OfertaEmpresa["estado"], string> = {
+  borrador: "border-l-border",
+  pendiente: "border-l-primary/40",
+  publicada: "border-l-primary",
+  rechazada: "border-l-destructive",
+  cerrada: "border-l-muted-foreground/40",
+};
 
 type PropsTarjetaOfertaEmpresa = {
   oferta: OfertaEmpresa;
@@ -25,7 +35,12 @@ export function TarjetaOfertaEmpresa({ oferta, candidatos }: PropsTarjetaOfertaE
       : `Último cambio el ${formatearFecha(oferta.updated_at)}`;
 
   return (
-    <article className="group relative flex flex-col gap-3 rounded-xl border border-border bg-card p-5 transition-shadow hover:shadow-md focus-within:ring-3 focus-within:ring-ring/50">
+    <article
+      className={cn(
+        "group relative flex h-full flex-col gap-3 rounded-2xl border border-l-4 border-border bg-card p-5 transition-[box-shadow,translate] duration-200 ease-out focus-within:ring-3 focus-within:ring-ring/50 hover:shadow-xl hover:shadow-primary/[0.07] motion-safe:hover:-translate-y-0.5",
+        FRANJA[oferta.estado],
+      )}
+    >
       <div className="flex flex-wrap items-center gap-2">
         <EtiquetaEstadoOferta estado={oferta.estado} />
         {candidatos && candidatos.porRevisar > 0 && (
@@ -35,7 +50,7 @@ export function TarjetaOfertaEmpresa({ oferta, candidatos }: PropsTarjetaOfertaE
         )}
       </div>
       <h2 className="font-heading text-lg font-semibold leading-snug text-foreground group-hover:text-primary">
-        <Link href={`/empresa/ofertas/${oferta.id}`} className="outline-none after:absolute after:inset-0">
+        <Link href={`/empresa/ofertas/${oferta.id}`} className="outline-none after:absolute after:inset-0 after:rounded-2xl">
           {oferta.titulo}
         </Link>
       </h2>

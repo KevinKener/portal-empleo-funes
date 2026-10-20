@@ -24,7 +24,7 @@ export default async function OfertasPage({ searchParams }: PageProps<"/ofertas"
   const filtros = validarFiltrosOfertas(aURLSearchParams(await searchParams));
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6 px-4 py-8 sm:py-12">
+    <div className="mx-auto max-w-7xl space-y-6 px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
       <header className="space-y-2">
         <h1 className="font-heading text-3xl font-semibold text-foreground sm:text-4xl">Ofertas de trabajo</h1>
         <p className="text-muted-foreground">
