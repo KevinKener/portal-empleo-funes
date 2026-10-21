@@ -3,7 +3,7 @@ import { listarOfertasPublicas } from "@/lib/ofertas";
 import { validarFiltrosOfertas } from "@/lib/validaciones/ofertas";
 
 /**
- * GET /api/ofertas?categoria=<uuid>&pagina=<n>
+ * GET /api/ofertas?categoria=<uuid>&pagina=<n>&orden=recientes|urgentes|solicitadas
  * Public (no session needed): published offers only (Rule 2), paginated.
  * Returns { ofertas, total, pagina, porPagina }.
  */

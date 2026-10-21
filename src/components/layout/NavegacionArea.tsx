@@ -71,11 +71,19 @@ export function NavegacionArea({ enlaces, variante }: { enlaces: readonly Enlace
                 href={href}
                 aria-current={actual ? "page" : undefined}
                 className={cn(
-                  "flex h-14 flex-col items-center justify-center gap-0.5 px-1 text-xs font-medium transition-colors focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none",
-                  actual ? "text-primary" : "text-muted-foreground hover:text-foreground",
+                  "group flex h-16 flex-col items-center justify-center gap-1 px-1 text-xs transition-colors focus-visible:outline-none active:scale-95",
+                  actual ? "font-semibold text-primary" : "font-medium text-muted-foreground hover:text-foreground",
                 )}
               >
-                <Icono aria-hidden className="size-5" />
+                {/* A pill behind the active icon says "you are here" at a glance (Material-style bar) */}
+                <span
+                  className={cn(
+                    "flex h-8 w-14 items-center justify-center rounded-full transition-[background-color,width] duration-300 group-focus-visible:ring-3 group-focus-visible:ring-ring/50",
+                    actual ? "bg-secondary" : "w-10 group-hover:bg-muted",
+                  )}
+                >
+                  <Icono aria-hidden className="size-5" />
+                </span>
                 {texto}
               </Link>
             </li>

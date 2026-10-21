@@ -26,6 +26,10 @@
   --color-accent: #e8f1eb;
   --color-accent-foreground: #074a1f;
   --color-destructive: #b42318;
+  /* Time-sensitive, not an error: urgent offers and, later, overdue Admin queues. Always paired
+     with an icon and words, never color alone. aviso on white and on aviso-suave is above 5:1. */
+  --color-aviso: #8f4a00;
+  --color-aviso-suave: #fdf1dc;
   --color-border: #dde3df;
   --color-input: #dde3df;
   --color-ring: #074a1f;
@@ -220,5 +224,64 @@ body {
   background-repeat: no-repeat;
   @media (prefers-reduced-motion: no-preference) {
     animation: esqueleto 1.6s ease-in-out infinite;
+  }
+}
+
+/* Count tiles (ResumenPostulaciones): the number counts up from 0 to --hasta. A registered
+   integer property can be animated and printed with a CSS counter; the real number is in the
+   markup for screen readers. Without motion it shows the final value. */
+@property --cuenta {
+  syntax: "<integer>";
+  initial-value: 0;
+  inherits: false;
+}
+
+@keyframes contar {
+  from { --cuenta: 0; }
+}
+
+@utility contador {
+  --cuenta: var(--hasta);
+  counter-reset: cuenta var(--cuenta);
+  &::after {
+    content: counter(cuenta);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    animation: contar 1s cubic-bezier(0.2, 0.7, 0.2, 1) var(--retraso, 0ms) both;
+  }
+}
+
+/* The stretch of the application tracker being worked on now: soft dashes moving towards the
+   next step, so "en curso" reads as progress. Still dashes with reduced motion. */
+@keyframes avance {
+  to { background-position: 0.75rem 0; }
+}
+
+@utility tramo-en-curso {
+  background-image: repeating-linear-gradient(
+    90deg,
+    color-mix(in oklch, var(--color-primary) 45%, transparent) 0 0.375rem,
+    transparent 0.375rem 0.75rem
+  );
+  background-size: 0.75rem 100%;
+  @media (prefers-reduced-motion: no-preference) {
+    animation: avance 0.9s linear infinite;
+  }
+}
+
+/* Same stretch, going down (the full tracker is vertical on phones) */
+@keyframes avance-y {
+  to { background-position: 0 0.75rem; }
+}
+
+@utility tramo-en-curso-y {
+  background-image: repeating-linear-gradient(
+    180deg,
+    color-mix(in oklch, var(--color-primary) 45%, transparent) 0 0.375rem,
+    transparent 0.375rem 0.75rem
+  );
+  background-size: 100% 0.75rem;
+  @media (prefers-reduced-motion: no-preference) {
+    animation: avance-y 0.9s linear infinite;
   }
 }

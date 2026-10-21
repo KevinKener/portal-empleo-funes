@@ -164,16 +164,16 @@ export async function usarComoBase(id: string): Promise<ResultadoAccion> {
 
   const { data: original } = await supabase
     .from("ofertas")
-    .select("titulo, descripcion, requisitos, jornada, categoria_id, estado")
+    .select("titulo, descripcion, requisitos, jornada, categoria_id, prioridad, estado")
     .eq("id", id)
     .eq("empresa_id", empresa.id)
     .maybeSingle();
   if (!original || !ESTADOS_COPIABLES.includes(original.estado)) return { error: ERROR_CAMBIO };
 
-  const { titulo, descripcion, requisitos, jornada, categoria_id } = original;
+  const { titulo, descripcion, requisitos, jornada, categoria_id, prioridad } = original;
   const { data, error } = await supabase
     .from("ofertas")
-    .insert({ titulo, descripcion, requisitos, jornada, categoria_id, empresa_id: empresa.id })
+    .insert({ titulo, descripcion, requisitos, jornada, categoria_id, prioridad, empresa_id: empresa.id })
     .select("id")
     .single();
   if (error) {

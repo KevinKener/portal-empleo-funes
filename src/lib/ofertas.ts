@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
-import type { FiltrosOfertas } from "@/lib/validaciones/ofertas"
+import type { FiltrosOfertas, OrdenOfertas } from "@/lib/validaciones/ofertas"
 import type { Tables } from "@/types/database"
 
 /**
@@ -21,26 +21,37 @@ export type PaginaOfertas = {
 }
 
 const COLUMNAS =
-  "id, titulo, descripcion, requisitos, jornada, fecha_publicacion, categoria_id, categoria_nombre, empresa_nombre, empresa_logo_url"
+  "id, titulo, descripcion, requisitos, jornada, fecha_publicacion, categoria_id, categoria_nombre, empresa_nombre, empresa_logo_url, prioridad, nivel_demanda"
 
 // PostgREST answers 416 with this code when the page starts past the last row.
 const RANGO_FUERA_DE_LIMITE = "PGRST103"
 
+// Column sorted on before the publication date, per listing order. prioridad
+// is an enum declared ('normal', 'urgente'), so descending puts urgent first;
+// nivel_demanda goes from 0 (few applicants) to 2 (in high demand).
+const PRIMER_ORDEN: Record<OrdenOfertas, "prioridad" | "nivel_demanda" | null> = {
+  recientes: null,
+  urgentes: "prioridad",
+  solicitadas: "nivel_demanda",
+}
+
 /**
- * One page of published offers, newest first, optionally filtered by
- * category. A page past the end comes back empty with the real total.
- * Throws on database errors.
+ * One page of published offers, optionally filtered by category, sorted by
+ * `orden` and then newest first. A page past the end comes back empty with
+ * the real total. Throws on database errors.
  */
 export async function listarOfertasPublicas({
   categoria,
   pagina,
+  orden,
 }: FiltrosOfertas): Promise<PaginaOfertas> {
   const supabase = await createClient()
   const desde = (pagina - 1) * OFERTAS_POR_PAGINA
 
-  let consulta = supabase
-    .from("ofertas_publicas")
-    .select(COLUMNAS, { count: "exact" })
+  let consulta = supabase.from("ofertas_publicas").select(COLUMNAS, { count: "exact" })
+  const primero = PRIMER_ORDEN[orden]
+  if (primero) consulta = consulta.order(primero, { ascending: false })
+  consulta = consulta
     .order("fecha_publicacion", { ascending: false })
     .order("id")
     .range(desde, desde + OFERTAS_POR_PAGINA - 1)

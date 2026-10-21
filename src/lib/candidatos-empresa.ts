@@ -18,6 +18,8 @@ export type Candidato = {
   estado: EstadoPostulacion
   motivoRechazo: MotivoRechazoPostulacion | null
   decision: DecisionEmpresa | null
+  /** When the Office sent the candidate to the company. */
+  fechaPreseleccion: string | null
   nombre: string
   apellido: string
   localidad: Enums<"localidad"> | null
@@ -40,7 +42,7 @@ export async function listarCandidatos(ofertaId: string): Promise<Candidato[]> {
   const { data: filas, error } = await supabase
     .from("candidatos_empresa")
     .select(
-      "postulacion_id, postulante_id, estado, motivo_rechazo, decision_empresa, nombre, apellido, localidad, descripcion, cv_url, categorias, telefono, email",
+      "postulacion_id, postulante_id, estado, motivo_rechazo, decision_empresa, fecha_preseleccion, nombre, apellido, localidad, descripcion, cv_url, categorias, telefono, email",
     )
     .eq("oferta_id", ofertaId)
     .order("fecha_preseleccion")
@@ -71,6 +73,7 @@ export async function listarCandidatos(ofertaId: string): Promise<Candidato[]> {
         estado: fila.estado,
         motivoRechazo: fila.motivo_rechazo,
         decision: fila.decision_empresa,
+        fechaPreseleccion: fila.fecha_preseleccion,
         nombre: fila.nombre ?? "",
         apellido: fila.apellido ?? "",
         localidad: fila.localidad,

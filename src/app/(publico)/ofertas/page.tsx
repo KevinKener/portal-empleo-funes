@@ -2,13 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { BadgeCheck, SearchX } from "lucide-react";
 import { FiltroCategorias } from "@/components/ofertas/FiltroCategorias";
+import { OrdenOfertas } from "@/components/ofertas/OrdenOfertas";
 import { Paginacion } from "@/components/ofertas/Paginacion";
 import { TarjetaOferta } from "@/components/ofertas/TarjetaOferta";
 import { FondoMarca } from "@/components/layout/FondoMarca";
 import { Revelar } from "@/components/layout/Revelar";
 import { listarCategorias } from "@/lib/categorias";
 import { listarOfertasPublicas } from "@/lib/ofertas";
-import { validarFiltrosOfertas } from "@/lib/validaciones/ofertas";
+import { validarFiltrosOfertas, type FiltrosOfertas } from "@/lib/validaciones/ofertas";
 
 export const metadata: Metadata = { title: "Ofertas de trabajo" };
 
@@ -39,7 +40,7 @@ export default async function OfertasPage({ searchParams }: PageProps<"/ofertas"
       </header>
 
       {filtros.ok ? (
-        <Listado categoria={filtros.datos.categoria} pagina={filtros.datos.pagina} />
+        <Listado {...filtros.datos} />
       ) : (
         <EstadoVacio titulo={filtros.error} />
       )}
@@ -47,21 +48,24 @@ export default async function OfertasPage({ searchParams }: PageProps<"/ofertas"
   );
 }
 
-async function Listado({ categoria, pagina }: { categoria: string | null; pagina: number }) {
+async function Listado({ categoria, pagina, orden }: FiltrosOfertas) {
   // Rule 2 is enforced by the ofertas_publicas view behind listarOfertasPublicas.
   const [categorias, resultado] = await Promise.all([
     listarCategorias(),
-    listarOfertasPublicas({ categoria, pagina }),
+    listarOfertasPublicas({ categoria, pagina, orden }),
   ]);
   const totalPaginas = Math.ceil(resultado.total / resultado.porPagina);
 
   return (
     <>
-      <FiltroCategorias categorias={categorias} seleccionada={categoria} />
+      <FiltroCategorias categorias={categorias} seleccionada={categoria} orden={orden} />
 
-      <p className="text-sm text-muted-foreground" aria-live="polite">
-        {resultado.total === 1 ? "1 oferta publicada" : `${resultado.total} ofertas publicadas`}
-      </p>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <p className="text-sm text-muted-foreground" aria-live="polite">
+          {resultado.total === 1 ? "1 oferta publicada" : `${resultado.total} ofertas publicadas`}
+        </p>
+        <OrdenOfertas categoria={categoria} orden={orden} />
+      </div>
 
       {resultado.ofertas.length > 0 ? (
         <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -78,7 +82,7 @@ async function Listado({ categoria, pagina }: { categoria: string | null; pagina
         <EstadoVacio titulo={mensajeSinResultados(resultado.total, categoria)} />
       )}
 
-      <Paginacion pagina={pagina} totalPaginas={totalPaginas} categoria={categoria} />
+      <Paginacion pagina={pagina} totalPaginas={totalPaginas} categoria={categoria} orden={orden} />
     </>
   );
 }

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight, SearchX } from "lucide-react";
+import { InsigniasOferta } from "@/components/ofertas/InsigniasOferta";
 import { LogoEmpresa } from "@/components/empresa/LogoEmpresa";
 import type { OfertaParaVos } from "@/lib/panel-postulante";
 
@@ -41,11 +42,7 @@ export function OfertasParaVos({ ofertas }: { ofertas: OfertaParaVos[] }) {
                 <span className="min-w-0 flex-1">
                   <span className="flex items-center gap-2">
                     <span className="truncate font-medium group-hover:text-primary">{oferta.titulo}</span>
-                    {oferta.nueva && (
-                      <span className="shrink-0 rounded-full bg-primary px-2 py-0.5 text-xs font-semibold text-primary-foreground">
-                        Nueva
-                      </span>
-                    )}
+                    <InsigniasOferta insignias={oferta.insignias} className="shrink-0 flex-nowrap" />
                   </span>
                   <span className="block truncate text-sm text-muted-foreground">
                     {[oferta.empresa, oferta.categoria].filter(Boolean).join(" · ")}

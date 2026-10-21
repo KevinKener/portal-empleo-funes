@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import { LoaderCircle } from "lucide-react";
 import { guardarOferta, type EstadoFormularioOferta } from "@/app/empresa/ofertas/actions";
+import { CampoPrioridad } from "@/components/empresa/CampoPrioridad";
 import { AvisoFormulario } from "@/components/formularios/AvisoFormulario";
 import { Campo, ESTILO_AREA } from "@/components/formularios/Campo";
 import { Selector } from "@/components/formularios/Selector";
@@ -65,6 +66,8 @@ export function FormularioOferta({ categorias, oferta, volver }: PropsFormulario
           {(control) => <Selector control={control} opciones={OPCIONES_JORNADA} inicial={oferta?.jornada} placeholder="Elegí la jornada" />}
         </Campo>
       </div>
+
+      <CampoPrioridad inicial={oferta?.prioridad} error={errores.prioridad} />
 
       <Campo
         nombre="descripcion"

@@ -1,12 +1,13 @@
 "use client";
 
-import { LoaderCircle } from "lucide-react";
+import { LoaderCircle, Lock } from "lucide-react";
 import { actualizarDatosEmpresa } from "@/app/empresa/datos/actions";
 import { AvisoFormulario } from "@/components/formularios/AvisoFormulario";
 import { CampoTexto } from "@/components/formularios/CampoTexto";
 import { buttonVariants } from "@/components/ui/button";
 import { useFormularioPorPasos, type Paso } from "@/hooks/useFormularioPorPasos";
 import { CAMPOS_DATOS_EMPRESA, type CampoDatosEmpresa } from "@/lib/validaciones/auth";
+import { cn } from "@/lib/utils";
 
 const PASOS_PENDIENTE: readonly Paso<CampoDatosEmpresa>[] = [{ titulo: "Datos de la empresa", campos: CAMPOS_DATOS_EMPRESA }];
 const PASOS_VERIFICADA: readonly Paso<CampoDatosEmpresa>[] = [
@@ -37,27 +38,19 @@ export function FormularioEmpresa({ iniciales, cuit, email, verificada }: PropsF
     <form onSubmit={form.enviar} noValidate className="space-y-5">
       <AvisoFormulario error={form.mensaje} aviso={form.aviso} />
 
-      <dl className="grid gap-3 rounded-xl bg-muted p-4 text-sm sm:grid-cols-2">
-        {verificada && (
-          <div className="sm:col-span-2">
-            <dt className="text-muted-foreground">Razón social</dt>
-            <dd className="font-medium">{iniciales.razon_social}</dd>
-          </div>
-        )}
-        <div>
-          <dt className="text-muted-foreground">CUIT</dt>
-          <dd className="font-medium">{formatearCuit(cuit)}</dd>
-        </div>
-        <div className="min-w-0">
-          <dt className="text-muted-foreground">Email</dt>
-          <dd className="truncate font-medium">{email}</dd>
-        </div>
-        <p className="text-muted-foreground sm:col-span-2">
+      {/* Fixed data: who can change it is said right there */}
+      <div className="space-y-2">
+        <dl className="grid gap-2 text-sm sm:grid-cols-2">
+          {verificada && <DatoFijo etiqueta="Razón social" valor={iniciales.razon_social} ancho />}
+          <DatoFijo etiqueta="CUIT" valor={formatearCuit(cuit)} />
+          <DatoFijo etiqueta="Email" valor={email} />
+        </dl>
+        <p className="text-xs text-muted-foreground">
           {verificada
             ? "Para cambiar la razón social o el CUIT, comunicate con la Oficina de Empleo."
             : "Para cambiar el CUIT, comunicate con la Oficina de Empleo."}
         </p>
-      </dl>
+      </div>
 
       {!verificada && (
         <CampoTexto
@@ -88,5 +81,17 @@ export function FormularioEmpresa({ iniciales, cuit, email, verificada }: PropsF
         {form.enviando ? "Guardando…" : "Guardar cambios"}
       </button>
     </form>
+  );
+}
+
+function DatoFijo({ etiqueta, valor, ancho = false }: { etiqueta: string; valor: string; ancho?: boolean }) {
+  return (
+    <div className={cn("flex min-w-0 items-start gap-2.5 rounded-xl bg-muted px-3 py-2.5", ancho && "sm:col-span-2")}>
+      <Lock aria-hidden className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
+      <div className="min-w-0">
+        <dt className="text-xs text-muted-foreground">{etiqueta}</dt>
+        <dd className="truncate font-medium">{valor}</dd>
+      </div>
+    </div>
   );
 }

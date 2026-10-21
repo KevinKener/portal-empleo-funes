@@ -72,7 +72,7 @@ const SECCIONES: SeccionLegal[] = [
           aspecto físico ni ningún otro motivo prohibido por la Ley N° 23.592.
         </li>
         <li>Los datos de contacto de los candidatos se usan solo para el proceso de selección de esa oferta.</li>
-        <li>Te pedimos que registres en el portal a quién contrataste, para que la Oficina pueda hacer el seguimiento.</li>
+        <li>Te pedimos que registres en el portal a quién contrataste, para que la Oficina pueda medir cuánta gente consigue trabajo.</li>
       </ul>
     ),
   },

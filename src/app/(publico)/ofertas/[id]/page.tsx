@@ -6,13 +6,15 @@ import { cache, ViewTransition, type CSSProperties } from "react";
 import { ArrowLeft, BadgeCheck, CalendarDays, Clock, FileText, ListChecks, Share2 } from "lucide-react";
 import { FondoMarca } from "@/components/layout/FondoMarca";
 import { Revelar } from "@/components/layout/Revelar";
+import { InsigniasOferta } from "@/components/ofertas/InsigniasOferta";
 import { LogoEmpresa } from "@/components/empresa/LogoEmpresa";
 import { AccionPostular } from "@/components/ofertas/AccionPostular";
 import { TextoOferta } from "@/components/ofertas/TextoOferta";
 import { nombreTransicionOferta } from "@/components/ofertas/TarjetaOferta";
+import { insigniasOferta } from "@/lib/insignias-oferta";
 import { urlLogo } from "@/lib/logo-empresa";
 import { obtenerOfertaPublica } from "@/lib/ofertas";
-import { ETIQUETAS_JORNADA, formatearFecha } from "@/lib/formato";
+import { ahora, ETIQUETAS_JORNADA, formatearFecha } from "@/lib/formato";
 import { esUuid } from "@/lib/validaciones/ofertas";
 
 // Deduplicated per request: generateMetadata and the page read the same offer.
@@ -83,6 +85,8 @@ export default async function OfertaDetallePage({ params }: PageProps<"/ofertas/
               {oferta.categoria_nombre && <p className="truncate text-sm text-primary-foreground/80">{oferta.categoria_nombre}</p>}
             </div>
           </div>
+
+          <InsigniasOferta insignias={insigniasOferta(oferta, ahora(), 3)} sobreOscuro />
 
           <h1 className="max-w-3xl font-heading text-3xl leading-tight font-semibold tracking-tight text-balance sm:text-5xl">
             <ViewTransition name={nombreTransicionOferta(oferta.id)} share="morph" default="none">

@@ -1,4 +1,5 @@
 import "server-only"
+import { insigniasOferta, type InsigniaOferta } from "@/lib/insignias-oferta"
 import { urlLogo } from "@/lib/logo-empresa"
 import { createClient } from "@/lib/supabase/server"
 import { puedePostularse, tieneCv, type ResumenPerfil } from "@/lib/perfil-postulante"
@@ -21,7 +22,8 @@ export type OfertaParaVos = {
   /** Public URL of the company logo, or null (the initial shows instead). */
   logo: string | null
   categoria: string | null
-  nueva: boolean
+  /** One badge at most (urgent, demand or new), so the row stays one line. */
+  insignias: InsigniaOferta[]
 }
 
 /** The company behind an offer, as job seekers may see it. */
@@ -64,7 +66,7 @@ export async function obtenerOfertasParaVos(
 
   let lista = supabase
     .from("ofertas_publicas")
-    .select("id, titulo, empresa_nombre, empresa_logo_url, categoria_nombre, fecha_publicacion")
+    .select("id, titulo, empresa_nombre, empresa_logo_url, categoria_nombre, fecha_publicacion, prioridad, nivel_demanda")
     .in("categoria_id", categorias)
     .order("fecha_publicacion", { ascending: false })
     .limit(OFERTAS_EN_PANEL)
@@ -93,7 +95,7 @@ export async function obtenerOfertasParaVos(
               empresa: oferta.empresa_nombre,
               logo: urlLogo(oferta.empresa_logo_url),
               categoria: oferta.categoria_nombre,
-              nueva: oferta.fecha_publicacion !== null && new Date(oferta.fecha_publicacion) >= new Date(desde),
+              insignias: insigniasOferta(oferta, Date.now(), 1),
             },
           ]
         : [],
@@ -180,10 +182,35 @@ export function contarPorGrupo(postulaciones: MiPostulacion[]): { grupo: GrupoEs
     .filter(({ cantidad }) => cantidad > 0)
 }
 
-/** Active applications first (they can still move), then the rest; newest first inside each. */
+// Further stages first: an interview matters more to the person than one more application sent
+const AVANCE: Record<MiPostulacion["estado"], number> = {
+  contratado: 0,
+  entrevista: 1,
+  preseleccionado: 2,
+  pendiente: 3,
+  rechazado: 4,
+}
+
+/** Whether an application can still move: not rejected and its offer not closed. */
+export function esActiva(postulacion: MiPostulacion): boolean {
+  return postulacion.estado !== "rechazado" && postulacion.oferta?.estado !== "cerrada"
+}
+
+/**
+ * Applications split into active (furthest stage first) and finished, each
+ * keeping the input order (newest first) inside a stage.
+ */
+export function separarPostulaciones(postulaciones: MiPostulacion[]): { activas: MiPostulacion[]; finalizadas: MiPostulacion[] } {
+  return {
+    activas: postulaciones.filter(esActiva).sort((a, b) => AVANCE[a.estado] - AVANCE[b.estado]),
+    finalizadas: postulaciones.filter((p) => !esActiva(p)),
+  }
+}
+
+/** Active applications first (they can still move), then the rest, at most `cantidad`. */
 export function destacarActivas(postulaciones: MiPostulacion[], cantidad: number): MiPostulacion[] {
-  const activa = (p: MiPostulacion) => p.estado !== "rechazado" && p.oferta?.estado !== "cerrada"
-  return [...postulaciones.filter(activa), ...postulaciones.filter((p) => !activa(p))].slice(0, cantidad)
+  const { activas, finalizadas } = separarPostulaciones(postulaciones)
+  return [...activas, ...finalizadas].slice(0, cantidad)
 }
 
 const CONSEJOS = [

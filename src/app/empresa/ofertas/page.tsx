@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import type { CSSProperties } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { FilePlus2, FileText } from "lucide-react";
+import { FiltroOfertasEmpresa } from "@/components/empresa/FiltroOfertasEmpresa";
 import { AvisoEmpresaSinVerificar } from "@/components/empresa/AvisoEmpresaSinVerificar";
 import { TarjetaOfertaEmpresa } from "@/components/empresa/TarjetaOfertaEmpresa";
 import { PaginaArea } from "@/components/layout/PaginaArea";
@@ -9,17 +11,26 @@ import { buttonVariants } from "@/components/ui/button";
 import { requerirRol } from "@/lib/auth";
 import { resumirCandidatosPorOferta } from "@/lib/candidatos-empresa";
 import { listarOfertasEmpresa, obtenerEmpresaActual } from "@/lib/ofertas-empresa";
+import { FILTROS_OFERTAS, filtroOfertas, ofertasDelFiltro, type FiltroOfertas } from "@/lib/panel-empresa";
 
 export const metadata: Metadata = { title: "Mis ofertas" };
 
-/** Every offer of the signed-in company, with its status. */
-export default async function OfertasEmpresaPage() {
+/**
+ * Every offer of the signed-in company, filtered by status (`?estado=`),
+ * the ones waiting for the company first.
+ */
+export default async function OfertasEmpresaPage({ searchParams }: PageProps<"/empresa/ofertas">) {
+  const filtro = filtroOfertas((await searchParams).estado);
   const { userId } = await requerirRol("empresa");
   const empresa = await obtenerEmpresaActual(userId);
   if (!empresa) notFound();
 
   const [ofertas, candidatos] = await Promise.all([listarOfertasEmpresa(empresa.id), resumirCandidatosPorOferta()]);
   const verificada = empresa.estado === "verificado";
+  const conteo = Object.fromEntries(
+    FILTROS_OFERTAS.map((f) => [f, f === "todas" ? ofertas.length : ofertas.filter((o) => o.estado === f).length]),
+  ) as Record<FiltroOfertas, number>;
+  const visibles = ofertasDelFiltro(ofertas, candidatos, filtro);
 
   return (
     <PaginaArea
@@ -47,13 +58,22 @@ export default async function OfertasEmpresaPage() {
           )}
         </div>
       ) : (
-        <ul className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {ofertas.map((oferta) => (
-            <li key={oferta.id}>
-              <TarjetaOfertaEmpresa oferta={oferta} candidatos={candidatos.get(oferta.id)} />
-            </li>
-          ))}
-        </ul>
+        <div className="space-y-5">
+          <FiltroOfertasEmpresa conteo={conteo} actual={filtro} />
+          {visibles.length === 0 ? (
+            <p className="rounded-xl border border-dashed border-border bg-card px-4 py-8 text-center text-sm text-muted-foreground">
+              No tenés ofertas en este estado.
+            </p>
+          ) : (
+            <ul className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+              {visibles.map((oferta, i) => (
+                <li key={oferta.id} className="motion-safe:animate-entrada" style={{ "--retraso": `${Math.min(i, 8) * 70}ms` } as CSSProperties}>
+                  <TarjetaOfertaEmpresa oferta={oferta} candidatos={candidatos.get(oferta.id)} />
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       )}
     </PaginaArea>
   );

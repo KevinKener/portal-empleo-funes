@@ -24,7 +24,8 @@ export function CopiarEmail({ email }: { email: string }) {
     <button
       type="button"
       onClick={copiar}
-      className="inline-flex h-8 shrink-0 items-center gap-1.5 rounded-lg border border-border px-2.5 text-xs font-semibold text-foreground transition-colors hover:bg-accent focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+      // Fixed width: "Copiado" is longer than "Copiar", and a growing button would push the email into a new line
+      className="inline-flex h-8 w-[5.5rem] shrink-0 items-center justify-center gap-1.5 rounded-lg border border-border px-2.5 text-xs font-semibold text-foreground transition-colors hover:bg-accent focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
     >
       {copiado ? <Check aria-hidden className="size-3.5 text-primary" /> : <Copy aria-hidden className="size-3.5" />}
       {copiado ? "Copiado" : "Copiar"}

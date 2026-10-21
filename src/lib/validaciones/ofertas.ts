@@ -13,9 +13,14 @@ const PAGINA_MAXIMA = 1000
 
 export type Validacion<T> = { ok: true; datos: T } | { ok: false; error: string }
 
+/** How the public listing can be sorted (`?orden=`); the first one is the default. */
+export const ORDENES_OFERTAS = ["recientes", "urgentes", "solicitadas"] as const
+export type OrdenOfertas = (typeof ORDENES_OFERTAS)[number]
+
 export type FiltrosOfertas = {
   categoria: string | null
   pagina: number
+  orden: OrdenOfertas
 }
 
 /** Whether `valor` is a UUID (ids of every table). */
@@ -33,8 +38,9 @@ export function rutaDeOferta(volver: string | string[] | undefined): string | nu
 }
 
 /**
- * Validates `?categoria=<uuid>&pagina=<n>` from the offers listing.
- * Both are optional; `pagina` defaults to 1. Error messages reach the user.
+ * Validates `?categoria=<uuid>&pagina=<n>&orden=<orden>` from the offers
+ * listing. All are optional; `pagina` defaults to 1 and `orden` to
+ * "recientes". Error messages reach the user.
  */
 export function validarFiltrosOfertas(params: URLSearchParams): Validacion<FiltrosOfertas> {
   const categoria = params.get("categoria")
@@ -51,10 +57,26 @@ export function validarFiltrosOfertas(params: URLSearchParams): Validacion<Filtr
     }
   }
 
-  return { ok: true, datos: { categoria, pagina } }
+  const ordenTexto = params.get("orden") ?? ORDENES_OFERTAS[0]
+  if (!(ORDENES_OFERTAS as readonly string[]).includes(ordenTexto)) {
+    return { ok: false, error: "El orden no es válido." }
+  }
+
+  return { ok: true, datos: { categoria, pagina, orden: ordenTexto as OrdenOfertas } }
+}
+
+/** URL of the public listing with these filters, leaving defaults out so links stay short. */
+export function hrefOfertas({ categoria = null, pagina = 1, orden = ORDENES_OFERTAS[0] }: Partial<FiltrosOfertas>): string {
+  const params = new URLSearchParams()
+  if (categoria) params.set("categoria", categoria)
+  if (orden !== ORDENES_OFERTAS[0]) params.set("orden", orden)
+  if (pagina > 1) params.set("pagina", String(pagina))
+  const query = params.toString()
+  return query ? `/ofertas?${query}` : "/ofertas"
 }
 
 export const JORNADAS = Constants.public.Enums.jornada
+export const PRIORIDADES = Constants.public.Enums.prioridad_oferta
 
 // Mirror the CHECK constraints on public.ofertas (initial migration).
 export const MAXIMO_TITULO = 150
@@ -67,6 +89,7 @@ export type DatosOferta = {
   requisitos: string | null
   jornada: Enums<"jornada">
   categoria_id: string
+  prioridad: Enums<"prioridad_oferta">
 }
 
 function texto(valor: FormDataEntryValue | null): string {
@@ -75,7 +98,7 @@ function texto(valor: FormDataEntryValue | null): string {
 
 /**
  * Validates the company's offer form (fields: titulo, descripcion,
- * requisitos, jornada, categoria_id). Shared by the browser and the Server
+ * requisitos, jornada, categoria_id, prioridad). Shared by the browser and the Server
  * Actions; messages reach the user.
  */
 export function validarOferta(formData: FormData): Resultado<DatosOferta> {
@@ -85,6 +108,8 @@ export function validarOferta(formData: FormData): Resultado<DatosOferta> {
   const requisitos = texto(formData.get("requisitos"))
   const jornada = texto(formData.get("jornada"))
   const categoria = texto(formData.get("categoria_id"))
+  // Missing means "normal": the field is optional and older forms do not send it
+  const prioridad = texto(formData.get("prioridad")) || "normal"
 
   if (!titulo) errores.titulo = "Completá el puesto que buscás."
   else if (titulo.length > MAXIMO_TITULO) errores.titulo = `Usá como máximo ${MAXIMO_TITULO} caracteres.`
@@ -93,6 +118,7 @@ export function validarOferta(formData: FormData): Resultado<DatosOferta> {
   if (requisitos.length > MAXIMO_REQUISITOS) errores.requisitos = `Usá como máximo ${MAXIMO_REQUISITOS} caracteres.`
   if (!(JORNADAS as readonly string[]).includes(jornada)) errores.jornada = "Elegí la jornada."
   if (!esUuid(categoria)) errores.categoria_id = "Elegí el rubro."
+  if (!(PRIORIDADES as readonly string[]).includes(prioridad)) errores.prioridad = "Elegí qué tan rápido la necesitás cubrir."
 
   if (Object.keys(errores).length > 0) return { ok: false, errores }
   return {
@@ -103,6 +129,7 @@ export function validarOferta(formData: FormData): Resultado<DatosOferta> {
       requisitos: requisitos || null,
       jornada: jornada as Enums<"jornada">,
       categoria_id: categoria,
+      prioridad: prioridad as Enums<"prioridad_oferta">,
     },
   }
 }
