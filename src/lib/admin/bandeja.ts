@@ -22,7 +22,7 @@ export type Cola = {
 /** A queue item is "overdue" after this many days (shown with the `aviso` token). */
 export const DIAS_DEMORA = 3
 // Published this long without a single application: the Office may want to call the company.
-const DIAS_SIN_POSTULANTES = 7
+export const DIAS_SIN_POSTULANTES = 7
 const DIA = 24 * 60 * 60 * 1000
 
 const ERROR_BANDEJA = "No se pudo leer la bandeja de la Oficina de Empleo"

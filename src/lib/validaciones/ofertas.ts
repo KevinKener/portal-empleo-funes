@@ -133,3 +133,6 @@ export function validarOferta(formData: FormData): Resultado<DatosOferta> {
     },
   }
 }
+
+/** Length of the reason the Office writes when rejecting an offer (ofertas.motivo_rechazo check). */
+export const MOTIVO_RECHAZO = { minimo: 10, maximo: 1000 } as const

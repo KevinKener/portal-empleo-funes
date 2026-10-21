@@ -143,3 +143,8 @@ export function textoEstadoPostulacion(
 ): { titulo: string; detalle: string } {
   return ESTADO_POSTULACION_PARA_POSTULANTE[estado === "rechazado" && motivo ? motivo : estado]
 }
+
+/** "30-00000000-7" from the 11 stored digits; anything else is returned as is. */
+export function formatearCuit(cuit: string): string {
+  return /^\d{11}$/.test(cuit) ? `${cuit.slice(0, 2)}-${cuit.slice(2, 10)}-${cuit.slice(10)}` : cuit
+}
