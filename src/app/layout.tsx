@@ -11,6 +11,9 @@ const beVietnamPro = Be_Vietnam_Pro({
 });
 
 export const metadata: Metadata = {
+  // Share previews need absolute URLs; previews of preview deployments point to production
+  metadataBase: new URL("https://portal-empleo-funes.vercel.app"),
+  openGraph: { siteName: "Portal de Empleo · Municipalidad de Funes", locale: "es_AR", type: "website" },
   title: {
     default: "Portal de Empleo · Municipalidad de Funes",
     template: "%s · Portal de Empleo Funes",

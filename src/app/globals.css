@@ -200,3 +200,25 @@ body {
     animation: borde-giro 6s linear infinite;
   }
 }
+
+/* Loading skeletons (loading.tsx): a soft light sweeps across the grey blocks, instead of the
+   whole block blinking. Still with reduced motion. */
+@keyframes esqueleto {
+  from { background-position: 150% 0; }
+  to { background-position: -50% 0; }
+}
+
+@utility esqueleto {
+  background-color: var(--color-muted);
+  background-image: linear-gradient(
+    100deg,
+    transparent 30%,
+    color-mix(in oklch, var(--color-card) 75%, transparent) 50%,
+    transparent 70%
+  );
+  background-size: 200% 100%;
+  background-repeat: no-repeat;
+  @media (prefers-reduced-motion: no-preference) {
+    animation: esqueleto 1.6s ease-in-out infinite;
+  }
+}

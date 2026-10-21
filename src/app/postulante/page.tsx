@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight, Building2, CircleCheck, FileText, Lightbulb, Search, Send } from "lucide-react";
+import { AyudaOficina } from "@/components/layout/AyudaOficina";
 import { FondoMarca } from "@/components/layout/FondoMarca";
 import { BandaBienvenida } from "@/components/layout/PanelBienvenida";
 import { Avatar } from "@/components/postulante/Avatar";
@@ -101,6 +102,7 @@ export default async function PostulantePage() {
               </div>
               <p className="leading-relaxed text-primary-foreground/95">{consejoDelDia()}</p>
             </section>
+            <AyudaOficina />
           </aside>
         </div>
       </div>

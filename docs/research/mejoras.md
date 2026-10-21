@@ -11,10 +11,10 @@
 | 2 | Email notifications (Gmail SMTP, already approved) | Very high: nobody learns about changes today unless they log in | Medium | No |
 | 3 | Company home with a "Próximo paso" card and a summary | High | Low | No |
 | 4 | Offer fields: optional pay, number of vacancies, workplace | High | Medium | Yes |
-| 5 | "Compartir por WhatsApp" on public offers | Medium | Very low | No |
+| 5 | "Compartir por WhatsApp" on public offers — **done** (button + share preview image, 2026-10-21) | Medium | Very low | No |
 | 6 | "Así la van a ver los postulantes" preview before sending to review | Medium | Low | No |
 | 7 | Installable on phones (PWA manifest with the municipal shield) | Medium (demo) | Low | No (config: ask first) |
-| 8 | "¿Necesitás ayuda?" button to the Office's WhatsApp | Medium | Very low | No (needs the number) |
+| 8 | "¿Necesitás ayuda?" — **done** with phone, email and address (the Office has no WhatsApp line), 2026-10-21 | Medium | Very low | No |
 | 9 | Text search and "Solo en Funes" filter on `/ofertas` | Medium, grows with volume | Medium | Maybe (location column, see #4) |
 
 Suggested order: merge the current branches → #3 (closes Phase 5 together with company data + ARCA) → #5 and #6 → #4 before real offers are loaded → Phase 6 (#1, #2).

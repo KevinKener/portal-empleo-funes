@@ -1,7 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Clock, Mail, MapPin, Phone } from "lucide-react";
 import { Escudo } from "@/components/layout/Escudo";
+import { OFICINA } from "@/lib/oficina";
+import { cn } from "@/lib/utils";
 
 const COLUMNAS = [
   {
@@ -34,7 +36,7 @@ export function PiePagina() {
     <footer className="relative isolate mt-auto overflow-hidden bg-primary-deep text-primary-foreground">
       <Escudo className="absolute -right-24 -bottom-32 -z-10 size-96 text-primary-foreground/[0.04]" />
       <div className="mx-auto max-w-7xl px-4 pt-12 pb-8 sm:px-6 lg:px-8">
-        <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr]">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.3fr]">
           <div className="space-y-4">
             <Image src="/marca/logo-blanco.png" alt="Gobierno de la Ciudad de Funes" width={185} height={52} className="h-11 w-auto" />
             <p className="max-w-sm text-sm text-primary-foreground/75">
@@ -67,6 +69,34 @@ export function PiePagina() {
               </ul>
             </nav>
           ))}
+
+          {/* Real contact channels of the Office (no WhatsApp line), from src/lib/oficina.ts */}
+          <section aria-labelledby="pie-oficina" className="space-y-3">
+            <h2 id="pie-oficina" className="font-heading text-sm font-semibold">
+              Oficina de Empleo
+            </h2>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <a href={OFICINA.telefonoEnlace} className={cn(ENLACE, "inline-flex items-center gap-2")}>
+                  <Phone aria-hidden className="size-4 shrink-0" /> {OFICINA.telefono}
+                </a>
+              </li>
+              <li>
+                <a href={OFICINA.emailEnlace} className={cn(ENLACE, "inline-flex items-center gap-2 break-all")}>
+                  <Mail aria-hidden className="size-4 shrink-0" /> {OFICINA.email}
+                </a>
+              </li>
+              <li>
+                <a href={OFICINA.mapa} target="_blank" rel="noopener noreferrer" className={cn(ENLACE, "inline-flex items-center gap-2")}>
+                  <MapPin aria-hidden className="size-4 shrink-0" /> {OFICINA.direccion}
+                  <span className="sr-only"> (abre el mapa en otra pestaña)</span>
+                </a>
+              </li>
+              <li className="inline-flex items-center gap-2 text-primary-foreground/75">
+                <Clock aria-hidden className="size-4 shrink-0" /> {OFICINA.horario}
+              </li>
+            </ul>
+          </section>
         </div>
 
         <div className="mt-10 flex flex-col gap-2 border-t border-primary-foreground/15 pt-6 text-xs text-primary-foreground/60 sm:flex-row sm:justify-between">

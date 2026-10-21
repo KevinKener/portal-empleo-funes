@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { DocumentoLegal, type SeccionLegal } from "@/components/legal/DocumentoLegal";
+import { OFICINA } from "@/lib/oficina";
 
 export const metadata: Metadata = { title: "Política de privacidad" };
 
@@ -95,7 +96,8 @@ const SECCIONES: SeccionLegal[] = [
         <p>
           Podés acceder a tus datos, actualizarlos, corregirlos o pedir que los eliminemos, en forma gratuita (artículos
           14 a 16 de la Ley N° 25.326). Muchos los podés cambiar vos mismo desde tu perfil; para lo demás, comunicate con
-          la Oficina de Empleo de la Municipalidad de Funes.
+          la Oficina de Empleo de la Municipalidad de Funes: {OFICINA.email}, {OFICINA.telefono} o en {OFICINA.direccion}
+          ({OFICINA.horario.toLowerCase()}).
         </p>
         <p>
           La Agencia de Acceso a la Información Pública, en su carácter de Órgano de Control de la Ley N° 25.326, tiene la
