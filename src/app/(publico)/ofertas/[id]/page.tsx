@@ -20,7 +20,14 @@ const cargarOferta = cache(async (id: string) => (esUuid(id) ? obtenerOfertaPubl
 
 export async function generateMetadata({ params }: PageProps<"/ofertas/[id]">): Promise<Metadata> {
   const oferta = await cargarOferta((await params).id);
-  return { title: oferta?.titulo ?? "Oferta no encontrada" };
+  if (!oferta) return { title: "Oferta no encontrada" };
+  // What WhatsApp shows under the preview image (opengraph-image.tsx next to this page)
+  const resumen = [oferta.empresa_nombre, oferta.descripcion?.split("\n")[0]].filter(Boolean).join(" · ").slice(0, 180);
+  return {
+    title: oferta.titulo,
+    description: resumen,
+    openGraph: { title: `${oferta.titulo} · Portal de Empleo Funes`, description: resumen },
+  };
 }
 
 const VIDRIO = "flex items-center gap-2 rounded-full border border-primary-foreground/15 bg-primary-foreground/10 px-3.5 py-1.5 backdrop-blur-sm";

@@ -1,16 +1,19 @@
 import Link from "next/link";
-import { SearchX } from "lucide-react";
-import { buttonVariants } from "@/components/ui/button";
+import { ArrowRight, SearchX } from "lucide-react";
+import { BOTON_PRINCIPAL, PantallaEstado } from "@/components/layout/PantallaEstado";
 
+/** An offer that is missing or no longer published (Rule 2: both look the same). */
 export default function OfertaNoEncontrada() {
   return (
-    <div className="mx-auto flex max-w-md flex-col items-center gap-4 px-4 py-20 text-center">
-      <SearchX aria-hidden className="size-10 text-muted-foreground" />
-      <h1 className="font-heading text-2xl font-semibold">Esta oferta no está disponible</h1>
-      <p className="text-muted-foreground">Puede que ya se haya cerrado o que el enlace no sea correcto.</p>
-      <Link href="/ofertas" className={buttonVariants({ size: "lg", className: "h-10 px-5" })}>
-        Ver ofertas publicadas
-      </Link>
-    </div>
+    <PantallaEstado
+      icono={<SearchX aria-hidden className="size-10" />}
+      titulo="Esta oferta ya no está disponible"
+      texto="Puede que se haya cerrado o que el enlace no sea correcto. Hay otras ofertas publicadas que te pueden interesar."
+      acciones={
+        <Link href="/ofertas" className={BOTON_PRINCIPAL}>
+          Ver ofertas publicadas <ArrowRight aria-hidden className="size-4" />
+        </Link>
+      }
+    />
   );
 }

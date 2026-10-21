@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { BriefcaseBusiness, FileUp, GraduationCap, UserRound } from "lucide-react";
 import { SeccionExperiencias, SeccionFormaciones } from "@/components/postulante/cv/SeccionesCv";
 import { SobreMi } from "@/components/postulante/cv/SobreMi";
+import { AyudaOficina } from "@/components/layout/AyudaOficina";
 import { PaginaArea } from "@/components/layout/PaginaArea";
 import { Revelar } from "@/components/layout/Revelar";
 import { ProgresoCv } from "@/components/postulante/cv/ProgresoCv";
@@ -56,7 +57,12 @@ export default async function CvPage({ searchParams }: PageProps<"/postulante/cv
       volver={VOLVER_A_MI_PERFIL}
       titulo="Tu CV"
       descripcion="Armalo acá completando las secciones, o subí el CV que ya tenés. Con cualquiera de los dos ya podés postularte."
-      aside={<IndiceCv secciones={[...secciones, { id: "archivo", titulo: "CV adjunto", hecho: Boolean(cv_url) }]} />}
+      aside={
+        <>
+          <IndiceCv secciones={[...secciones, { id: "archivo", titulo: "CV adjunto", hecho: Boolean(cv_url) }]} />
+          <AyudaOficina />
+        </>
+      }
     >
       <ProgresoCv secciones={secciones} completo={completo} oferta={oferta} />
 
