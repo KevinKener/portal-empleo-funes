@@ -1,5 +1,6 @@
 import "server-only"
 import { cache } from "react"
+import { hoyArgentina } from "@/lib/cierre-oferta"
 import { createClient } from "@/lib/supabase/server"
 
 /**
@@ -62,7 +63,13 @@ export const obtenerColas = cache(async (): Promise<Cola[]> => {
       .eq("localidad", "funes")
       .eq("estado_domicilio", "pendiente")
       .not("comprobante_url", "is", null),
-    supabase.from("ofertas").select("id, fecha_publicacion").eq("estado", "publicada").lte("fecha_publicacion", limite),
+    // Expired offers are out of the portal: no point in nudging about them
+    supabase
+      .from("ofertas")
+      .select("id, fecha_publicacion")
+      .eq("estado", "publicada")
+      .lte("fecha_publicacion", limite)
+      .or(`fecha_cierre.is.null,fecha_cierre.gte.${hoyArgentina(Date.now())}`),
   ]).then(([e, o, p, d, pub]) => [filas(e), filas(o), filas(p), filas(d), filas(pub)] as const))
 
   // Published offers without applications: one extra lookup over just those offers

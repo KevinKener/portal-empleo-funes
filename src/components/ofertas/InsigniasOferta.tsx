@@ -1,4 +1,4 @@
-import { Flame, Sparkles, Target, Zap, type LucideIcon } from "lucide-react";
+import { Flame, Hourglass, Sparkles, Target, Zap, type LucideIcon } from "lucide-react";
 import type { InsigniaOferta } from "@/lib/insignias-oferta";
 import { cn } from "@/lib/utils";
 
@@ -7,6 +7,12 @@ const INSIGNIAS: Record<InsigniaOferta, { texto: string; titulo: string; Icono: 
     texto: "Urgente",
     titulo: "La empresa necesita cubrirla pronto",
     Icono: Zap,
+    clase: "bg-aviso-suave text-aviso",
+  },
+  cierra: {
+    texto: "Cierra pronto",
+    titulo: "Quedan pocos días para postularse",
+    Icono: Hourglass,
     clase: "bg-aviso-suave text-aviso",
   },
   solicitada: {
@@ -54,7 +60,7 @@ export function InsigniasOferta({
             title={titulo}
             className={cn(
               "inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold whitespace-nowrap",
-              sobreOscuro && insignia !== "urgente"
+              sobreOscuro && insignia !== "urgente" && insignia !== "cierra"
                 ? "border border-primary-foreground/20 bg-primary-foreground/10 text-primary-foreground backdrop-blur-sm"
                 : clase,
             )}

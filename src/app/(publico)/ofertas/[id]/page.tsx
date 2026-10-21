@@ -3,9 +3,10 @@ import Link from "next/link";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { cache, type CSSProperties } from "react";
-import { ArrowLeft, BadgeCheck, CalendarDays, Clock, Share2 } from "lucide-react";
+import { ArrowLeft, BadgeCheck, CalendarClock, CalendarDays, Clock, Share2 } from "lucide-react";
 import { AccionPostular } from "@/components/ofertas/AccionPostular";
 import { CabeceraOferta, SeccionesOferta, TARJETA_OFERTA, VIDRIO } from "@/components/ofertas/DetalleOferta";
+import { formatearDia } from "@/lib/cierre-oferta";
 import { insigniasOferta } from "@/lib/insignias-oferta";
 import { urlLogo } from "@/lib/logo-empresa";
 import { obtenerOfertaPublica } from "@/lib/ofertas";
@@ -88,6 +89,13 @@ export default async function OfertaDetallePage({ params }: PageProps<"/ofertas/
               <CalendarDays aria-hidden className="size-4" />
               <dd>Publicada el {formatearFecha(oferta.fecha_publicacion)}</dd>
             </div>
+            {oferta.fecha_cierre && (
+              <div className={VIDRIO}>
+                <dt className="sr-only">Cierre</dt>
+                <CalendarClock aria-hidden className="size-4" />
+                <dd>Recibe postulaciones hasta el {formatearDia(oferta.fecha_cierre)}</dd>
+              </div>
+            )}
             <div className={VIDRIO}>
               <dt className="sr-only">Revisión</dt>
               <BadgeCheck aria-hidden className="size-4" />

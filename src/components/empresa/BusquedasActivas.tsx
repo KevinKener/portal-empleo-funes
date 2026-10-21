@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowRight, BadgeCheck, Globe, MessagesSquare, UserSearch } from "lucide-react";
 import { InsigniasOferta } from "@/components/ofertas/InsigniasOferta";
 import type { ResumenCandidatos } from "@/lib/candidatos-empresa";
+import { ofertaVencida, textoCierre } from "@/lib/cierre-oferta";
 import { ahora, haceCuanto } from "@/lib/formato";
 import type { OfertaEmpresa } from "@/lib/ofertas-empresa";
 import { cn } from "@/lib/utils";
@@ -58,9 +59,15 @@ export function BusquedasActivas({ ofertas, candidatos }: { ofertas: OfertaEmpre
                     <span className="font-semibold group-hover:text-primary">{oferta.titulo}</span>
                     {oferta.prioridad === "urgente" && <InsigniasOferta insignias={["urgente"]} />}
                   </span>
-                  <span className="block text-sm text-muted-foreground">
-                    En el portal desde {oferta.fecha_publicacion ? haceCuanto(oferta.fecha_publicacion, momento) : "hace poco"}
-                  </span>
+                  {ofertaVencida(oferta, momento) && oferta.fecha_cierre ? (
+                    // Out of the portal: only the Office extends it (decision 2026-10-21)
+                    <span className="block text-sm font-medium text-aviso">{textoCierre(oferta.fecha_cierre, momento)} · pedile a la Oficina que la extienda</span>
+                  ) : (
+                    <span className="block text-sm text-muted-foreground">
+                      En el portal desde {oferta.fecha_publicacion ? haceCuanto(oferta.fecha_publicacion, momento) : "hace poco"}
+                      {oferta.fecha_cierre && <> · {textoCierre(oferta.fecha_cierre, momento).toLowerCase()}</>}
+                    </span>
+                  )}
                 </span>
                 {/* Phones: under the title, lined up with it */}
                 <span className="flex w-full flex-wrap items-center gap-2 pl-[3.25rem] text-xs font-semibold sm:w-auto sm:pl-0">

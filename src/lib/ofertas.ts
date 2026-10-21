@@ -21,7 +21,7 @@ export type PaginaOfertas = {
 }
 
 const COLUMNAS =
-  "id, titulo, descripcion, requisitos, jornada, fecha_publicacion, categoria_id, categoria_nombre, empresa_nombre, empresa_logo_url, prioridad, nivel_demanda"
+  "id, titulo, descripcion, requisitos, jornada, fecha_publicacion, categoria_id, categoria_nombre, empresa_nombre, empresa_logo_url, prioridad, nivel_demanda, fecha_cierre"
 
 // PostgREST answers 416 with this code when the page starts past the last row.
 const RANGO_FUERA_DE_LIMITE = "PGRST103"
