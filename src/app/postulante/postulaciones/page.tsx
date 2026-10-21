@@ -6,6 +6,7 @@ import { PaginaArea } from "@/components/layout/PaginaArea";
 import { TarjetaPostulacion } from "@/components/postulante/TarjetaPostulacion";
 import { buttonVariants } from "@/components/ui/button";
 import { requerirRol } from "@/lib/auth";
+import { empresasDeOfertas } from "@/lib/panel-postulante";
 import { obtenerResumenPerfil } from "@/lib/perfil-postulante";
 import { listarMisPostulaciones } from "@/lib/postulaciones";
 
@@ -17,6 +18,7 @@ export default async function PostulacionesPage() {
   const resumen = await obtenerResumenPerfil(userId);
   if (!resumen) notFound();
   const postulaciones = await listarMisPostulaciones(resumen.postulante.id);
+  const empresas = await empresasDeOfertas(postulaciones.flatMap((p) => (p.oferta ? [p.oferta.id] : [])));
 
   return (
     <PaginaArea
@@ -34,7 +36,11 @@ export default async function PostulacionesPage() {
       ) : (
         <div className="grid gap-4 lg:grid-cols-2">
           {postulaciones.map((postulacion) => (
-            <TarjetaPostulacion key={postulacion.id} postulacion={postulacion} />
+            <TarjetaPostulacion
+              key={postulacion.id}
+              postulacion={postulacion}
+              empresa={postulacion.oferta ? empresas.get(postulacion.oferta.id) : undefined}
+            />
           ))}
         </div>
       )}

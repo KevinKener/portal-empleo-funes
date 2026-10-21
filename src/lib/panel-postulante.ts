@@ -1,4 +1,5 @@
 import "server-only"
+import { urlLogo } from "@/lib/logo-empresa"
 import { createClient } from "@/lib/supabase/server"
 import { puedePostularse, tieneCv, type ResumenPerfil } from "@/lib/perfil-postulante"
 import type { MiPostulacion } from "@/lib/postulaciones"
@@ -17,9 +18,14 @@ export type OfertaParaVos = {
   id: string
   titulo: string
   empresa: string | null
+  /** Public URL of the company logo, or null (the initial shows instead). */
+  logo: string | null
   categoria: string | null
   nueva: boolean
 }
+
+/** The company behind an offer, as job seekers may see it. */
+export type EmpresaDeOferta = { nombre: string; logo: string | null }
 
 export type ProximoPaso = {
   titulo: string
@@ -58,7 +64,7 @@ export async function obtenerOfertasParaVos(
 
   let lista = supabase
     .from("ofertas_publicas")
-    .select("id, titulo, empresa_nombre, categoria_nombre, fecha_publicacion")
+    .select("id, titulo, empresa_nombre, empresa_logo_url, categoria_nombre, fecha_publicacion")
     .in("categoria_id", categorias)
     .order("fecha_publicacion", { ascending: false })
     .limit(OFERTAS_EN_PANEL)
@@ -85,6 +91,7 @@ export async function obtenerOfertasParaVos(
               id: oferta.id,
               titulo: oferta.titulo,
               empresa: oferta.empresa_nombre,
+              logo: urlLogo(oferta.empresa_logo_url),
               categoria: oferta.categoria_nombre,
               nueva: oferta.fecha_publicacion !== null && new Date(oferta.fecha_publicacion) >= new Date(desde),
             },
@@ -96,15 +103,23 @@ export async function obtenerOfertasParaVos(
 }
 
 /**
- * Trade name of the company behind each published offer. Job seekers cannot
- * read `empresas` (RLS), so it comes from the public view; closed offers get none.
+ * Trade name and logo of the company behind each published offer. Job
+ * seekers cannot read `empresas` (RLS), so it comes from the public view;
+ * closed offers get none.
  */
-export async function nombresDeEmpresas(ofertaIds: string[]): Promise<Map<string, string>> {
+export async function empresasDeOfertas(ofertaIds: string[]): Promise<Map<string, EmpresaDeOferta>> {
   if (ofertaIds.length === 0) return new Map()
   const supabase = await createClient()
-  const { data, error } = await supabase.from("ofertas_publicas").select("id, empresa_nombre").in("id", ofertaIds)
+  const { data, error } = await supabase
+    .from("ofertas_publicas")
+    .select("id, empresa_nombre, empresa_logo_url")
+    .in("id", ofertaIds)
   if (error) throw error
-  return new Map(data.flatMap((o) => (o.id && o.empresa_nombre ? [[o.id, o.empresa_nombre] as const] : [])))
+  return new Map(
+    data.flatMap((o) =>
+      o.id && o.empresa_nombre ? [[o.id, { nombre: o.empresa_nombre, logo: urlLogo(o.empresa_logo_url) }] as const] : [],
+    ),
+  )
 }
 
 /** The single action the panel suggests now; the first matching rule wins. */

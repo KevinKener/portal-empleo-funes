@@ -2,9 +2,10 @@ import type { CSSProperties } from "react";
 import Link from "next/link";
 import { Archive, ArrowRight, Building2, Clock, Inbox, PartyPopper, type LucideIcon } from "lucide-react";
 import { textoEstadoPostulacion } from "@/lib/formato";
-import { contarPorGrupo, destacarActivas, type GrupoEstado } from "@/lib/panel-postulante";
+import { contarPorGrupo, destacarActivas, type EmpresaDeOferta, type GrupoEstado } from "@/lib/panel-postulante";
 import type { MiPostulacion } from "@/lib/postulaciones";
 import { cn } from "@/lib/utils";
+import { LogoEmpresa } from "@/components/empresa/LogoEmpresa";
 import { SeguimientoPostulacion } from "../SeguimientoPostulacion";
 import { MarcaNovedad } from "./VistosPanel";
 
@@ -22,7 +23,7 @@ const GRUPOS: Record<GrupoEstado, { texto: (n: number) => string; Icono: LucideI
  * "Mis postulaciones" on the panel: a count per status, the most relevant
  * applications with a compact tracker, and a clear way to the full list.
  */
-export function ResumenPostulaciones({ postulaciones, empresas }: { postulaciones: MiPostulacion[]; empresas: Map<string, string> }) {
+export function ResumenPostulaciones({ postulaciones, empresas }: { postulaciones: MiPostulacion[]; empresas: Map<string, EmpresaDeOferta> }) {
   const total = postulaciones.length;
 
   return (
@@ -94,7 +95,7 @@ export function ResumenPostulaciones({ postulaciones, empresas }: { postulacione
   );
 }
 
-function TarjetaCompacta({ postulacion, empresa }: { postulacion: MiPostulacion; empresa?: string }) {
+function TarjetaCompacta({ postulacion, empresa }: { postulacion: MiPostulacion; empresa?: EmpresaDeOferta }) {
   const { id, estado, motivo_rechazo, oferta } = postulacion;
   const texto = textoEstadoPostulacion(estado, motivo_rechazo);
   const rechazada = estado === "rechazado";
@@ -106,16 +107,16 @@ function TarjetaCompacta({ postulacion, empresa }: { postulacion: MiPostulacion;
       className="group block space-y-3 rounded-xl border border-border p-4 transition-[border-color,box-shadow,translate] duration-200 hover:border-primary/30 hover:shadow-md hover:shadow-primary/[0.06] focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none motion-safe:hover:-translate-y-0.5"
     >
       <div className="flex items-center gap-3">
-        {/* Company initial, as on the offer cards */}
-        <span
-          aria-hidden
-          className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-secondary font-heading font-semibold text-secondary-foreground transition-colors duration-300 group-hover:bg-primary group-hover:text-primary-foreground"
-        >
-          {(empresa ?? oferta?.titulo ?? "?").trim().charAt(0).toLocaleUpperCase("es-AR")}
-        </span>
+        {/* Company logo or initial, as on the offer cards */}
+        <LogoEmpresa
+          nombre={empresa?.nombre ?? oferta?.titulo ?? "?"}
+          logo={empresa?.logo}
+          tamanio="sm"
+          className="transition-[rotate,scale] duration-300 motion-safe:group-hover:scale-105 motion-safe:group-hover:-rotate-6"
+        />
         <div className="min-w-0 flex-1">
           <p className="font-semibold sm:truncate">{oferta?.titulo ?? "Oferta"}</p>
-          {empresa && <p className="truncate text-sm text-muted-foreground">{empresa}</p>}
+          {empresa && <p className="truncate text-sm text-muted-foreground">{empresa.nombre}</p>}
           {/* Phones: the stage goes under the company, so the job title is never cut */}
           <span className={cn("mt-1.5 inline-block rounded-full px-2.5 py-1 text-xs font-semibold sm:hidden", etapa)}>{texto.titulo}</span>
         </div>

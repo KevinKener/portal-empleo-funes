@@ -13,7 +13,7 @@ import { VistosPanel } from "@/components/postulante/panel/VistosPanel";
 import { requerirRol } from "@/lib/auth";
 import { encuadreDe } from "@/lib/encuadre";
 import { urlFotoPerfil } from "@/lib/foto-perfil";
-import { consejoDelDia, nombresDeEmpresas, obtenerOfertasParaVos, proximoPaso } from "@/lib/panel-postulante";
+import { consejoDelDia, empresasDeOfertas, obtenerOfertasParaVos, proximoPaso } from "@/lib/panel-postulante";
 import { obtenerResumenPerfil, puedePostularse, tareasDelPerfil, type Tarea } from "@/lib/perfil-postulante";
 import { listarMisPostulaciones } from "@/lib/postulaciones";
 
@@ -33,7 +33,7 @@ export default async function PostulantePage() {
   const ofertaIds = postulaciones.flatMap((p) => (p.oferta ? [p.oferta.id] : []));
   const [{ ofertas, nuevas }, empresas, foto] = await Promise.all([
     obtenerOfertasParaVos(postulante.id, ofertaIds),
-    nombresDeEmpresas(ofertaIds),
+    empresasDeOfertas(ofertaIds),
     urlFotoPerfil(postulante.foto_url),
   ]);
 

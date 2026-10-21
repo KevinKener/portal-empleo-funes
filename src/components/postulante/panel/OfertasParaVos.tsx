@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { ArrowRight, BriefcaseBusiness, SearchX } from "lucide-react";
+import { ArrowRight, SearchX } from "lucide-react";
+import { LogoEmpresa } from "@/components/empresa/LogoEmpresa";
 import type { OfertaParaVos } from "@/lib/panel-postulante";
 
 /**
@@ -31,9 +32,12 @@ export function OfertasParaVos({ ofertas }: { ofertas: OfertaParaVos[] }) {
                 href={`/ofertas/${oferta.id}`}
                 className="group -mx-2 flex items-center gap-3 rounded-xl px-2 py-3 transition-[background-color,translate] duration-200 hover:bg-accent focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none motion-safe:hover:translate-x-1"
               >
-                <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-secondary text-secondary-foreground transition-[background-color,color,rotate] duration-300 group-hover:bg-primary group-hover:text-primary-foreground motion-safe:group-hover:-rotate-6">
-                  <BriefcaseBusiness aria-hidden className="size-5" />
-                </span>
+                <LogoEmpresa
+                  nombre={oferta.empresa ?? oferta.titulo}
+                  logo={oferta.logo}
+                  tamanio="sm"
+                  className="transition-[rotate,scale] duration-300 motion-safe:group-hover:scale-105 motion-safe:group-hover:-rotate-6"
+                />
                 <span className="min-w-0 flex-1">
                   <span className="flex items-center gap-2">
                     <span className="truncate font-medium group-hover:text-primary">{oferta.titulo}</span>
