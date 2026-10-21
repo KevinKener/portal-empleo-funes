@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { FormularioOferta } from "@/components/empresa/FormularioOferta";
+import { ahora } from "@/lib/formato";
+import { hoyArgentina } from "@/lib/cierre-oferta";
 import { PasosOferta } from "@/components/empresa/PasosOferta";
 import { PaginaArea } from "@/components/layout/PaginaArea";
 import { requerirRol } from "@/lib/auth";
@@ -27,7 +29,7 @@ export default async function NuevaOfertaPage() {
       aside={<PasosOferta />}
     >
       <div className="max-w-3xl rounded-2xl border border-border bg-card p-5 sm:p-6">
-        <FormularioOferta categorias={categorias} volver={VOLVER.href} />
+        <FormularioOferta categorias={categorias} volver={VOLVER.href} hoy={hoyArgentina(ahora())} />
       </div>
     </PaginaArea>
   );

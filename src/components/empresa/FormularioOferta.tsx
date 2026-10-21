@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import { LoaderCircle } from "lucide-react";
 import { guardarOferta, type EstadoFormularioOferta } from "@/app/empresa/ofertas/actions";
+import { CampoCierre } from "@/components/empresa/CampoCierre";
 import { CampoPrioridad } from "@/components/empresa/CampoPrioridad";
 import { AvisoFormulario } from "@/components/formularios/AvisoFormulario";
 import { Campo, ESTILO_AREA } from "@/components/formularios/Campo";
@@ -22,6 +23,8 @@ type PropsFormularioOferta = {
   oferta?: OfertaEmpresa;
   /** Where "Cancelar" goes. */
   volver: string;
+  /** Today in Funes ("YYYY-MM-DD"), for the closing date window. */
+  hoy: string;
 };
 
 /**
@@ -30,7 +33,7 @@ type PropsFormularioOferta = {
  * Called by hand (not as a form action) so React does not reset the fields
  * when the server returns errors.
  */
-export function FormularioOferta({ categorias, oferta, volver }: PropsFormularioOferta) {
+export function FormularioOferta({ categorias, oferta, volver, hoy }: PropsFormularioOferta) {
   const [estado, setEstado] = useState(VACIO);
   const [guardando, iniciar] = useTransition();
 
@@ -68,6 +71,7 @@ export function FormularioOferta({ categorias, oferta, volver }: PropsFormulario
       </div>
 
       <CampoPrioridad inicial={oferta?.prioridad} error={errores.prioridad} />
+      <CampoCierre hoy={hoy} inicial={oferta?.fecha_cierre} error={errores.fecha_cierre} />
 
       <Campo
         nombre="descripcion"

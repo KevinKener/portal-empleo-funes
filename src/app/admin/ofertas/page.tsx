@@ -8,6 +8,7 @@ import { LogoEmpresa } from "@/components/empresa/LogoEmpresa";
 import { PaginaArea } from "@/components/layout/PaginaArea";
 import { InsigniasOferta } from "@/components/ofertas/InsigniasOferta";
 import { filtroOfertasAdmin, listarOfertasAdmin, type FiltroOfertasAdmin, type FilaOfertaAdmin } from "@/lib/admin/ofertas";
+import { ofertaVencida, textoCierre } from "@/lib/cierre-oferta";
 import { ahora, haceCuanto } from "@/lib/formato";
 import { urlLogo } from "@/lib/logo-empresa";
 import { cn } from "@/lib/utils";
@@ -18,6 +19,7 @@ const FILTROS: { valor: FiltroOfertasAdmin; texto: string }[] = [
   { valor: "pendiente", texto: "Por revisar" },
   { valor: "publicada", texto: "Publicadas" },
   { valor: "sin-postulantes", texto: "Sin postulantes" },
+  { valor: "vencida", texto: "Vencidas" },
   { valor: "rechazada", texto: "Rechazadas" },
   { valor: "cerrada", texto: "Cerradas" },
   { valor: "todas", texto: "Todas" },
@@ -27,6 +29,7 @@ const VACIOS: Record<FiltroOfertasAdmin, string> = {
   pendiente: "No hay ofertas esperando revisión. ¡Al día!",
   publicada: "No hay ofertas publicadas.",
   "sin-postulantes": "Todas las ofertas publicadas hace más de una semana tienen postulantes.",
+  vencida: "No hay ofertas vencidas.",
   rechazada: "No hay ofertas rechazadas.",
   cerrada: "No hay ofertas cerradas.",
   todas: "Todavía no llegó ninguna oferta.",
@@ -38,6 +41,8 @@ function cuando(fila: FilaOfertaAdmin, momento: number): string {
     case "pendiente":
       return `Enviada ${haceCuanto(fila.fecha_envio ?? fila.updated_at, momento)}`;
     case "publicada":
+      // The closing date says more than the publication once it is near or past
+      if (fila.fecha_cierre) return textoCierre(fila.fecha_cierre, momento);
       return fila.fecha_publicacion ? `Publicada ${haceCuanto(fila.fecha_publicacion, momento)}` : "Publicada";
     case "rechazada":
       return `Rechazada ${haceCuanto(fila.updated_at, momento)}`;
@@ -113,7 +118,7 @@ export default async function OfertasAdminPage({ searchParams }: PageProps<"/adm
     { titulo: "Oferta", celda: (fila) => <Titulo fila={fila} />, className: "w-[30%]" },
     { titulo: "Empresa", celda: (fila) => <Empresa fila={fila} />, className: "max-w-56" },
     { titulo: "Rubro", celda: (fila) => <span className="text-muted-foreground">{fila.categoria}</span>, secundaria: true, className: "max-w-40" },
-    { titulo: "Estado", celda: (fila) => <EtiquetaOfertaAdmin estado={fila.estado} /> },
+    { titulo: "Estado", celda: (fila) => <EtiquetaOfertaAdmin estado={fila.estado} vencida={ofertaVencida(fila, momento)} /> },
     { titulo: "Fecha", celda: (fila) => <span className="whitespace-nowrap text-muted-foreground">{cuando(fila, momento)}</span> },
     { titulo: "Postulaciones", celda: (fila) => <Postulaciones fila={fila} /> },
     { titulo: "Acción", celda: (fila) => <Accion fila={fila} />, className: "text-right" },
@@ -152,7 +157,7 @@ export default async function OfertasAdminPage({ searchParams }: PageProps<"/adm
             >
               <div className="flex items-start justify-between gap-3">
                 <Titulo fila={fila} />
-                <EtiquetaOfertaAdmin estado={fila.estado} />
+                <EtiquetaOfertaAdmin estado={fila.estado} vencida={ofertaVencida(fila, momento)} />
               </div>
               <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
                 <Empresa fila={fila} />

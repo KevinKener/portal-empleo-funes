@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { cache, type CSSProperties, type ReactNode } from "react";
-import { AlarmClock, ArrowRight, BadgeCheck, Building2, CalendarDays, Clock, Eye, Hash, MapPin, Phone, ShieldAlert, Users } from "lucide-react";
+import { AlarmClock, ArrowRight, BadgeCheck, Building2, CalendarClock, CalendarDays, Clock, Eye, Hash, MapPin, Phone, ShieldAlert, Users } from "lucide-react";
 import { AccionesRevision } from "@/components/admin/AccionesRevision";
 import { EtiquetaOfertaAdmin } from "@/components/admin/EtiquetaOfertaAdmin";
 import { LineaTiempo, type HitoLinea } from "@/components/admin/LineaTiempo";
@@ -12,6 +12,7 @@ import { CabeceraOferta, SeccionesOferta, VIDRIO } from "@/components/ofertas/De
 import { DIAS_DEMORA, diasEsperando } from "@/lib/admin/bandeja";
 import { obtenerOfertaAdmin, siguientePorRevisar, type OfertaAdmin } from "@/lib/admin/ofertas";
 import { requerirRol } from "@/lib/auth";
+import { CIERRE, diasParaCierre, formatearDia, hoyArgentina, ofertaVencida, textoCierre } from "@/lib/cierre-oferta";
 import { ahora, ETIQUETAS_JORNADA, formatearCuit, formatearFecha, formatearMesAnio } from "@/lib/formato";
 import { urlLogo } from "@/lib/logo-empresa";
 import { cn } from "@/lib/utils";
@@ -70,16 +71,21 @@ export default async function RevisarOfertaPage({ params }: PageProps<"/admin/of
   const nombreEmpresa = empresa?.nombre_comercial ?? "Empresa";
   const espera = oferta.estado === "pendiente" ? diasEsperando(oferta.fecha_envio ?? oferta.updated_at, momento) : 0;
   const totalPostulaciones = Object.values(oferta.postulaciones).reduce((suma, n) => suma + n, 0);
+  const vencida = ofertaVencida(oferta, momento);
 
   return (
     <div className="space-y-6">
-      <EnlaceVolver href={`/admin/ofertas?estado=${oferta.estado}`} texto="Ofertas" />
+      <EnlaceVolver href={`/admin/ofertas?estado=${vencida ? "vencida" : oferta.estado}`} texto="Ofertas" />
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_23rem] lg:items-start">
         <div className="min-w-0 space-y-4">
           <p className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
             <Eye aria-hidden className="size-4 text-primary" />
-            {oferta.estado === "pendiente" ? "Así la van a ver los postulantes" : "Así se ve la oferta en el portal"}
+            {oferta.estado === "pendiente"
+              ? "Así la van a ver los postulantes"
+              : vencida
+                ? "Así se veía en el portal (venció y ya no se muestra)"
+                : "Así se ve la oferta en el portal"}
           </p>
           <CabeceraOferta
             id={oferta.id}
@@ -95,6 +101,13 @@ export default async function RevisarOfertaPage({ params }: PageProps<"/admin/of
                   <Clock aria-hidden className="size-4" />
                   <dd>{ETIQUETAS_JORNADA[oferta.jornada]}</dd>
                 </div>
+                {oferta.fecha_cierre && (
+                  <div className={VIDRIO}>
+                    <dt className="sr-only">Cierre</dt>
+                    <CalendarClock aria-hidden className="size-4" />
+                    <dd>Recibe postulaciones hasta el {formatearDia(oferta.fecha_cierre)}</dd>
+                  </div>
+                )}
                 {oferta.fecha_publicacion && (
                   <div className={VIDRIO}>
                     <dt className="sr-only">Publicada</dt>
@@ -115,9 +128,12 @@ export default async function RevisarOfertaPage({ params }: PageProps<"/admin/of
                 <h2 id="titulo-revision" className="font-heading text-lg font-semibold">
                   Revisión
                 </h2>
-                <EtiquetaOfertaAdmin estado={oferta.estado} />
+                <EtiquetaOfertaAdmin estado={oferta.estado} vencida={vencida} />
               </div>
-              <p className="text-sm text-muted-foreground">{TEXTO_ESTADO[oferta.estado]}</p>
+              <p className="text-sm text-muted-foreground">
+                {vencida ? "Venció: ya no se ve en el portal ni recibe postulaciones. Podés reabrirla con una fecha nueva." : TEXTO_ESTADO[oferta.estado]}
+              </p>
+              <FechaCierre fecha={oferta.fecha_cierre} estado={oferta.estado} momento={momento} />
               {espera > DIAS_DEMORA && (
                 <p className="inline-flex items-center gap-1.5 rounded-full bg-aviso-suave px-2.5 py-1 text-sm font-semibold text-aviso">
                   <AlarmClock aria-hidden className="size-4" /> Espera hace {espera} días
@@ -131,7 +147,14 @@ export default async function RevisarOfertaPage({ params }: PageProps<"/admin/of
               )}
             </div>
 
-            <AccionesRevision id={oferta.id} estado={oferta.estado} urgente={oferta.prioridad === "urgente"} />
+            <AccionesRevision
+              id={oferta.id}
+              estado={oferta.estado}
+              urgente={oferta.prioridad === "urgente"}
+              hoy={hoyArgentina(momento)}
+              vencida={vencida}
+              fechaCierre={oferta.fecha_cierre}
+            />
 
             {siguiente && (
               <Link
@@ -239,5 +262,26 @@ function Dato({ Icono, etiqueta, children }: { Icono: typeof Hash; etiqueta: str
       <dt className="sr-only">{etiqueta}</dt>
       <dd className="min-w-0 break-words">{children}</dd>
     </div>
+  );
+}
+
+/** Until when the offer takes applications, or what happens on publication when the company chose no date. */
+function FechaCierre({ fecha, estado, momento }: { fecha: string | null; estado: OfertaAdmin["estado"]; momento: number }) {
+  if (estado === "pendiente") {
+    return (
+      <p className="flex gap-2 text-sm">
+        <CalendarClock aria-hidden className="mt-0.5 size-4 shrink-0 text-primary" />
+        {fecha
+          ? `La empresa pidió recibir postulaciones hasta el ${formatearDia(fecha)}.`
+          : `La empresa no eligió fecha de cierre: al publicarla queda abierta ${CIERRE.porDefecto} días.`}
+      </p>
+    );
+  }
+  if (estado !== "publicada" || !fecha) return null;
+  const pronto = diasParaCierre(fecha, momento) <= CIERRE.pronto;
+  return (
+    <p className={cn("inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-sm font-semibold", pronto ? "bg-aviso-suave text-aviso" : "bg-muted")}>
+      <CalendarClock aria-hidden className="size-4" /> {textoCierre(fecha, momento)}
+    </p>
   );
 }

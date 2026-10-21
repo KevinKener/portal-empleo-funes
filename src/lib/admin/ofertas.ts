@@ -1,5 +1,6 @@
 import "server-only"
 import { DIAS_SIN_POSTULANTES } from "@/lib/admin/bandeja"
+import { ofertaVencida } from "@/lib/cierre-oferta"
 import { createClient } from "@/lib/supabase/server"
 import type { EstadoOferta, EstadoPostulacion } from "@/lib/estados"
 import type { Tables } from "@/types/database"
@@ -11,7 +12,7 @@ import type { Tables } from "@/types/database"
  * (Rule 9). Callers check the role first with requerirRol("admin").
  */
 
-export const FILTROS_OFERTAS_ADMIN = ["pendiente", "publicada", "sin-postulantes", "rechazada", "cerrada", "todas"] as const
+export const FILTROS_OFERTAS_ADMIN = ["pendiente", "publicada", "sin-postulantes", "vencida", "rechazada", "cerrada", "todas"] as const
 export type FiltroOfertasAdmin = (typeof FILTROS_OFERTAS_ADMIN)[number]
 
 /** `?estado=` from the URL, defaulting to the review queue. */
@@ -25,7 +26,7 @@ type Empresa = Pick<Tables<"empresas">, "id" | "nombre_comercial" | "logo_url">
 
 export type FilaOfertaAdmin = Pick<
   Tables<"ofertas">,
-  "id" | "titulo" | "estado" | "prioridad" | "fecha_envio" | "fecha_publicacion" | "updated_at"
+  "id" | "titulo" | "estado" | "prioridad" | "fecha_envio" | "fecha_publicacion" | "fecha_cierre" | "updated_at"
 > & {
   categoria: string | null
   empresa: Empresa | null
@@ -44,6 +45,7 @@ function normalizar(texto: string): string {
 function sinPostulantes(fila: FilaOfertaAdmin, momento: number): boolean {
   return (
     fila.estado === "publicada" &&
+    !ofertaVencida(fila, momento) &&
     fila.postulaciones.total === 0 &&
     fila.fecha_publicacion !== null &&
     momento - new Date(fila.fecha_publicacion).getTime() >= DIAS_SIN_POSTULANTES * DIA
@@ -53,6 +55,9 @@ function sinPostulantes(fila: FilaOfertaAdmin, momento: number): boolean {
 function enFiltro(fila: FilaOfertaAdmin, filtro: FiltroOfertasAdmin, momento: number): boolean {
   if (filtro === "todas") return true
   if (filtro === "sin-postulantes") return sinPostulantes(fila, momento)
+  // Expired offers are still `publicada` in the database, but out of the portal
+  if (filtro === "vencida") return ofertaVencida(fila, momento)
+  if (filtro === "publicada") return fila.estado === "publicada" && !ofertaVencida(fila, momento)
   return fila.estado === filtro
 }
 
@@ -67,6 +72,8 @@ const ORDEN: Record<FiltroOfertasAdmin, (a: FilaOfertaAdmin, b: FilaOfertaAdmin)
   // Offers with applications to review first (pre-selection, branch D)
   publicada: (a, b) => b.postulaciones.pendientes - a.postulaciones.pendientes || fecha(b.fecha_publicacion) - fecha(a.fecha_publicacion),
   "sin-postulantes": (a, b) => fecha(a.fecha_publicacion) - fecha(b.fecha_publicacion),
+  // Most recently expired first: the ones a company may still want extended
+  vencida: (a, b) => fecha(b.fecha_cierre) - fecha(a.fecha_cierre),
   rechazada: (a, b) => fecha(b.updated_at) - fecha(a.updated_at),
   cerrada: (a, b) => fecha(b.updated_at) - fecha(a.updated_at),
   todas: (a, b) => fecha(b.updated_at) - fecha(a.updated_at),
@@ -82,7 +89,7 @@ export async function listarOfertasAdmin(filtro: FiltroOfertasAdmin, busqueda: s
   const supabase = await createClient()
   const { data: ofertas, error } = await supabase
     .from("ofertas")
-    .select("id, titulo, estado, prioridad, fecha_envio, fecha_publicacion, updated_at, categorias(nombre), empresas(id, nombre_comercial, logo_url)")
+    .select("id, titulo, estado, prioridad, fecha_envio, fecha_publicacion, fecha_cierre, updated_at, categorias(nombre), empresas(id, nombre_comercial, logo_url)")
     .neq("estado", "borrador")
   if (error) throw new Error(ERROR_LECTURA)
 

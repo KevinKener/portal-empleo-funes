@@ -273,6 +273,7 @@ export type Database = {
           descripcion: string
           empresa_id: string
           estado: Database["public"]["Enums"]["estado_oferta"]
+          fecha_cierre: string | null
           fecha_envio: string | null
           fecha_publicacion: string | null
           id: string
@@ -289,6 +290,7 @@ export type Database = {
           descripcion: string
           empresa_id: string
           estado?: Database["public"]["Enums"]["estado_oferta"]
+          fecha_cierre?: string | null
           fecha_envio?: string | null
           fecha_publicacion?: string | null
           id?: string
@@ -305,6 +307,7 @@ export type Database = {
           descripcion?: string
           empresa_id?: string
           estado?: Database["public"]["Enums"]["estado_oferta"]
+          fecha_cierre?: string | null
           fecha_envio?: string | null
           fecha_publicacion?: string | null
           id?: string
@@ -647,6 +650,7 @@ export type Database = {
           descripcion: string | null
           empresa_logo_url: string | null
           empresa_nombre: string | null
+          fecha_cierre: string | null
           fecha_publicacion: string | null
           id: string | null
           jornada: Database["public"]["Enums"]["jornada"] | null
@@ -760,6 +764,7 @@ export type Database = {
       }
       empresa_actual_verificada: { Args: never; Returns: boolean }
       es_admin: { Args: never; Returns: boolean }
+      hoy_argentina: { Args: never; Returns: string }
       oferta_es_de_empresa_actual: {
         Args: { p_oferta_id: string }
         Returns: boolean

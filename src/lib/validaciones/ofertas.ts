@@ -1,3 +1,4 @@
+import { errorFechaCierre } from "@/lib/cierre-oferta"
 import { Constants, type Enums } from "@/types/database"
 import type { Resultado } from "@/lib/validaciones/cv"
 
@@ -90,6 +91,8 @@ export type DatosOferta = {
   jornada: Enums<"jornada">
   categoria_id: string
   prioridad: Enums<"prioridad_oferta">
+  /** Last day to apply ("YYYY-MM-DD"), or null for the default on publication. */
+  fecha_cierre: string | null
 }
 
 function texto(valor: FormDataEntryValue | null): string {
@@ -101,7 +104,7 @@ function texto(valor: FormDataEntryValue | null): string {
  * requisitos, jornada, categoria_id, prioridad). Shared by the browser and the Server
  * Actions; messages reach the user.
  */
-export function validarOferta(formData: FormData): Resultado<DatosOferta> {
+export function validarOferta(formData: FormData, momento: number): Resultado<DatosOferta> {
   const errores: Record<string, string> = {}
   const titulo = texto(formData.get("titulo"))
   const descripcion = texto(formData.get("descripcion"))
@@ -110,6 +113,8 @@ export function validarOferta(formData: FormData): Resultado<DatosOferta> {
   const categoria = texto(formData.get("categoria_id"))
   // Missing means "normal": the field is optional and older forms do not send it
   const prioridad = texto(formData.get("prioridad")) || "normal"
+  // Optional: empty means the 30-day default once published
+  const fechaCierre = texto(formData.get("fecha_cierre"))
 
   if (!titulo) errores.titulo = "Completá el puesto que buscás."
   else if (titulo.length > MAXIMO_TITULO) errores.titulo = `Usá como máximo ${MAXIMO_TITULO} caracteres.`
@@ -119,6 +124,8 @@ export function validarOferta(formData: FormData): Resultado<DatosOferta> {
   if (!(JORNADAS as readonly string[]).includes(jornada)) errores.jornada = "Elegí la jornada."
   if (!esUuid(categoria)) errores.categoria_id = "Elegí el rubro."
   if (!(PRIORIDADES as readonly string[]).includes(prioridad)) errores.prioridad = "Elegí qué tan rápido la necesitás cubrir."
+  const errorCierre = fechaCierre ? errorFechaCierre(fechaCierre, momento) : null
+  if (errorCierre) errores.fecha_cierre = errorCierre
 
   if (Object.keys(errores).length > 0) return { ok: false, errores }
   return {
@@ -130,6 +137,7 @@ export function validarOferta(formData: FormData): Resultado<DatosOferta> {
       jornada: jornada as Enums<"jornada">,
       categoria_id: categoria,
       prioridad: prioridad as Enums<"prioridad_oferta">,
+      fecha_cierre: fechaCierre || null,
     },
   }
 }

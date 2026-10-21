@@ -66,7 +66,7 @@ export async function obtenerOfertasParaVos(
 
   let lista = supabase
     .from("ofertas_publicas")
-    .select("id, titulo, empresa_nombre, empresa_logo_url, categoria_nombre, fecha_publicacion, prioridad, nivel_demanda")
+    .select("id, titulo, empresa_nombre, empresa_logo_url, categoria_nombre, fecha_publicacion, prioridad, nivel_demanda, fecha_cierre")
     .in("categoria_id", categorias)
     .order("fecha_publicacion", { ascending: false })
     .limit(OFERTAS_EN_PANEL)

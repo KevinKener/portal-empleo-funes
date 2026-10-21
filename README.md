@@ -132,6 +132,7 @@ Junta en un solo lugar a **vecinos que buscan trabajo**, **empresas de la ciudad
 - ✅ Bandeja: lo que espera revisión (empresas, ofertas, postulaciones, domicilios), con la antigüedad de lo más viejo
 - ✅ Revisar ofertas tal como las verán los postulantes: publicarlas, rechazarlas con el motivo o cerrarlas
 - ✅ Verificar o rechazar empresas con el motivo; si la empresa corrige sus datos, vuelve a revisión
+- ✅ Fecha de cierre de las ofertas: la empresa la elige (hasta 60 días) o dura 30 días; al vencer sale del portal y solo la Oficina la extiende
 - 🔜 Verificar domicilios
 - 🔜 Preseleccionar postulantes (vecinos de Funes primero)
 - 🔜 Buscar perfiles por rubro, nombre o localidad

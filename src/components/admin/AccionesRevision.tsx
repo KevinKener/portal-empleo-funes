@@ -2,11 +2,12 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { CircleCheck, Info, LoaderCircle, XCircle, Zap, ZapOff } from "lucide-react";
-import { cambiarPrioridad, cerrarOferta, publicarOferta, rechazarOferta, type ResultadoRevision } from "@/app/admin/ofertas/actions";
+import { CalendarClock, CircleCheck, Info, LoaderCircle, XCircle, Zap, ZapOff } from "lucide-react";
+import { cambiarPrioridad, cerrarOferta, extenderOferta, publicarOferta, rechazarOferta, type ResultadoRevision } from "@/app/admin/ofertas/actions";
 import { FormularioRechazo, type SugerenciaRechazo } from "@/components/admin/FormularioRechazo";
 import { AvisoFormulario } from "@/components/formularios/AvisoFormulario";
 import { buttonVariants } from "@/components/ui/button";
+import { CIERRE, formatearDia, sumarDias } from "@/lib/cierre-oferta";
 import type { EstadoOferta } from "@/lib/estados";
 import { cn } from "@/lib/utils";
 
@@ -24,6 +25,12 @@ type PropsAccionesRevision = {
   id: string;
   estado: EstadoOferta;
   urgente: boolean;
+  /** Today in Funes ("YYYY-MM-DD"), from the server. */
+  hoy: string;
+  /** Published but past its closing date: extending it puts it back on the portal. */
+  vencida: boolean;
+  /** Current closing date ("YYYY-MM-DD"); extending only offers later days. */
+  fechaCierre: string | null;
 };
 
 /**
@@ -33,7 +40,7 @@ type PropsAccionesRevision = {
  * first tap, with what it means said beforehand (one notice, tutor review
  * 2026-10-20); rejecting asks for the reason first, which is its own step.
  */
-export function AccionesRevision({ id, estado, urgente }: PropsAccionesRevision) {
+export function AccionesRevision({ id, estado, urgente, hoy, vencida, fechaCierre }: PropsAccionesRevision) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [aviso, setAviso] = useState<string | null>(null);
@@ -56,6 +63,10 @@ export function AccionesRevision({ id, estado, urgente }: PropsAccionesRevision)
   }
 
   const ocupado = enCurso !== null;
+  // Only days after the current closing date: extending never shortens the offer
+  const extensiones = [14, 30, CIERRE.maximo]
+    .map((dias) => ({ dias, fecha: sumarDias(hoy, dias) }))
+    .filter(({ fecha }) => !fechaCierre || fecha > fechaCierre);
 
   return (
     <div className="space-y-4">
@@ -116,6 +127,44 @@ export function AccionesRevision({ id, estado, urgente }: PropsAccionesRevision)
           <p id="aviso-cerrar" className="flex gap-2 text-sm text-muted-foreground">
             <Info aria-hidden className="mt-0.5 size-4 shrink-0 text-primary" />
             Deja de verse en el portal y no recibe más postulaciones. No se puede volver a abrir.
+          </p>
+        </div>
+      )}
+
+      {estado === "publicada" && (
+        // Only the Office extends (decision 2026-10-21), from today up to CIERRE.maximo days
+        <div className="space-y-2 rounded-xl border border-border bg-muted/40 p-3">
+          <p className="flex items-center gap-2 text-sm font-semibold">
+            <CalendarClock aria-hidden className="size-4 text-primary" />
+            {vencida ? "Reabrir hasta el…" : "Extender hasta el…"}
+          </p>
+          {extensiones.length === 0 && (
+            <p className="text-sm text-muted-foreground">Ya cierra en la fecha más lejana posible ({CIERRE.maximo} días).</p>
+          )}
+          <div className="flex flex-wrap gap-1.5">
+            {extensiones.map(({ dias, fecha }) => {
+              return (
+                <button
+                  key={dias}
+                  type="button"
+                  disabled={ocupado}
+                  onClick={() =>
+                    correr(
+                      `extender-${dias}`,
+                      () => extenderOferta(id, fecha),
+                      `Listo: recibe postulaciones hasta el ${formatearDia(fecha)}.`,
+                    )
+                  }
+                  className="inline-flex h-9 items-center gap-1.5 rounded-full border border-border bg-card px-3 text-sm font-medium transition-colors hover:border-primary hover:text-primary disabled:opacity-50"
+                >
+                  {enCurso === `extender-${dias}` && <LoaderCircle aria-hidden className="size-3.5 animate-spin" />}
+                  {formatearDia(fecha)}
+                </button>
+              );
+            })}
+          </div>
+          <p className="text-xs text-muted-foreground">
+            {vencida ? "Vuelve a verse en el portal y a recibir postulaciones." : "La empresa no puede cambiar la fecha: te la pide a vos."}
           </p>
         </div>
       )}

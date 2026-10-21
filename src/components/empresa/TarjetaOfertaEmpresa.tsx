@@ -1,8 +1,9 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { ArrowRight, BadgeCheck, CalendarDays, Clock, FilePen, Hourglass, MessagesSquare, Tag, UserSearch, type LucideIcon } from "lucide-react";
+import { ArrowRight, BadgeCheck, CalendarClock, CalendarDays, Clock, FilePen, Hourglass, MessagesSquare, Tag, UserSearch, type LucideIcon } from "lucide-react";
 import { InsigniasOferta } from "@/components/ofertas/InsigniasOferta";
 import { EtiquetaEstadoOferta } from "@/components/empresa/EtiquetaEstadoOferta";
+import { CIERRE, diasParaCierre, textoCierre } from "@/lib/cierre-oferta";
 import { ahora, ETIQUETAS_JORNADA, haceCuanto } from "@/lib/formato";
 import type { ResumenCandidatos } from "@/lib/candidatos-empresa";
 import type { OfertaEmpresa } from "@/lib/ofertas-empresa";
@@ -88,6 +89,14 @@ export function TarjetaOfertaEmpresa({ oferta, candidatos }: PropsTarjetaOfertaE
           <Clock aria-hidden className="size-4 shrink-0 text-primary" />
           <dd>{ETIQUETAS_JORNADA[oferta.jornada]}</dd>
         </div>
+        {oferta.estado === "publicada" && oferta.fecha_cierre && (
+          // Amber in the last days and once it expired (it no longer shows on the portal)
+          <div className={cn(PILDORA, diasParaCierre(oferta.fecha_cierre, momento) <= CIERRE.pronto && "bg-aviso-suave text-aviso")}>
+            <dt className="sr-only">Cierre</dt>
+            <CalendarClock aria-hidden className="size-4 shrink-0" />
+            <dd>{textoCierre(oferta.fecha_cierre, momento)}</dd>
+          </div>
+        )}
       </dl>
 
       <Situacion oferta={oferta} candidatos={candidatos} momento={momento} />

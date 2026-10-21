@@ -24,11 +24,12 @@ export type OfertaEmpresa = Pick<
   | "motivo_rechazo"
   | "fecha_publicacion"
   | "fecha_envio"
+  | "fecha_cierre"
   | "updated_at"
 > & { categoria_nombre: string | null }
 
 const COLUMNAS =
-  "id, titulo, descripcion, requisitos, jornada, categoria_id, prioridad, estado, motivo_rechazo, fecha_publicacion, fecha_envio, updated_at, categorias(nombre)"
+  "id, titulo, descripcion, requisitos, jornada, categoria_id, prioridad, estado, motivo_rechazo, fecha_publicacion, fecha_envio, fecha_cierre, updated_at, categorias(nombre)"
 
 type FilaOferta = Omit<OfertaEmpresa, "categoria_nombre"> & { categorias: { nombre: string } | null }
 

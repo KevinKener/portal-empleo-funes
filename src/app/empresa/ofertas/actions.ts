@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requerirRol } from "@/lib/auth";
+import { ahora } from "@/lib/formato";
 import { ESTADOS_OFERTA, puedeCambiarEstado, type EstadoOferta } from "@/lib/estados";
 import { obtenerEmpresaActual } from "@/lib/ofertas-empresa";
 import { createClient } from "@/lib/supabase/server";
@@ -44,7 +45,7 @@ export async function guardarOferta(
   _previo: EstadoFormularioOferta,
   formData: FormData,
 ): Promise<EstadoFormularioOferta> {
-  const resultado = validarOferta(formData);
+  const resultado = validarOferta(formData, ahora());
   if (!resultado.ok) return { errores: resultado.errores, mensaje: "Revisá los datos marcados." };
 
   const idTexto = formData.get("id");

@@ -2,6 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import { requerirRol } from "@/lib/auth";
+import { CIERRE, diasParaCierre } from "@/lib/cierre-oferta";
+import { ahora } from "@/lib/formato";
 import { puedeCambiarEstado, type EstadoOferta } from "@/lib/estados";
 import { createClient } from "@/lib/supabase/server";
 import { esUuid, MOTIVO_RECHAZO } from "@/lib/validaciones/ofertas";
@@ -89,6 +91,35 @@ export async function cambiarPrioridad(id: string, urgente: boolean): Promise<Re
     .maybeSingle();
   if (error || !data) {
     if (error) console.error("cambiarPrioridad failed:", error.code);
+    return { error: ERROR_CAMBIO };
+  }
+
+  revalidar();
+  return { error: null };
+}
+
+/**
+ * Moves the closing date of a published offer, also once expired ("reabrirla"):
+ * from today up to CIERRE.maximo days ahead. Only the Office does it
+ * (decision 2026-10-21); the trigger checks the same window.
+ */
+export async function extenderOferta(id: string, fechaCierre: string): Promise<ResultadoRevision> {
+  if (!esUuid(id) || typeof fechaCierre !== "string") return { error: ERROR_CAMBIO };
+  const momento = ahora();
+  const dias = /^\d{4}-\d{2}-\d{2}$/.test(fechaCierre) ? diasParaCierre(fechaCierre, momento) : Number.NaN;
+  if (!(dias >= 0 && dias <= CIERRE.maximo)) return { error: `Elegí una fecha entre hoy y los próximos ${CIERRE.maximo} días.` };
+  await requerirRol("admin");
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("ofertas")
+    .update({ fecha_cierre: fechaCierre })
+    .eq("id", id)
+    .eq("estado", "publicada")
+    .select("id")
+    .maybeSingle();
+  if (error || !data) {
+    if (error) console.error("extenderOferta failed:", error.code);
     return { error: ERROR_CAMBIO };
   }
 
