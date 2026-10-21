@@ -27,9 +27,9 @@ export function ProgresoCv({ secciones, completo, oferta }: PropsProgresoCv) {
       className="relative isolate overflow-hidden rounded-2xl bg-primary-deep p-5 text-primary-foreground sm:p-6"
     >
       <FondoMarca compacto />
-      <div className="flex flex-col gap-5 motion-safe:animate-entrada sm:flex-row sm:items-center">
+      <div className="flex flex-wrap items-center gap-x-5 gap-y-4 motion-safe:animate-entrada">
         <AnilloProgreso hechas={hechas} total={secciones.length} tono="oscuro" />
-        <div className="min-w-0 flex-1 space-y-1">
+        <div className="min-w-0 flex-1 basis-56 space-y-1">
           <h2 className="flex items-center gap-2 font-heading text-xl font-semibold">
             {completo && <CircleCheck aria-hidden className="size-5 shrink-0" />}
             {completo ? "Tu CV está listo para postularte" : "Completá tu CV para postularte"}

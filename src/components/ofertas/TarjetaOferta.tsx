@@ -1,6 +1,8 @@
 import { ViewTransition } from "react";
 import Link from "next/link";
 import { ArrowRight, CalendarDays, Clock } from "lucide-react";
+import { LogoEmpresa } from "@/components/empresa/LogoEmpresa";
+import { urlLogo } from "@/lib/logo-empresa";
 import type { OfertaPublica } from "@/lib/ofertas";
 import { ETIQUETAS_JORNADA, formatearFecha } from "@/lib/formato";
 
@@ -38,13 +40,13 @@ export function TarjetaOferta({ oferta }: { oferta: OfertaPublica }) {
       </span>
 
       <div className="flex items-start gap-3">
-        {/* Company monogram: a quick visual anchor when scanning many cards */}
-        <span
-          aria-hidden
-          className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-secondary font-heading text-lg font-semibold text-secondary-foreground transition-[background-color,color,rotate,scale] duration-300 group-hover:bg-primary group-hover:text-primary-foreground motion-safe:group-hover:scale-105 motion-safe:group-hover:-rotate-6"
-        >
-          {empresa.trim().charAt(0).toLocaleUpperCase("es-AR") || "?"}
-        </span>
+        {/* Company logo, or its initial: a quick visual anchor when scanning many cards */}
+        <LogoEmpresa
+          nombre={empresa}
+          logo={urlLogo(oferta.empresa_logo_url)}
+          tamanio="sm"
+          className="transition-[rotate,scale] duration-300 motion-safe:group-hover:scale-105 motion-safe:group-hover:-rotate-6"
+        />
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-semibold text-foreground">{empresa}</p>
           {oferta.categoria_nombre && <p className="truncate text-sm font-medium text-primary">{oferta.categoria_nombre}</p>}

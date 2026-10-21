@@ -74,8 +74,12 @@ export function ListaTareas({ tareas }: { tareas: Tarea[] }) {
                 <span className="min-w-0 flex-1">
                   <span className="block font-medium">{tarea.titulo}</span>
                   <span className="block text-sm text-muted-foreground">{tarea.descripcion}</span>
+                  {/* Phones: status under the text, so the text keeps the width */}
+                  <span className={cn("mt-1.5 inline-block rounded-full px-2.5 py-0.5 text-xs font-medium sm:hidden", estado.clase)}>
+                    {estado.texto}
+                  </span>
                 </span>
-                <span className={cn("shrink-0 rounded-full px-2.5 py-0.5 text-xs font-medium", estado.clase)}>
+                <span className={cn("hidden shrink-0 rounded-full px-2.5 py-0.5 text-xs font-medium sm:inline-block", estado.clase)}>
                   {estado.texto}
                 </span>
                 <ChevronRight
