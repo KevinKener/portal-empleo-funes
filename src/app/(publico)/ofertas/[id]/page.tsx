@@ -6,9 +6,11 @@ import { cache, ViewTransition, type CSSProperties } from "react";
 import { ArrowLeft, BadgeCheck, CalendarDays, Clock, FileText, ListChecks, Share2 } from "lucide-react";
 import { FondoMarca } from "@/components/layout/FondoMarca";
 import { Revelar } from "@/components/layout/Revelar";
+import { LogoEmpresa } from "@/components/empresa/LogoEmpresa";
 import { AccionPostular } from "@/components/ofertas/AccionPostular";
 import { TextoOferta } from "@/components/ofertas/TextoOferta";
 import { nombreTransicionOferta } from "@/components/ofertas/TarjetaOferta";
+import { urlLogo } from "@/lib/logo-empresa";
 import { obtenerOfertaPublica } from "@/lib/ofertas";
 import { ETIQUETAS_JORNADA, formatearFecha } from "@/lib/formato";
 import { esUuid } from "@/lib/validaciones/ofertas";
@@ -67,10 +69,8 @@ export default async function OfertaDetallePage({ params }: PageProps<"/ofertas/
           </Link>
 
           <div className="flex items-center gap-3">
-            {/* Company initial, as on the offer cards */}
-            <span aria-hidden className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary-foreground font-heading text-xl font-bold text-primary-deep shadow-lg shadow-black/20">
-              {empresa.trim().charAt(0).toLocaleUpperCase("es-AR") || "?"}
-            </span>
+            {/* Company logo or initial, as on the offer cards */}
+            <LogoEmpresa nombre={empresa} logo={urlLogo(oferta.empresa_logo_url)} tamanio="md" className="shadow-lg shadow-black/20 ring-0" />
             <div className="min-w-0">
               <p className="truncate font-semibold">{empresa}</p>
               {oferta.categoria_nombre && <p className="truncate text-sm text-primary-foreground/80">{oferta.categoria_nombre}</p>}

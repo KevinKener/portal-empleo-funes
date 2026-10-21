@@ -34,22 +34,25 @@ export function TarjetaSeccion({ id, titulo, descripcion, icono, hecho, children
           </span>
         )}
         <div className="min-w-0 flex-1 space-y-1">
-          <h2 id={id ? `${id}-titulo` : undefined} className="font-heading text-xl font-semibold">
-            {titulo}
-          </h2>
+          {/* Badge next to the title, wrapping under it on phones instead of taking a column */}
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+            <h2 id={id ? `${id}-titulo` : undefined} className="font-heading text-xl font-semibold">
+              {titulo}
+            </h2>
+            {hecho !== undefined && (
+              <span
+                className={cn(
+                  "flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold",
+                  hecho ? "bg-secondary text-secondary-foreground" : "bg-muted text-muted-foreground",
+                )}
+              >
+                {hecho && <CircleCheck aria-hidden className="size-3.5" />}
+                {hecho ? "Completo" : "Vacío"}
+              </span>
+            )}
+          </div>
           {descripcion && <p className="text-sm text-muted-foreground">{descripcion}</p>}
         </div>
-        {hecho !== undefined && (
-          <span
-            className={cn(
-              "flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold",
-              hecho ? "bg-secondary text-secondary-foreground" : "bg-muted text-muted-foreground",
-            )}
-          >
-            {hecho && <CircleCheck aria-hidden className="size-3.5" />}
-            {hecho ? "Completo" : "Vacío"}
-          </span>
-        )}
       </div>
       {children}
     </section>

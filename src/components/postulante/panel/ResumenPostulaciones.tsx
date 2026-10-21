@@ -98,6 +98,7 @@ function TarjetaCompacta({ postulacion, empresa }: { postulacion: MiPostulacion;
   const { id, estado, motivo_rechazo, oferta } = postulacion;
   const texto = textoEstadoPostulacion(estado, motivo_rechazo);
   const rechazada = estado === "rechazado";
+  const etapa = rechazada ? "bg-muted text-muted-foreground" : "bg-secondary text-secondary-foreground";
 
   return (
     <Link
@@ -113,18 +114,13 @@ function TarjetaCompacta({ postulacion, empresa }: { postulacion: MiPostulacion;
           {(empresa ?? oferta?.titulo ?? "?").trim().charAt(0).toLocaleUpperCase("es-AR")}
         </span>
         <div className="min-w-0 flex-1">
-          <p className="truncate font-semibold">{oferta?.titulo ?? "Oferta"}</p>
+          <p className="font-semibold sm:truncate">{oferta?.titulo ?? "Oferta"}</p>
           {empresa && <p className="truncate text-sm text-muted-foreground">{empresa}</p>}
+          {/* Phones: the stage goes under the company, so the job title is never cut */}
+          <span className={cn("mt-1.5 inline-block rounded-full px-2.5 py-1 text-xs font-semibold sm:hidden", etapa)}>{texto.titulo}</span>
         </div>
         <MarcaNovedad id={id} estado={estado} />
-        <span
-          className={cn(
-            "shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold",
-            rechazada ? "bg-muted text-muted-foreground" : "bg-secondary text-secondary-foreground",
-          )}
-        >
-          {texto.titulo}
-        </span>
+        <span className={cn("hidden shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold sm:inline-block", etapa)}>{texto.titulo}</span>
       </div>
       {!rechazada && <SeguimientoPostulacion estado={estado} compacto />}
       <p className="text-sm text-muted-foreground">{texto.detalle}</p>

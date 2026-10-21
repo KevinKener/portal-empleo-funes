@@ -69,8 +69,9 @@ export default async function PostulantePage() {
           extra={<AccesosPanel enCurso={enCurso} conEmpresa={conEmpresa} />}
         />
 
+        {/* min-w-0: grid items default to their content's width and pushed the page sideways on phones */}
         <div className="grid gap-6 lg:grid-cols-[2fr_1fr] lg:items-start">
-          <div className="space-y-6">
+          <div className="min-w-0 space-y-6">
             <ProximoPaso
               paso={proximoPaso(resumen, nuevas)}
               perfilListo={listo}
@@ -81,7 +82,7 @@ export default async function PostulantePage() {
             {resumen.rubros > 0 && <OfertasParaVos ofertas={ofertas} />}
           </div>
 
-          <aside className="space-y-6">
+          <aside className="min-w-0 space-y-6">
             {listo && <PerfilCompleto domicilio={tareas.find((t) => t.clave === "domicilio")} />}
             <section
               aria-labelledby="titulo-consejo"

@@ -9,7 +9,7 @@ import type { Tables } from "@/types/database"
  * Callers check the role first with requerirRol("empresa").
  */
 
-export type EmpresaActual = Pick<Tables<"empresas">, "id" | "nombre_comercial" | "estado" | "constancia_arca_url">
+export type EmpresaActual = Pick<Tables<"empresas">, "id" | "nombre_comercial" | "estado" | "constancia_arca_url" | "logo_url">
 
 export type OfertaEmpresa = Pick<
   Tables<"ofertas">,
@@ -39,7 +39,7 @@ export async function obtenerEmpresaActual(userId: string): Promise<EmpresaActua
   const supabase = await createClient()
   const { data, error } = await supabase
     .from("empresas")
-    .select("id, nombre_comercial, estado, constancia_arca_url")
+    .select("id, nombre_comercial, estado, constancia_arca_url, logo_url")
     .eq("perfil_id", userId)
     .maybeSingle()
 

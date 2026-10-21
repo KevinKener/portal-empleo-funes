@@ -126,7 +126,7 @@ Junta en un solo lugar a **vecinos que buscan trabajo**, **empresas de la ciudad
 - ✅ Ver el motivo si una oferta no se aprueba, y usarla como base para corregirla
 - ✅ Recibir a los candidatos que preselecciona la Oficina
 - ✅ Marcar a quién entrevistar o contratar y confirmar todo junto
-- ✅ Editar sus datos y subir la constancia de ARCA
+- ✅ Editar sus datos, subir su logo (se ve en sus ofertas) y la constancia de ARCA
 
 ### 🏛️ Oficina de Empleo
 - 🔜 Aprobar empresas y ofertas, y verificar domicilios
@@ -325,7 +325,7 @@ Las páginas públicas viven en el grupo `src/app/(publico)/`, que comparte enca
 | `/postulante/domicilio` | Subir el comprobante de domicilio (solo vecinos de Funes) |
 | `/postulante/postulaciones` | Mis postulaciones, con el estado de cada una |
 | `/empresa` | Inicio de la empresa: aviso mientras está en revisión, "Próximo paso" y resumen de ofertas y candidatos (requiere rol empresa) |
-| `/empresa/datos` | Mi empresa: editar nombre comercial, teléfono y dirección (la razón social solo hasta que la Oficina verifica la empresa) y subir la constancia de ARCA (opcional) |
+| `/empresa/datos` | Mi empresa: logo (opcional, se ve en las ofertas; si no hay, la inicial), editar nombre comercial, teléfono y dirección (la razón social solo hasta que la Oficina verifica la empresa) y subir la constancia de ARCA (opcional) |
 | `/empresa/ofertas` | Mis ofertas: borradores, en revisión, publicadas, rechazadas (con motivo) y cerradas |
 | `/empresa/ofertas/nueva` · `/empresa/ofertas/[id]` · `/empresa/ofertas/[id]/editar` | Cargar una oferta como borrador, ver su estado (enviar a revisión, volver a borrador, cerrar, usar como base) y editarla mientras es borrador |
 | `/empresa/ofertas/[id]/candidatos` | Candidatos preseleccionados por la Oficina: CV, borrador entrevistar/contratar/descartar y "Confirmar selección"; teléfono y email solo desde la entrevista |

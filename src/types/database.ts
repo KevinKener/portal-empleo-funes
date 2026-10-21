@@ -119,6 +119,7 @@ export type Database = {
           direccion: string
           estado: Database["public"]["Enums"]["estado_verificacion"]
           id: string
+          logo_url: string | null
           nombre_comercial: string
           perfil_id: string
           razon_social: string
@@ -132,6 +133,7 @@ export type Database = {
           direccion: string
           estado?: Database["public"]["Enums"]["estado_verificacion"]
           id?: string
+          logo_url?: string | null
           nombre_comercial: string
           perfil_id: string
           razon_social: string
@@ -145,6 +147,7 @@ export type Database = {
           direccion?: string
           estado?: Database["public"]["Enums"]["estado_verificacion"]
           id?: string
+          logo_url?: string | null
           nombre_comercial?: string
           perfil_id?: string
           razon_social?: string
@@ -633,6 +636,7 @@ export type Database = {
           categoria_id: string | null
           categoria_nombre: string | null
           descripcion: string | null
+          empresa_logo_url: string | null
           empresa_nombre: string | null
           fecha_publicacion: string | null
           id: string | null

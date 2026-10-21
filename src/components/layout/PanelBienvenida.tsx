@@ -45,10 +45,24 @@ export function BandaBienvenida({ saludo, descripcion, inicio, extra }: PropsBan
 }
 
 /** Heading band of a private area's home, with notices or next steps below. */
-export function PanelBienvenida({ saludo, descripcion, children }: { saludo: string; descripcion: string; children?: ReactNode }) {
+export function PanelBienvenida({
+  saludo,
+  descripcion,
+  extra,
+  inicio,
+  children,
+}: {
+  saludo: string;
+  descripcion: string;
+  /** Quick actions or figures inside the band (see BandaBienvenida). */
+  extra?: ReactNode;
+  /** Shown before the greeting (the company logo). */
+  inicio?: ReactNode;
+  children?: ReactNode;
+}) {
   return (
     <div className="space-y-6">
-      <BandaBienvenida saludo={saludo} descripcion={<p>{descripcion}</p>} />
+      <BandaBienvenida saludo={saludo} descripcion={<p>{descripcion}</p>} extra={extra} inicio={inicio} />
       {children}
     </div>
   );
