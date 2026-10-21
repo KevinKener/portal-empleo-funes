@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, Clock, Mail, MapPin, Phone } from "lucide-react";
+import { ContactoEmail } from "@/components/layout/ContactoEmail";
 import { Escudo } from "@/components/layout/Escudo";
 import { AREA_POR_ROL, obtenerSesion } from "@/lib/auth";
 import { OFICINA } from "@/lib/oficina";
@@ -90,14 +91,14 @@ export async function PiePagina() {
                 </a>
               </li>
               <li>
-                <a href={OFICINA.emailEnlace} className={cn(ENLACE, "inline-flex items-center gap-2")}>
+                <ContactoEmail className={cn(ENLACE, "inline-flex items-center gap-2")}>
                   <Mail aria-hidden className="size-4 shrink-0" />
                   {/* If it has to wrap, it wraps after the @, never in the middle of a word */}
                   <span>
                     {OFICINA.email.split("@")[0]}@<wbr />
                     {OFICINA.email.split("@")[1]}
                   </span>
-                </a>
+                </ContactoEmail>
               </li>
               <li>
                 <a href={OFICINA.mapa} target="_blank" rel="noopener noreferrer" className={cn(ENLACE, "inline-flex items-center gap-2")}>
