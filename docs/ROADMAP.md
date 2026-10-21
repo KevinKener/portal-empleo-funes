@@ -8,9 +8,9 @@ Legend: `[x]` done · `[ ]` pending · `[~]` in progress
 
 ## Current status
 
-- **Current phase:** Phase 6 (Admin). Branches J (PR #35) and A (Bandeja, PRs #36–#37) merged 2026-10-21; branch B `feature/admin-ofertas` in progress. Phase 5 and the tutor review of 2026-10-20 are done (PRs #23–#34).
+- **Current phase:** Phase 6 (Admin). Branches J (PR #35), A (Bandeja, PRs #36–#37) and B (offers review, PR #38) merged 2026-10-21; branch C `feature/admin-empresas` in progress (migration `20261021140000_rechazo_empresa.sql`). Phase 5 and the tutor review of 2026-10-20 are done (PRs #23–#34).
 - **Latest progress:** 2026-10-20, offer CRUD for companies on `feature/crud-ofertas` (no migrations): list, new draft, edit while `borrador`, send to review / take back / close / delete draft, "Usar como base" for rejected and closed offers, company area navigation. Test company: the seed's "Empresa Demo" (CUIT 30000000007, `verificado`), password set by hand in the SQL Editor. Before that, "Mi panel" redesign and profile photo merged (PRs #16, #17) and phone fixes (#18). Earlier: public portal live on Vercel (https://portal-empleo-funes.vercel.app). Phase 2 merged in PR #7: `GET /api/ofertas` and `/api/ofertas/[id]`, landing, `/ofertas` listing with category filter and pagination, offer detail, public layout with the municipal identity from funes.gob.ar. Before that, flow corrections from the tutor review (2026-10-08) on `feature/correcciones-flujo`: offers start as `borrador` (company edits only drafts, sends and takes back), rejected applications carry `motivo_rechazo`, company selection draft (`decision_empresa` + `confirmar_seleccion()`), ARCA certificate optional. Migrations applied in Supabase, types regenerated, `estados.ts` and `AGENTS.md` §2 updated.
-- **Next step:** test and merge `feature/admin-ofertas`, then branch C `feature/admin-empresas` (small migration, D1). Order: J → A → B → C → D → I → E → F → G → H (`docs/research/admin.md` §7). Further ideas, ranked: [`docs/research/mejoras.md`](research/mejoras.md). The tutor's corrections arrive once everything is done.
+- **Next step:** apply the migration, test and merge `feature/admin-empresas`, then branch D `feature/admin-preseleccion`. Order: J → A → B → C → D → I → E → F → G → H (`docs/research/admin.md` §7). Further ideas, ranked: [`docs/research/mejoras.md`](research/mejoras.md). The tutor's corrections arrive once everything is done.
 
 > Update this section at the end of every work session.
 
@@ -191,9 +191,9 @@ Plan approved 2026-10-21: [`docs/research/admin.md`](research/admin.md) — desi
   - Same branch: "Mis postulaciones" (job seeker) and the company home / "Mis ofertas" redesigned (counters, trackers with "Ahora / Lo que sigue", status filters, candidates funnel, live searches) and the candidates page (offer funnel, key facts per candidate, "Tu selección" at the side) and "Mi empresa" (profile checklist, preview, verification steps, activity); copy-email fix; phone navigation (area bar also on public pages, active pill, `EnlaceVolver`), whole-card links above moving arrows, filter chips no longer clipped
 
 - [x] Admin base: navigation with pending badges and the Bandeja home with the work queues — `feature/admin-base` (branch A, no migration)
-- [ ] Approve/reject company sign-ups
+- [~] Approve/reject company sign-ups, with a reason; a rejected company that fixes its data goes back to review (D1) — `/admin/empresas`, `feature/admin-empresas` (branch C)
 - [ ] Verify job seeker addresses (view proof)
-- [~] Approve/reject offers (with reason), close them, take the urgency off — `/admin/ofertas`, `feature/admin-ofertas` (branch B, no migration)
+- [x] Approve/reject offers (with reason), close them, take the urgency off — `/admin/ofertas`, `feature/admin-ofertas` (branch B, no migration)
 - [ ] Pre-select job seekers per offer
 - [ ] Job seeker search by category, name or city ("verified address" filter)
 - [ ] Metrics dashboard: job seekers, hires, employability rate, rejections by reason, supply vs. demand per category, review and fill times, online now; weekly report in PDF and Excel

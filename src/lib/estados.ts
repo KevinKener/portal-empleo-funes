@@ -26,10 +26,18 @@ type Transicion<E extends string> = {
   roles: readonly Rol[]
 }
 
-// empresas.estado (Rule 3): only the Admin verifies or rejects.
+// Verifying or rejecting is the Admin's only (Rules 3 and 4).
 const TRANSICIONES_VERIFICACION: readonly Transicion<EstadoVerificacion>[] = [
   { desde: "pendiente", hacia: "verificado", roles: ["admin"] },
   { desde: "pendiente", hacia: "rechazado", roles: ["admin"] },
+]
+
+// empresas.estado: a rejected company that fixes its data goes back to review
+// (decision D1). The database applies that reset automatically
+// (20261021140000_rechazo_empresa.sql); a rejection carries motivo_rechazo.
+const TRANSICIONES_EMPRESA: readonly Transicion<EstadoVerificacion>[] = [
+  ...TRANSICIONES_VERIFICACION,
+  { desde: "rechazado", hacia: "pendiente", roles: ["empresa"] },
 ]
 
 // postulantes.estado_domicilio (Rule 4): same as above, plus the job seeker
@@ -76,7 +84,7 @@ export type Entidad = keyof EstadosPorEntidad
 const TRANSICIONES: {
   [K in Entidad]: readonly Transicion<EstadosPorEntidad[K]>[]
 } = {
-  verificacion: TRANSICIONES_VERIFICACION,
+  verificacion: TRANSICIONES_EMPRESA,
   domicilio: TRANSICIONES_DOMICILIO,
   oferta: TRANSICIONES_OFERTA,
   postulacion: TRANSICIONES_POSTULACION,

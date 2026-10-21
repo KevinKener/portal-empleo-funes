@@ -120,6 +120,7 @@ export type Database = {
           estado: Database["public"]["Enums"]["estado_verificacion"]
           id: string
           logo_url: string | null
+          motivo_rechazo: string | null
           nombre_comercial: string
           perfil_id: string
           razon_social: string
@@ -134,6 +135,7 @@ export type Database = {
           estado?: Database["public"]["Enums"]["estado_verificacion"]
           id?: string
           logo_url?: string | null
+          motivo_rechazo?: string | null
           nombre_comercial: string
           perfil_id: string
           razon_social: string
@@ -148,6 +150,7 @@ export type Database = {
           estado?: Database["public"]["Enums"]["estado_verificacion"]
           id?: string
           logo_url?: string | null
+          motivo_rechazo?: string | null
           nombre_comercial?: string
           perfil_id?: string
           razon_social?: string

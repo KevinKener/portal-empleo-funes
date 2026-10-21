@@ -34,7 +34,7 @@ export default async function EmpresaPage() {
       extra={<AccesosEmpresa verificada={verificada} />}
       inicio={<LogoEmpresa nombre={empresa.nombre_comercial} logo={urlLogo(empresa.logo_url)} tamanio="lg" redondo />}
     >
-      <AvisoEmpresaSinVerificar estado={empresa.estado} />
+      <AvisoEmpresaSinVerificar estado={empresa.estado} motivo={empresa.motivo_rechazo} />
 
       {pasos.length > 0 ? (
         <ProximoPasoEmpresa pasos={pasos} />

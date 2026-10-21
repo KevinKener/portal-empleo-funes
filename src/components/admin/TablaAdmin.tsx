@@ -31,7 +31,7 @@ export function TablaAdmin<T>({ titulo, filas, clave, columnas, tarjeta }: Props
     <>
       <ul className="grid gap-3 lg:hidden">
         {filas.map((fila, i) => (
-          <li key={clave(fila)} className="motion-safe:animate-entrada" style={{ "--retraso": `${Math.min(i, 8) * 50}ms` } as CSSProperties}>
+          <li key={clave(fila)} className="min-w-0 motion-safe:animate-entrada" style={{ "--retraso": `${Math.min(i, 8) * 50}ms` } as CSSProperties}>
             {tarjeta(fila)}
           </li>
         ))}

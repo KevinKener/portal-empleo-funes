@@ -7,14 +7,14 @@ type Estado = Enums<"estado_verificacion">;
 const TEXTO: Record<Estado, string> = {
   pendiente: "La Oficina de Empleo está revisando tus datos. Mientras tanto podés completar tu perfil; las ofertas se habilitan cuando te verifiquen.",
   verificado: "La Oficina de Empleo verificó tu empresa: ya podés publicar ofertas y recibir candidatos.",
-  rechazado: "La Oficina de Empleo no pudo verificar tu empresa. Comunicate con ellos para saber qué corregir.",
+  rechazado: "La Oficina de Empleo no pudo verificar tu empresa. Corregí tus datos o subí la constancia de ARCA y la vuelve a revisar.",
 };
 
 /**
  * The company's verification as three steps (Rule 3): signed up, in review,
  * verified. A rejection replaces the last step, in red, with what to do.
  */
-export function VerificacionEmpresa({ estado }: { estado: Estado }) {
+export function VerificacionEmpresa({ estado, motivo }: { estado: Estado; motivo: string | null }) {
   const pasos: { texto: string; Icono: LucideIcon; hecho: boolean; actual: boolean; error?: boolean }[] = [
     { texto: "Registrada", Icono: UserPlus, hecho: true, actual: false },
     { texto: "En revisión", Icono: Clock, hecho: estado !== "pendiente", actual: estado === "pendiente" },
@@ -55,7 +55,12 @@ export function VerificacionEmpresa({ estado }: { estado: Estado }) {
         ))}
       </ol>
       <p className={cn("rounded-xl px-4 py-3 text-sm", estado === "rechazado" ? "bg-destructive/5 text-destructive" : "bg-secondary/60 text-foreground/85")}>
-        {TEXTO[estado]}
+        {estado === "rechazado" && motivo && (
+          <span className="mb-1 block">
+            <span className="font-semibold">Motivo:</span> <span className="whitespace-pre-line">{motivo}</span>
+          </span>
+        )}
+        {estado === "pendiente" && motivo ? "Recibimos tus correcciones: la Oficina de Empleo vuelve a revisar tu empresa." : TEXTO[estado]}
       </p>
     </section>
   );

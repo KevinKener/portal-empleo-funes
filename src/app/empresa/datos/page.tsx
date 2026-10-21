@@ -33,7 +33,7 @@ export default async function DatosEmpresaPage() {
   const [{ data: empresa }, { data: usuario }] = await Promise.all([
     supabase
       .from("empresas")
-      .select("id, razon_social, cuit, nombre_comercial, telefono, direccion, constancia_arca_url, estado, logo_url, created_at")
+      .select("id, razon_social, cuit, nombre_comercial, telefono, direccion, constancia_arca_url, estado, logo_url, created_at, motivo_rechazo")
       .eq("perfil_id", userId)
       .maybeSingle(),
     supabase.auth.getUser(),
@@ -41,7 +41,7 @@ export default async function DatosEmpresaPage() {
   if (!empresa) notFound();
 
   // Only the editable fields stay in `iniciales`, the form's starting values
-  const { id: empresaId, cuit, constancia_arca_url, estado, logo_url, created_at, ...iniciales } = empresa;
+  const { id: empresaId, cuit, constancia_arca_url, estado, logo_url, created_at, motivo_rechazo, ...iniciales } = empresa;
   const verificada = estado === "verificado";
   const logo = urlLogo(logo_url);
   const [ofertas, candidatos] = await Promise.all([listarOfertasEmpresa(empresaId), resumirCandidatosPorOferta()]);
@@ -63,7 +63,7 @@ export default async function DatosEmpresaPage() {
         </div>
 
         <div className="min-w-0 space-y-6">
-          <VerificacionEmpresa estado={estado} />
+          <VerificacionEmpresa estado={estado} motivo={motivo_rechazo} />
 
           {/* The company's track in the portal, at a glance */}
           <ul aria-label="Tu actividad en el portal" className="grid gap-3 sm:grid-cols-3">

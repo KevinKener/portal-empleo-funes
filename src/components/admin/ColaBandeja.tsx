@@ -32,7 +32,7 @@ export const COLAS: Record<TipoCola, DatosCola> = {
   empresas: {
     Icono: Building2,
     titulo: "Empresas por verificar",
-    href: "/admin/empresas",
+    href: "/admin/empresas?estado=pendiente",
     accion: "Verificar empresas",
     detalle: () => null,
     espera: "Se registró",
