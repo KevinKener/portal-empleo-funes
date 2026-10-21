@@ -61,7 +61,7 @@
 <rect x="116" y="536" width="90" height="24" rx="12" fill="#e8f1eb"/><text x="127" y="552.5" class="t chip" fill="#052f14">🏢 Empresa</text>
 <text x="116" y="588" class="t titulo">¡Contratado! 🎉</text>
 <text x="116" y="614" class="t texto">Conseguiste el trabajo.</text>
-<text x="116" y="635" class="t texto">Seguimiento cada 2 meses.</text>
+<text x="116" y="635" class="t texto">¡Éxitos en esta etapa!</text>
 <circle class="halo" style="animation-delay:6.20s" cx="50" cy="585.0" r="22"/>
 <circle class="nodo" style="animation-delay:6.20s" cx="50" cy="585.0" r="22" stroke="#f7f9f7" stroke-width="5"/>
 <text x="50" y="591.0" text-anchor="middle" class="t num">4</text>

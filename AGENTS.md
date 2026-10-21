@@ -97,8 +97,8 @@ pendiente ──(admin)──────► preseleccionado ──(empresa acce
 ```
 - Every move to `rechazado` carries `motivo_rechazo` (`cupo_completo` | `no_seleccionado`).
 - The company's moves can be drafted first and applied in bulk (rule 11).
-- A `rechazado` job seeker can be **referred to courses** by the Admin.
-- A `contratado` job seeker enters **follow-up every 2 months**.
+- Job seekers get **course materials** (PDFs, videos, links): suggested automatically after their 2nd rejection, and the Admin can recommend one by hand (decision 2026-10-21, `docs/research/admin.md` §4.9).
+- There is **no periodic follow-up of hires**: too many people for the Office to call (decision 2026-10-21, D9). Hires count in the Admin metrics.
 
 ---
 

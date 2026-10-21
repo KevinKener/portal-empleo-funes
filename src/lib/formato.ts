@@ -16,6 +16,23 @@ const FORMATO_FECHA = new Intl.DateTimeFormat("es-AR", {
   timeZone: "America/Argentina/Buenos_Aires",
 })
 
+/** "Now" in milliseconds, read outside components (react-hooks/purity). */
+export function ahora(): number {
+  return Date.now()
+}
+
+/**
+ * "hoy", "ayer", "hace 3 días" for the last month, then the full date.
+ * `momento` is passed in (see `ahora()`) so components stay pure.
+ */
+export function haceCuanto(iso: string, momento: number): string {
+  const dias = Math.floor((momento - new Date(iso).getTime()) / (24 * 60 * 60 * 1000))
+  if (dias <= 0) return "hoy"
+  if (dias === 1) return "ayer"
+  if (dias < 30) return `hace ${dias} días`
+  return `el ${formatearFecha(iso)}`
+}
+
 /** "6 de octubre de 2026" from an ISO timestamp; empty string when missing. */
 export function formatearFecha(iso: string | null): string {
   return iso ? FORMATO_FECHA.format(new Date(iso)) : ""
@@ -100,13 +117,23 @@ export const ESTADO_POSTULACION_PARA_POSTULANTE: Record<
   pendiente: { titulo: "Enviada", detalle: "La Oficina de Empleo está revisando tu perfil." },
   preseleccionado: { titulo: "Preseleccionada", detalle: "La Oficina envió tu perfil a la empresa." },
   entrevista: { titulo: "Entrevista", detalle: "La empresa quiere conocerte. Te van a contactar." },
-  contratado: { titulo: "¡Contratado/a!", detalle: "¡Felicitaciones! La Oficina va a hacer un seguimiento." },
+  contratado: { titulo: "¡Contratado/a!", detalle: "¡Felicitaciones! Que te vaya muy bien en tu nuevo trabajo." },
   rechazado: { titulo: "No seleccionada", detalle: "Esta vez no avanzaste. Seguí postulándote." },
   cupo_completo: {
     titulo: "Cupo completo",
     detalle: "Se completaron los puestos de esta oferta. Tu perfil sigue activo para otras.",
   },
   no_seleccionado: { titulo: "No seleccionada", detalle: "Esta vez no avanzaste. Seguí postulándote." },
+}
+
+/**
+ * What comes after the current step of an active application, so the job
+ * seeker never wonders whether it is moving (vague statuses cause anxiety).
+ */
+export const DESPUES_POSTULACION: Partial<Record<Enums<"estado_postulacion">, string>> = {
+  pendiente: "Si tu perfil encaja con la búsqueda, la Oficina se lo presenta a la empresa.",
+  preseleccionado: "Si a la empresa le interesa tu perfil, te va a llamar para una entrevista.",
+  entrevista: "Tené el teléfono a mano. Después de la entrevista, la empresa le cuenta su decisión a la Oficina.",
 }
 
 /** Plain-words status of an application, using the rejection reason when there is one. */

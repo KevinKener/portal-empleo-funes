@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { EnlaceVolver } from "@/components/layout/EnlaceVolver";
 import { notFound } from "next/navigation";
 import { cache } from "react";
-import { ArrowLeft, CalendarDays, Clock, Tag, Users } from "lucide-react";
+import { CalendarDays, Clock, Tag, Users } from "lucide-react";
 import { AccionesOferta } from "@/components/empresa/AccionesOferta";
 import { TextoOferta } from "@/components/ofertas/TextoOferta";
+import { InsigniasOferta } from "@/components/ofertas/InsigniasOferta";
 import { EtiquetaEstadoOferta } from "@/components/empresa/EtiquetaEstadoOferta";
 import { buttonVariants } from "@/components/ui/button";
 import { requerirRol } from "@/lib/auth";
@@ -36,16 +38,17 @@ export default async function OfertaEmpresaPage({ params }: PageProps<"/empresa/
 
   return (
     <div className="space-y-6">
-      <Link href="/empresa/ofertas" className="inline-flex items-center gap-1 text-sm font-medium text-primary underline-offset-4 hover:underline">
-        <ArrowLeft aria-hidden className="size-4" /> Mis ofertas
-      </Link>
+      <EnlaceVolver href="/empresa/ofertas" texto="Mis ofertas" />
 
       {/* Status and actions go first on phones and to the side from lg, so the offer text gets the width */}
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start">
         <aside className="space-y-4 lg:sticky lg:top-24 lg:order-last">
           <section aria-label="Estado de la oferta" className="space-y-4 rounded-2xl border border-border bg-card p-5 sm:p-6">
             <div className="space-y-2">
-              <EtiquetaEstadoOferta estado={oferta.estado} />
+              <div className="flex flex-wrap items-center gap-2">
+                <EtiquetaEstadoOferta estado={oferta.estado} />
+                {oferta.prioridad === "urgente" && <InsigniasOferta insignias={["urgente"]} />}
+              </div>
               <p className="text-sm text-muted-foreground">{ESTADO_OFERTA_PARA_EMPRESA[oferta.estado].detalle}</p>
               {oferta.estado === "rechazada" && oferta.motivo_rechazo && (
                 <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive">

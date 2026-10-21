@@ -39,7 +39,8 @@ export function DecisionCandidato({ ofertaId, postulacionId, decision, textoToma
   }
 
   return (
-    <div className="space-y-2">
+    // data-elegido lets the whole card show the decision (TarjetaCandidato)
+    <div className="space-y-2" data-elegido={actual ?? undefined}>
       <div role="group" aria-label="Tu decisión" className="grid grid-cols-2 gap-2">
         <button
           type="button"
@@ -61,6 +62,12 @@ export function DecisionCandidato({ ofertaId, postulacionId, decision, textoToma
           <X aria-hidden /> Descartar
         </button>
       </div>
+      {actual && (
+        <p className="text-xs text-muted-foreground motion-safe:animate-in motion-safe:fade-in">
+          {actual === "tomar" ? `Marcado para ${textoTomar.toLowerCase()}.` : "Marcado para descartar."} Se aplica cuando confirmes la
+          selección; tocá de nuevo para quitarlo.
+        </p>
+      )}
       {error && (
         <p role="alert" className="text-sm text-destructive">
           {error}

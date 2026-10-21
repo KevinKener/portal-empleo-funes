@@ -72,7 +72,7 @@ export function SelectorRubros({ categorias, elegidas }: { categorias: Categoria
       </fieldset>
 
       {/* Sticky on phones: the save button stays reachable after a long list, above the area's bottom nav */}
-      <div className="sticky bottom-[calc(57px+env(safe-area-inset-bottom))] -mx-4 flex items-center justify-between gap-3 border-t border-border bg-background/95 px-4 py-3 backdrop-blur sm:static sm:mx-0 sm:border-0 sm:bg-transparent sm:p-0">
+      <div className="sticky bottom-[calc(65px+env(safe-area-inset-bottom))] -mx-4 flex items-center justify-between gap-3 border-t border-border bg-background/95 px-4 py-3 backdrop-blur sm:static sm:mx-0 sm:border-0 sm:bg-transparent sm:p-0">
         <p className="text-sm text-muted-foreground" aria-live="polite">
           {seleccion.size === 1 ? "1 rubro elegido" : `${seleccion.size} rubros elegidos`}
         </p>

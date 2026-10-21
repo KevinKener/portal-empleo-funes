@@ -16,7 +16,7 @@ export function MarcoArea({
   children: ReactNode;
 }) {
   return (
-    <div className={navegacion ? "flex min-h-svh flex-col pb-16 md:pb-0" : "flex min-h-svh flex-col"}>
+    <div className={navegacion ? "flex min-h-svh flex-col pb-[4.5rem] md:pb-0" : "flex min-h-svh flex-col"}>
       <Encabezado navegacion={navegacion?.("pestanias")} />
       <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 sm:py-10 lg:px-8">{children}</main>
       {navegacion?.("barra")}

@@ -8,9 +8,9 @@ Legend: `[x]` done · `[ ]` pending · `[~]` in progress
 
 ## Current status
 
-- **Current phase:** Phase 5 done and the tutor review of 2026-10-20 fully addressed (PRs #23–#27 and `feature/encuadre-foto`), plus a visual polish pass. Next: Phase 6 (Admin).
+- **Current phase:** Phase 6 (Admin) started 2026-10-21 with branch J, `feature/ofertas-prioridad` (offer priority and demand badges). Phase 5 and the tutor review of 2026-10-20 are done (PRs #23–#34).
 - **Latest progress:** 2026-10-20, offer CRUD for companies on `feature/crud-ofertas` (no migrations): list, new draft, edit while `borrador`, send to review / take back / close / delete draft, "Usar como base" for rejected and closed offers, company area navigation. Test company: the seed's "Empresa Demo" (CUIT 30000000007, `verificado`), password set by hand in the SQL Editor. Before that, "Mi panel" redesign and profile photo merged (PRs #16, #17) and phone fixes (#18). Earlier: public portal live on Vercel (https://portal-empleo-funes.vercel.app). Phase 2 merged in PR #7: `GET /api/ofertas` and `/api/ofertas/[id]`, landing, `/ofertas` listing with category filter and pagination, offer detail, public layout with the municipal identity from funes.gob.ar. Before that, flow corrections from the tutor review (2026-10-08) on `feature/correcciones-flujo`: offers start as `borrador` (company edits only drafts, sends and takes back), rejected applications carry `motivo_rechazo`, company selection draft (`decision_empresa` + `confirmar_seleccion()`), ARCA certificate optional. Migrations applied in Supabase, types regenerated, `estados.ts` and `AGENTS.md` §2 updated.
-- **Next step:** offer CRUD (#19) and pre-selected candidates + company home (#21, re-opened from #20, which had landed on the stacked base branch) are merged; review and merge `feature/mi-empresa` (company data, ARCA certificate, migration `20261020130000`, already applied). After that, Phase 6 (Admin). Further ideas, ranked: [`docs/research/mejoras.md`](research/mejoras.md). The tutor's corrections arrive once everything is done.
+- **Next step:** review and merge `feature/ofertas-prioridad` (migration `20261021130000`, already applied; also the panels redesign and phone navigation), then branch A `feature/admin-base` (Bandeja). Order: J → A → B → C → D → I → E → F → G → H (`docs/research/admin.md` §7). Further ideas, ranked: [`docs/research/mejoras.md`](research/mejoras.md). The tutor's corrections arrive once everything is done.
 
 > Update this section at the end of every work session.
 
@@ -102,7 +102,7 @@ Everything built works; UX details to fix:
 | `postulante_categorias` | `postulante_id`, `categoria_id` | N:M (multi-category) |
 | `ofertas` | `empresa_id`, `titulo`, `descripcion`, `categoria_id`, `requisitos`, `jornada`, `estado`, `motivo_rechazo`, `fecha_publicacion` | Only `publicada` is public |
 | `postulaciones` | `oferta_id`, `postulante_id`, `estado`, `notas_admin`, `fecha_preseleccion`, `motivo_rechazo`, `decision_empresa` | Unique (`oferta_id`, `postulante_id`). `notas_admin` hidden from non-admins; companies only see rows with `fecha_preseleccion` set |
-| `seguimientos` | `postulacion_id`, `fecha`, `notas` | Hired people, every 2 months |
+| `seguimientos` | `postulacion_id`, `fecha`, `notas` | Hired people; unused since the follow-up was dropped (2026-10-21) |
 | `cursos` | `nombre`, `descripcion`, `enlace` | Training courses |
 | `derivaciones` | `postulante_id`, `curso_id`, `fecha` | Rejected → courses |
 
@@ -171,7 +171,7 @@ Everything built works; UX details to fix:
 - [x] Offer CRUD (created as `borrador`, editable only as draft) — `/empresa/ofertas`, plus "Usar como base" to copy a rejected or closed offer into a new draft (decision 2026-10-20: never live offers, to avoid duplicates on the portal)
 - [x] Send an offer for review and take it back while `pendiente`; close a published one
 - [x] See the status of my offers (draft / pending / published / rejected + reason)
-- [x] Company area navigation (Inicio · Mis ofertas · Portal), shared component with the job seeker's (`NavegacionArea`)
+- [x] Company area navigation (now Mi panel · Mis ofertas · Mi empresa · Ver portal, renamed 2026-10-21), shared component with the job seeker's (`NavegacionArea`)
 - [x] See **pre-selected** candidates, draft tomar/descartar and confirm in bulk (`confirmar_seleccion`) — `/empresa/ofertas/[id]/candidatos`; migration `20261020120000_candidatos_empresa.sql` lets companies read the CV built on the platform and shows phone/email only from `entrevista` on (decisions 2026-10-20)
 - [x] Record a hire ("Contratar" on a candidate in `entrevista`, then confirm)
 - [x] Company home with "Próximo paso" and an offers/candidates summary; candidate counts on each offer card ([improvement ideas](research/mejoras.md) #3)
@@ -183,18 +183,21 @@ Everything built works; UX details to fix:
 
 ## Phase 6 — Administrator (Employment Office)
 
-Plan (pending approval): [`docs/research/admin.md`](research/admin.md) — work-queue home, branches A–I, decisions D1–D6.
+Plan approved 2026-10-21: [`docs/research/admin.md`](research/admin.md) — design research (§4), work-queue home, branches J and A–I, decisions D1–D13 (all accepted; D8 dropped with the follow-up).
 
 **Goal:** the office controls the whole flow.
+
+- [~] Offer priority ("Urgente" / "Sin apuro", chosen by the company) and demand badges ("Muy solicitada", "Pocos postulantes", "Nueva"), listing sort, `aviso` token — `feature/ofertas-prioridad`, migration `20261021130000_prioridad_ofertas.sql` (branch J)
+  - Same branch: "Mis postulaciones" (job seeker) and the company home / "Mis ofertas" redesigned (counters, trackers with "Ahora / Lo que sigue", status filters, candidates funnel, live searches) and the candidates page (offer funnel, key facts per candidate, "Tu selección" at the side) and "Mi empresa" (profile checklist, preview, verification steps, activity); copy-email fix; phone navigation (area bar also on public pages, active pill, `EnlaceVolver`), whole-card links above moving arrows, filter chips no longer clipped
 
 - [ ] Approve/reject company sign-ups
 - [ ] Verify job seeker addresses (view proof)
 - [ ] Approve/reject offers (with reason)
 - [ ] Pre-select job seekers per offer
 - [ ] Job seeker search by category, name or city ("verified address" filter)
-- [ ] Metrics dashboard: job seekers, hires, employability rate, rejections by reason and referrals to courses
-- [ ] Follow-up of hires (reminder every 2 months)
-- [ ] Refer non-selected job seekers to courses
+- [ ] Metrics dashboard: job seekers, hires, employability rate, rejections by reason, supply vs. demand per category, review and fill times, online now; weekly report in PDF and Excel
+- ~~Follow-up of hires (reminder every 2 months)~~ — dropped 2026-10-21: too many people for the Office to call (D9)
+- [ ] Course materials section (`/cursos`, PDFs / videos / links), suggested automatically after 2 rejections and recommended by the Admin
 - [ ] Create other Admin accounts (flat model, rule 7; server-only, uses the secret key after checking the caller is Admin)
 - [ ] Status-change email notifications via Gmail SMTP ([research](research/email-notifications.md))
 
@@ -224,7 +227,7 @@ Plan (pending approval): [`docs/research/admin.md`](research/admin.md) — work-
 
 ## v2 (outside the MVP)
 
-- Automatic course notifications to non-selected job seekers
+- Email notice when new course materials are suggested
 - Metrics export for the province (Excel/PDF)
 - Integration with the official registry to verify addresses
 - Map with OpenStreetMap (e.g. Leaflet) for addresses/offers in Funes (tutor suggestion)

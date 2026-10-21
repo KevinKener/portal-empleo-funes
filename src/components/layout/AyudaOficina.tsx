@@ -33,8 +33,10 @@ export function AyudaOficina({ className }: { className?: string }) {
         <li className="flex items-center gap-2">
           <a href={OFICINA.emailEnlace} className={cn(ENLACE, "min-w-0 flex-1")}>
             <Mail aria-hidden className="size-4 shrink-0 text-primary" />
-            <span className="break-all">
-              {OFICINA.email}
+            {/* If it has to wrap, it wraps after the @, never in the middle of a word */}
+            <span className="min-w-0 break-words">
+              {OFICINA.email.split("@")[0]}@<wbr />
+              {OFICINA.email.split("@")[1]}
               <span className="sr-only"> (abre tu correo para escribirles)</span>
             </span>
           </a>

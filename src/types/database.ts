@@ -270,10 +270,12 @@ export type Database = {
           descripcion: string
           empresa_id: string
           estado: Database["public"]["Enums"]["estado_oferta"]
+          fecha_envio: string | null
           fecha_publicacion: string | null
           id: string
           jornada: Database["public"]["Enums"]["jornada"]
           motivo_rechazo: string | null
+          prioridad: Database["public"]["Enums"]["prioridad_oferta"]
           requisitos: string | null
           titulo: string
           updated_at: string
@@ -284,10 +286,12 @@ export type Database = {
           descripcion: string
           empresa_id: string
           estado?: Database["public"]["Enums"]["estado_oferta"]
+          fecha_envio?: string | null
           fecha_publicacion?: string | null
           id?: string
           jornada: Database["public"]["Enums"]["jornada"]
           motivo_rechazo?: string | null
+          prioridad?: Database["public"]["Enums"]["prioridad_oferta"]
           requisitos?: string | null
           titulo: string
           updated_at?: string
@@ -298,10 +302,12 @@ export type Database = {
           descripcion?: string
           empresa_id?: string
           estado?: Database["public"]["Enums"]["estado_oferta"]
+          fecha_envio?: string | null
           fecha_publicacion?: string | null
           id?: string
           jornada?: Database["public"]["Enums"]["jornada"]
           motivo_rechazo?: string | null
+          prioridad?: Database["public"]["Enums"]["prioridad_oferta"]
           requisitos?: string | null
           titulo?: string
           updated_at?: string
@@ -641,6 +647,8 @@ export type Database = {
           fecha_publicacion: string | null
           id: string | null
           jornada: Database["public"]["Enums"]["jornada"] | null
+          nivel_demanda: number | null
+          prioridad: Database["public"]["Enums"]["prioridad_oferta"] | null
           requisitos: string | null
           titulo: string | null
         }
@@ -786,6 +794,7 @@ export type Database = {
         | "terciario"
         | "universitario"
         | "curso"
+      prioridad_oferta: "normal" | "urgente"
       rol_usuario: "postulante" | "empresa" | "admin"
     }
     CompositeTypes: {
@@ -941,6 +950,7 @@ export const Constants = {
         "universitario",
         "curso",
       ],
+      prioridad_oferta: ["normal", "urgente"],
       rol_usuario: ["postulante", "empresa", "admin"],
     },
   },

@@ -89,13 +89,13 @@
 <rect class="marco" style="animation-delay:6.50s" x="40" y="1180" width="260" height="130" rx="18"/>
 <rect x="60" y="1196" width="83" height="24" rx="12" fill="#e8f1eb"/><text x="71" y="1212.5" class="t chip" fill="#052f14">📚 Cursos</text>
 <text x="60" y="1248" class="t titulo">Si no queda</text>
-<text x="60" y="1274" class="t texto">La Oficina lo puede</text>
-<text x="60" y="1295" class="t texto">derivar a un curso.</text>
+<text x="60" y="1274" class="t texto">Recibe materiales</text>
+<text x="60" y="1295" class="t texto">para prepararse.</text>
 <rect class="card" x="316" y="1180" width="256" height="130" rx="18"/>
 <rect class="marco" style="animation-delay:6.80s" x="316" y="1180" width="256" height="130" rx="18"/>
 <rect x="336" y="1196" width="174" height="24" rx="12" fill="#074a1f"/><text x="347" y="1212.5" class="t chip" fill="#ffffff">🏛️ Oficina de Empleo</text>
 <text x="336" y="1248" class="t titulo">Si lo contratan</text>
-<text x="336" y="1274" class="t texto">Seguimiento cada</text>
-<text x="336" y="1295" class="t texto">2 meses.</text>
+<text x="336" y="1274" class="t texto">La Oficina lo suma</text>
+<text x="336" y="1295" class="t texto">a sus indicadores.</text>
 <circle class="viajero" r="9" fill="#fff" stroke="#074a1f" stroke-width="4"><animateMotion dur="10s" repeatCount="indefinite" path="M 50 115.0 L 50 1035.0" keyPoints="0;1;1" keyTimes="0;0.62;1" calcMode="linear"/><animate attributeName="opacity" dur="10s" repeatCount="indefinite" values="1;1;0;0" keyTimes="0;0.62;0.66;1"/></circle>
 </svg>

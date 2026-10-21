@@ -21,7 +21,7 @@ export function BotonCvCandidato({ postulacionId }: { postulacionId: string }) {
 
   return (
     <div className="space-y-1">
-      <button type="button" onClick={abrir} disabled={abriendo} className={buttonVariants({ variant: "outline", className: "h-11 px-4 text-base" })}>
+      <button type="button" onClick={abrir} disabled={abriendo} className={buttonVariants({ variant: "outline", className: "h-10 rounded-xl px-4 text-sm font-semibold" })}>
         {abriendo ? <LoaderCircle aria-hidden className="animate-spin" /> : <FileText aria-hidden />}
         Ver CV adjunto
       </button>

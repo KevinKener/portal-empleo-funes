@@ -109,8 +109,8 @@ def como_funciona():
     cuerpo += [
         f'<path class="rama" d="M {cx} {centro[-1] + 24} C {cx} {yb - 20}, 160 {yb - 30}, 190 {yb}"/>',
         f'<path class="rama" d="M {cx} {centro[-1] + 24} C {cx} {yb - 40}, 420 {yb - 50}, 440 {yb}"/>',
-        tarjeta(40, yb, 260, 130, fin + 0.3, "curso", "Si no queda", ["La Oficina lo puede", "derivar a un curso."]),
-        tarjeta(316, yb, 256, 130, fin + 0.6, "oficina", "Si lo contratan", ["Seguimiento cada", "2 meses."]),
+        tarjeta(40, yb, 260, 130, fin + 0.3, "curso", "Si no queda", ["Recibe materiales", "para prepararse."]),
+        tarjeta(316, yb, 256, 130, fin + 0.6, "oficina", "Si lo contratan", ["La Oficina lo suma", "a sus indicadores."]),
         viajero(camino),
     ]
     return svg(612, yb + 170, "\n".join(cuerpo), "Cómo funciona el portal, paso a paso")
@@ -122,7 +122,7 @@ def postulacion():
         ("vecino", "Enviada", ["La Oficina de Empleo", "revisa tu perfil."]),
         ("oficina", "Preseleccionada", ["La Oficina recomendó", "tu perfil a la empresa."]),
         ("empresa", "Entrevista", ["La empresa quiere", "conocerte y te contacta."]),
-        ("empresa", "¡Contratado! 🎉", ["Conseguiste el trabajo.", "Seguimiento cada 2 meses."]),
+        ("empresa", "¡Contratado! 🎉", ["Conseguiste el trabajo.", "¡Éxitos en esta etapa!"]),
     ]
     x0, y0, w, h, sep, cx = 96, 40, 300, 130, 30, 50
     paso_y = [y0 + i * (h + sep) for i in range(len(etapas))]

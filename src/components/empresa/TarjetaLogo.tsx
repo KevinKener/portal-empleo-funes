@@ -83,7 +83,7 @@ export function TarjetaLogo({ userId, nombreComercial, razonSocial, estado, logo
   const ocupado = subiendo || quitando;
 
   return (
-    <section aria-label="Logo de la empresa" className="overflow-hidden rounded-2xl border border-border bg-card">
+    <section id="logo" aria-label="Logo de la empresa" className="scroll-mt-24 overflow-hidden rounded-2xl border border-border bg-card">
       <div className="relative isolate h-24 overflow-hidden bg-primary-deep">
         <FondoMarca compacto />
       </div>

@@ -65,7 +65,7 @@ Junta en un solo lugar a **vecinos que buscan trabajo**, **empresas de la ciudad
 ## 🔄 Cómo funciona
 
 <p align="center">
-  <img src="docs/readme/flujo.svg" alt="Cómo funciona: 1. la empresa carga una oferta; 2. la Oficina de Empleo la revisa y la publica; 3. la oferta queda visible en el portal; 4. el vecino se postula; 5. la Oficina preselecciona perfiles, vecinos de Funes primero; 6. la empresa entrevista y contrata. Si no queda, la Oficina lo puede derivar a un curso; si lo contratan, hay seguimiento cada 2 meses." width="560">
+  <img src="docs/readme/flujo.svg" alt="Cómo funciona: 1. la empresa carga una oferta; 2. la Oficina de Empleo la revisa y la publica; 3. la oferta queda visible en el portal; 4. el vecino se postula; 5. la Oficina preselecciona perfiles, vecinos de Funes primero; 6. la empresa entrevista y contrata. Si no queda, recibe materiales para prepararse; si lo contratan, la Oficina lo suma a sus indicadores." width="560">
 </p>
 
 ### El camino de una postulación
@@ -132,7 +132,7 @@ Junta en un solo lugar a **vecinos que buscan trabajo**, **empresas de la ciudad
 - 🔜 Aprobar empresas y ofertas, y verificar domicilios
 - 🔜 Preseleccionar postulantes (vecinos de Funes primero)
 - 🔜 Buscar perfiles por rubro, nombre o localidad
-- 🔜 Ver indicadores, hacer el seguimiento de las contrataciones y derivar a cursos
+- 🔜 Ver indicadores con reporte semanal en PDF y Excel, y recomendar materiales para prepararse
 - 🔜 Dar de alta otros Admins
 
 > [!NOTE]
@@ -309,7 +309,7 @@ Las páginas públicas viven en el grupo `src/app/(publico)/`, que comparte enca
 | URL | Descripción |
 |-----|-------------|
 | `/` | Portada: presentación del portal, últimas ofertas en carrusel y cómo funciona |
-| `/ofertas` | Listado de ofertas publicadas, con filtro por categoría (`?categoria=`) y paginación (`?pagina=`) |
+| `/ofertas` | Listado de ofertas publicadas, con filtro por categoría (`?categoria=`), orden (`?orden=recientes\|urgentes\|solicitadas`) y paginación (`?pagina=`); etiquetas Urgente, Muy solicitada, Pocos postulantes y Nueva |
 | `/ofertas/[id]` | Detalle de una oferta publicada (404 si no existe o no está publicada), con compartir por WhatsApp |
 | `/api/ofertas` · `/api/ofertas/[id]` | API pública de ofertas publicadas (JSON) |
 | `/registro` | Crear cuenta: elegir entre postulante y empresa |
@@ -324,7 +324,7 @@ Las páginas públicas viven en el grupo `src/app/(publico)/`, que comparte enca
 | `/postulante/cv` | Armar el CV (sobre vos, experiencia, estudios) o subirlo en PDF, Word o foto |
 | `/postulante/domicilio` | Subir el comprobante de domicilio (solo vecinos de Funes) |
 | `/postulante/postulaciones` | Mis postulaciones, con el estado de cada una |
-| `/empresa` | Inicio de la empresa: aviso mientras está en revisión, "Próximo paso" y resumen de ofertas y candidatos (requiere rol empresa) |
+| `/empresa` | "Mi panel" de la empresa: aviso mientras está en revisión, próximo paso, resumen de ofertas, embudo de candidatos y búsquedas activas (requiere rol empresa) |
 | `/empresa/datos` | Mi empresa: logo (opcional, se ve en las ofertas; si no hay, la inicial), editar nombre comercial, teléfono y dirección (la razón social solo hasta que la Oficina verifica la empresa) y subir la constancia de ARCA (opcional) |
 | `/empresa/ofertas` | Mis ofertas: borradores, en revisión, publicadas, rechazadas (con motivo) y cerradas |
 | `/empresa/ofertas/nueva` · `/empresa/ofertas/[id]` · `/empresa/ofertas/[id]/editar` | Cargar una oferta como borrador, ver su estado (enviar a revisión, volver a borrador, cerrar, usar como base) y editarla mientras es borrador |

@@ -1,23 +1,17 @@
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
+import { hrefOfertas, type OrdenOfertas } from "@/lib/validaciones/ofertas";
 
 type Props = {
   pagina: number;
   totalPaginas: number;
   categoria: string | null;
+  orden: OrdenOfertas;
 };
 
-function hrefPagina(pagina: number, categoria: string | null): string {
-  const params = new URLSearchParams();
-  if (categoria) params.set("categoria", categoria);
-  if (pagina > 1) params.set("pagina", String(pagina));
-  const query = params.toString();
-  return query ? `/ofertas?${query}` : "/ofertas";
-}
-
-/** Previous/next links for the offers listing, keeping the category filter. */
-export function Paginacion({ pagina, totalPaginas, categoria }: Props) {
+/** Previous/next links for the offers listing, keeping the category filter and the order. */
+export function Paginacion({ pagina, totalPaginas, categoria, orden }: Props) {
   if (totalPaginas <= 1) return null;
 
   const clase = buttonVariants({ variant: "outline", size: "lg", className: "h-10 px-4" });
@@ -25,7 +19,7 @@ export function Paginacion({ pagina, totalPaginas, categoria }: Props) {
   return (
     <nav aria-label="Paginación" className="flex items-center justify-between gap-4">
       {pagina > 1 ? (
-        <Link href={hrefPagina(pagina - 1, categoria)} className={clase}>
+        <Link href={hrefOfertas({ categoria, orden, pagina: pagina - 1 })} className={clase}>
           <ChevronLeft aria-hidden /> Anterior
         </Link>
       ) : (
@@ -35,7 +29,7 @@ export function Paginacion({ pagina, totalPaginas, categoria }: Props) {
         Página {pagina} de {totalPaginas}
       </p>
       {pagina < totalPaginas ? (
-        <Link href={hrefPagina(pagina + 1, categoria)} className={clase}>
+        <Link href={hrefOfertas({ categoria, orden, pagina: pagina + 1 })} className={clase}>
           Siguiente <ChevronRight aria-hidden />
         </Link>
       ) : (

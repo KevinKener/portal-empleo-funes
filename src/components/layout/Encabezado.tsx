@@ -20,8 +20,10 @@ const ENLACE = "rounded-md px-2 py-1.5 text-sm font-medium whitespace-nowrap tex
  * Site header: municipal brand, navigation and the account entry point.
  * Inside a private area it carries the area's tabs (`navegacion`) instead of
  * the site links, so the page has a single bar (tutor review 2026-10-20).
+ * `conBarra`: on public pages the signed-in person has their area's bottom
+ * bar on phones, so "Mi panel" only shows from md.
  */
-export async function Encabezado({ navegacion }: { navegacion?: ReactNode }) {
+export async function Encabezado({ navegacion, conBarra = false }: { navegacion?: ReactNode; conBarra?: boolean }) {
   const sesion = await obtenerSesion();
   const enArea = Boolean(navegacion);
 
@@ -64,7 +66,7 @@ export async function Encabezado({ navegacion }: { navegacion?: ReactNode }) {
           {sesion ? (
             <>
               {!enArea && (
-                <Link href={AREA_POR_ROL[sesion.rol]} className={ENLACE}>
+                <Link href={AREA_POR_ROL[sesion.rol]} className={cn(ENLACE, conBarra && "hidden md:inline-flex")}>
                   Mi panel
                 </Link>
               )}

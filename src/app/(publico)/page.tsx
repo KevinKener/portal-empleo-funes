@@ -41,8 +41,9 @@ const VER_TODAS = (
 // The landing must render even if the database is down; the offers block just hides.
 async function ultimasOfertas(): Promise<OfertaPublica[] | null> {
   try {
-    const { ofertas } = await listarOfertasPublicas({ categoria: null, pagina: 1 });
-    // A first page is enough for the carousel; "Ver todas" leads to the full list
+    // Urgent offers first, then the newest: the carousel is where they get seen.
+    // A first page is enough; "Ver todas" leads to the full list.
+    const { ofertas } = await listarOfertasPublicas({ categoria: null, pagina: 1, orden: "urgentes" });
     return ofertas.slice(0, 9);
   } catch (error) {
     // Next's own control-flow errors (e.g. dynamic rendering bailout) must keep propagating.

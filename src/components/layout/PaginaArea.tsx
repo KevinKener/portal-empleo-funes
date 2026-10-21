@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { EnlaceVolver } from "@/components/layout/EnlaceVolver";
 
 export type Volver = { href: string; texto: string };
 
@@ -26,15 +25,7 @@ export function PaginaArea({ titulo, descripcion, volver, acciones, aside, child
     <div className="space-y-8">
       <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div className="min-w-0 space-y-2">
-          {volver && (
-            <Link
-              href={volver.href}
-              className="inline-flex items-center gap-1 text-sm font-medium text-primary underline-offset-4 hover:underline"
-            >
-              <ArrowLeft aria-hidden className="size-4" />
-              {volver.texto}
-            </Link>
-          )}
+          {volver && <EnlaceVolver href={volver.href} texto={volver.texto} className="mb-1" />}
           <h1 className="font-heading text-3xl font-bold text-balance">{titulo}</h1>
           {descripcion && <div className="max-w-2xl text-muted-foreground">{descripcion}</div>}
         </div>

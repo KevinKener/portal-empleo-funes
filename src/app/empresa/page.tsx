@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowRight, CircleCheck, Compass, FilePlus2, FileText } from "lucide-react";
+import { CircleCheck, FilePlus2, FileText } from "lucide-react";
+import { BusquedasActivas } from "@/components/empresa/BusquedasActivas";
+import { ProximoPasoEmpresa } from "@/components/empresa/ProximoPasoEmpresa";
 import { AvisoEmpresaSinVerificar } from "@/components/empresa/AvisoEmpresaSinVerificar";
 import { LogoEmpresa } from "@/components/empresa/LogoEmpresa";
 import { ResumenEmpresa } from "@/components/empresa/ResumenEmpresa";
@@ -11,18 +13,18 @@ import { requerirRol } from "@/lib/auth";
 import { resumirCandidatosPorOferta } from "@/lib/candidatos-empresa";
 import { urlLogo } from "@/lib/logo-empresa";
 import { listarOfertasEmpresa, obtenerEmpresaActual } from "@/lib/ofertas-empresa";
-import { proximoPasoEmpresa, resumirEmpresa } from "@/lib/panel-empresa";
+import { pasosEmpresa, resumirEmpresa } from "@/lib/panel-empresa";
 
 export const metadata: Metadata = { title: "Inicio" };
 
-/** Company home: the next step, then offers and candidates at a glance. */
+/** Company home: what is pending (next step first), offers and candidates at a glance, and the live searches. */
 export default async function EmpresaPage() {
   const { userId } = await requerirRol("empresa");
   const empresa = await obtenerEmpresaActual(userId);
   if (!empresa) notFound();
 
   const [ofertas, candidatos] = await Promise.all([listarOfertasEmpresa(empresa.id), resumirCandidatosPorOferta()]);
-  const paso = proximoPasoEmpresa(empresa, ofertas, candidatos);
+  const pasos = pasosEmpresa(empresa, ofertas, candidatos);
   const verificada = empresa.estado === "verificado";
 
   return (
@@ -34,32 +36,8 @@ export default async function EmpresaPage() {
     >
       <AvisoEmpresaSinVerificar estado={empresa.estado} />
 
-      {paso ? (
-        // Same card as the job seeker's "Tu próximo paso"
-        <section
-          aria-labelledby="titulo-proximo-paso"
-          className="relative overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-secondary via-card to-card p-5 shadow-sm sm:p-6"
-        >
-          <div className="flex items-start gap-4">
-            <span className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/25">
-              <Compass aria-hidden className="size-6" />
-            </span>
-            <div className="min-w-0 space-y-1">
-              <p className="text-sm font-semibold text-primary">Tu próximo paso</p>
-              <h2 id="titulo-proximo-paso" className="font-heading text-xl font-semibold sm:text-2xl">
-                {paso.titulo}
-              </h2>
-              <p className="max-w-2xl text-muted-foreground">{paso.texto}</p>
-              <Link
-                href={paso.href}
-                className={buttonVariants({ className: "group/accion mt-3 h-11 px-6 text-base shadow-md shadow-primary/20 hover:bg-primary-hover" })}
-              >
-                {paso.accion}
-                <ArrowRight aria-hidden className="transition-transform group-hover/accion:translate-x-1" />
-              </Link>
-            </div>
-          </div>
-        </section>
+      {pasos.length > 0 ? (
+        <ProximoPasoEmpresa pasos={pasos} />
       ) : (
         verificada && (
           <section className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
@@ -80,6 +58,7 @@ export default async function EmpresaPage() {
       )}
 
       {ofertas.length > 0 && <ResumenEmpresa resumen={resumirEmpresa(ofertas, candidatos)} />}
+      <BusquedasActivas ofertas={ofertas} candidatos={candidatos} />
     </PanelBienvenida>
   );
 }
