@@ -1,4 +1,5 @@
 import { Clock, LifeBuoy, Mail, MapPin, Phone } from "lucide-react";
+import { ContactoEmail } from "@/components/layout/ContactoEmail";
 import { CopiarEmail } from "@/components/layout/CopiarEmail";
 import { OFICINA } from "@/lib/oficina";
 import { cn } from "@/lib/utils";
@@ -31,15 +32,16 @@ export function AyudaOficina({ className }: { className?: string }) {
           </a>
         </li>
         <li className="flex items-center gap-2">
-          <a href={OFICINA.emailEnlace} className={cn(ENLACE, "min-w-0 flex-1")}>
-            <Mail aria-hidden className="size-4 shrink-0 text-primary" />
-            {/* If it has to wrap, it wraps after the @, never in the middle of a word */}
-            <span className="min-w-0 break-words">
-              {OFICINA.email.split("@")[0]}@<wbr />
-              {OFICINA.email.split("@")[1]}
-              <span className="sr-only"> (abre tu correo para escribirles)</span>
-            </span>
-          </a>
+          <div className="min-w-0 flex-1">
+            <ContactoEmail conCopiar={false} className={cn(ENLACE, "w-full")}>
+              <Mail aria-hidden className="size-4 shrink-0 text-primary" />
+              {/* If it has to wrap, it wraps after the @, never in the middle of a word */}
+              <span className="min-w-0 break-words">
+                {OFICINA.email.split("@")[0]}@<wbr />
+                {OFICINA.email.split("@")[1]}
+              </span>
+            </ContactoEmail>
+          </div>
           <CopiarEmail email={OFICINA.email} />
         </li>
         <li>

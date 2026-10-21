@@ -8,9 +8,9 @@ Legend: `[x]` done · `[ ]` pending · `[~]` in progress
 
 ## Current status
 
-- **Current phase:** Phase 6 (Admin) started 2026-10-21 with branch J, `feature/ofertas-prioridad` (offer priority and demand badges). Phase 5 and the tutor review of 2026-10-20 are done (PRs #23–#34).
+- **Current phase:** Phase 6 (Admin). Branch J (`feature/ofertas-prioridad`, PR #35) merged 2026-10-21; branch A `feature/admin-base` (Bandeja) in progress. Phase 5 and the tutor review of 2026-10-20 are done (PRs #23–#34).
 - **Latest progress:** 2026-10-20, offer CRUD for companies on `feature/crud-ofertas` (no migrations): list, new draft, edit while `borrador`, send to review / take back / close / delete draft, "Usar como base" for rejected and closed offers, company area navigation. Test company: the seed's "Empresa Demo" (CUIT 30000000007, `verificado`), password set by hand in the SQL Editor. Before that, "Mi panel" redesign and profile photo merged (PRs #16, #17) and phone fixes (#18). Earlier: public portal live on Vercel (https://portal-empleo-funes.vercel.app). Phase 2 merged in PR #7: `GET /api/ofertas` and `/api/ofertas/[id]`, landing, `/ofertas` listing with category filter and pagination, offer detail, public layout with the municipal identity from funes.gob.ar. Before that, flow corrections from the tutor review (2026-10-08) on `feature/correcciones-flujo`: offers start as `borrador` (company edits only drafts, sends and takes back), rejected applications carry `motivo_rechazo`, company selection draft (`decision_empresa` + `confirmar_seleccion()`), ARCA certificate optional. Migrations applied in Supabase, types regenerated, `estados.ts` and `AGENTS.md` §2 updated.
-- **Next step:** review and merge `feature/ofertas-prioridad` (migration `20261021130000`, already applied; also the panels redesign and phone navigation), then branch A `feature/admin-base` (Bandeja). Order: J → A → B → C → D → I → E → F → G → H (`docs/research/admin.md` §7). Further ideas, ranked: [`docs/research/mejoras.md`](research/mejoras.md). The tutor's corrections arrive once everything is done.
+- **Next step:** test and merge `feature/admin-base` (needs an Admin account, see README), then branch B `feature/admin-ofertas`. Order: J → A → B → C → D → I → E → F → G → H (`docs/research/admin.md` §7). Further ideas, ranked: [`docs/research/mejoras.md`](research/mejoras.md). The tutor's corrections arrive once everything is done.
 
 > Update this section at the end of every work session.
 
@@ -187,9 +187,10 @@ Plan approved 2026-10-21: [`docs/research/admin.md`](research/admin.md) — desi
 
 **Goal:** the office controls the whole flow.
 
-- [~] Offer priority ("Urgente" / "Sin apuro", chosen by the company) and demand badges ("Muy solicitada", "Pocos postulantes", "Nueva"), listing sort, `aviso` token — `feature/ofertas-prioridad`, migration `20261021130000_prioridad_ofertas.sql` (branch J)
+- [x] Offer priority ("Urgente" / "Sin apuro", chosen by the company) and demand badges ("Muy solicitada", "Pocos postulantes", "Nueva"), listing sort, `aviso` token — `feature/ofertas-prioridad`, migration `20261021130000_prioridad_ofertas.sql` (branch J)
   - Same branch: "Mis postulaciones" (job seeker) and the company home / "Mis ofertas" redesigned (counters, trackers with "Ahora / Lo que sigue", status filters, candidates funnel, live searches) and the candidates page (offer funnel, key facts per candidate, "Tu selección" at the side) and "Mi empresa" (profile checklist, preview, verification steps, activity); copy-email fix; phone navigation (area bar also on public pages, active pill, `EnlaceVolver`), whole-card links above moving arrows, filter chips no longer clipped
 
+- [~] Admin base: navigation with pending badges and the Bandeja home with the work queues — `feature/admin-base` (branch A, no migration)
 - [ ] Approve/reject company sign-ups
 - [ ] Verify job seeker addresses (view proof)
 - [ ] Approve/reject offers (with reason)

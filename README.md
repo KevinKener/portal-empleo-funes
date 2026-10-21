@@ -129,6 +129,7 @@ Junta en un solo lugar a **vecinos que buscan trabajo**, **empresas de la ciudad
 - ✅ Editar sus datos, subir su logo (se ve en sus ofertas) y la constancia de ARCA
 
 ### 🏛️ Oficina de Empleo
+- ✅ Bandeja: lo que espera revisión (empresas, ofertas, postulaciones, domicilios), con la antigüedad de lo más viejo
 - 🔜 Aprobar empresas y ofertas, y verificar domicilios
 - 🔜 Preseleccionar postulantes (vecinos de Funes primero)
 - 🔜 Buscar perfiles por rubro, nombre o localidad
@@ -170,7 +171,7 @@ Junta en un solo lugar a **vecinos que buscan trabajo**, **empresas de la ciudad
 | 3 · Cuentas e ingreso | 🟩🟩🟩🟩🟩 | ✅ Terminada |
 | 4 · Postulante | 🟩🟩🟩🟩🟩 | ✅ Terminada |
 | 5 · Empresa | 🟩🟩🟩🟩🟩 | ✅ Terminada, con las correcciones del tutor |
-| 6 · Oficina de Empleo (Admin) | ⬜⬜⬜⬜⬜ | 🔜 [Plan listo](docs/research/admin.md) |
+| 6 · Oficina de Empleo (Admin) | 🟩⬜⬜⬜⬜ | ⏳ En curso ([plan](docs/research/admin.md)) |
 | 7 · Calidad y entrega | 🟨⬜⬜⬜⬜ | ⏳ En parte (seguridad) |
 
 Detalle tarea por tarea en [`docs/ROADMAP.md`](docs/ROADMAP.md).
@@ -329,7 +330,8 @@ Las páginas públicas viven en el grupo `src/app/(publico)/`, que comparte enca
 | `/empresa/ofertas` | Mis ofertas: borradores, en revisión, publicadas, rechazadas (con motivo) y cerradas |
 | `/empresa/ofertas/nueva` · `/empresa/ofertas/[id]` · `/empresa/ofertas/[id]/editar` | Cargar una oferta como borrador, ver su estado (enviar a revisión, volver a borrador, cerrar, usar como base) y editarla mientras es borrador |
 | `/empresa/ofertas/[id]/candidatos` | Candidatos preseleccionados por la Oficina: CV, borrador entrevistar/contratar/descartar y "Confirmar selección"; teléfono y email solo desde la entrevista |
-| `/admin` | Panel de la Oficina de Empleo (requiere rol admin; se construye en la Fase 6) |
+| `/admin` | Bandeja de la Oficina de Empleo: colas de trabajo con su antigüedad (requiere rol admin) |
+| `/admin/empresas`, `/admin/ofertas`, `/admin/postulantes`, `/admin/indicadores` | Secciones de la Oficina (por ahora avisan que están en camino) |
 
 </details>
 
