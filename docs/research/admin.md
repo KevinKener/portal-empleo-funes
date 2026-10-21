@@ -237,6 +237,7 @@ Every number below comes from data the system already records (plus `fecha_contr
 ### A. `feature/admin-base` — no migration
 - `NavegacionAdmin` with pending-count badges, `/admin` Bandeja with the five queues (counts + oldest age + link, empty queues collapsed into "al día"), the shared `TablaAdmin` / `FiltrosLista` pieces (§4.4), `src/lib/admin/*.ts` queries (server-only, Admin client via RLS, never the secret key).
 - Loading / empty / error states for the area.
+- Built 2026-10-21: the other sections are placeholders (`SeccionEnCamino`) so tabs and queue links never 404; `TablaAdmin` and `FiltrosLista` moved to branch B, their first user (no unused code in A).
 
 ### B. `feature/admin-ofertas` — no migration
 - `/admin/ofertas`: tabs Por revisar · Publicadas · Todas; each row with company, category, age.
@@ -276,7 +277,7 @@ Every number below comes from data the system already records (plus `fecha_contr
 - Company form field, `TarjetaOferta` badges, `/ofertas` sorting, carousel and "Ofertas para vos" ordering, real counts in "Mis ofertas".
 
 ### H. `feature/admin-cuentas` — no migration
-- `/admin/cuentas`: list of Admins (email, created at). **Crear Admin** (Rule 7): server-only action that checks the caller is Admin, then uses the secret key to `auth.admin.createUser({ email, email_confirm: true, app_metadata: { rol: "admin" } })` (the existing trigger creates the profile) and sends the password-recovery email so the new Admin sets their own password with the existing `/recuperar` flow. No delete from the app (Rule 7).
+- `/admin/cuentas`: list of Admins (email, created at). **Crear Admin** (Rule 7): server-only action that checks the caller is Admin, then uses the secret key to `auth.admin.createUser({ email, email_confirm: true, app_metadata: { rol: "admin" } })` (the existing trigger creates the profile) and sends the password-recovery email so the new Admin sets their own password with the existing `/recuperar` flow. **Gotcha (seen 2026-10-21 creating the seed Admin):** GoTrue writes `app_metadata` after the insert, so `crear_perfil_nuevo_usuario()` does not see `rol = admin` and no profile is created; the action must insert the `perfiles` row itself (secret-key client) right after `createUser`. No delete from the app (Rule 7).
 
 ### I. `feature/notificaciones` — dependency + env vars
 - `nodemailer` (decision **D5**, pending since 2026-10-01) with the Office's demo Gmail (`empleofunes.demo@gmail.com`, App Password) — env vars `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `EMAIL_FROM` on Vercel.

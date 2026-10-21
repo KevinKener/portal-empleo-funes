@@ -2,26 +2,27 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, Clock, Mail, MapPin, Phone } from "lucide-react";
 import { Escudo } from "@/components/layout/Escudo";
+import { AREA_POR_ROL, obtenerSesion } from "@/lib/auth";
 import { OFICINA } from "@/lib/oficina";
 import { cn } from "@/lib/utils";
 
-const COLUMNAS = [
-  {
-    titulo: "Portal",
-    enlaces: [
-      { href: "/ofertas", texto: "Ofertas de trabajo" },
-      { href: "/registro", texto: "Crear cuenta" },
-      { href: "/ingresar", texto: "Ingresar" },
-    ],
-  },
-  {
-    titulo: "Legal",
-    enlaces: [
-      { href: "/terminos", texto: "Términos y condiciones" },
-      { href: "/privacidad", texto: "Política de privacidad" },
-    ],
-  },
-] as const;
+type Enlace = { href: string; texto: string };
+
+const LEGALES: Enlace[] = [
+  { href: "/terminos", texto: "Términos y condiciones" },
+  { href: "/privacidad", texto: "Política de privacidad" },
+];
+
+/** "Portal" column: sign-up and sign-in for visitors, the way back to their area for signed-in people. */
+function enlacesPortal(area: string | null): Enlace[] {
+  const cuenta = area
+    ? [{ href: area, texto: "Mi panel" }]
+    : [
+        { href: "/registro", texto: "Crear cuenta" },
+        { href: "/ingresar", texto: "Ingresar" },
+      ];
+  return [{ href: "/ofertas", texto: "Ofertas de trabajo" }, ...cuenta];
+}
 
 const ENLACE = "text-primary-foreground/75 transition-colors hover:text-primary-foreground focus-visible:underline focus-visible:outline-none";
 
@@ -31,7 +32,14 @@ function anioActual() {
 }
 
 /** Site footer on the brand's dark green: who runs the portal, its sections and the legal pages. */
-export function PiePagina() {
+export async function PiePagina() {
+  // Cached per request: the header already looked the session up
+  const sesion = await obtenerSesion();
+  const columnas = [
+    { titulo: "Portal", enlaces: enlacesPortal(sesion ? AREA_POR_ROL[sesion.rol] : null) },
+    { titulo: "Legal", enlaces: LEGALES },
+  ];
+
   return (
     <footer className="relative isolate mt-auto overflow-hidden bg-primary-deep text-primary-foreground">
       <Escudo className="absolute -right-24 -bottom-32 -z-10 size-96 text-primary-foreground/[0.04]" />
@@ -55,7 +63,7 @@ export function PiePagina() {
             </a>
           </div>
 
-          {COLUMNAS.map(({ titulo, enlaces }) => (
+          {columnas.map(({ titulo, enlaces }) => (
             <nav key={titulo} aria-label={titulo} className="space-y-3">
               <h2 className="font-heading text-sm font-semibold">{titulo}</h2>
               <ul className="space-y-2 text-sm">
@@ -82,8 +90,13 @@ export function PiePagina() {
                 </a>
               </li>
               <li>
-                <a href={OFICINA.emailEnlace} className={cn(ENLACE, "inline-flex items-center gap-2 break-all")}>
-                  <Mail aria-hidden className="size-4 shrink-0" /> {OFICINA.email}
+                <a href={OFICINA.emailEnlace} className={cn(ENLACE, "inline-flex items-center gap-2")}>
+                  <Mail aria-hidden className="size-4 shrink-0" />
+                  {/* If it has to wrap, it wraps after the @, never in the middle of a word */}
+                  <span>
+                    {OFICINA.email.split("@")[0]}@<wbr />
+                    {OFICINA.email.split("@")[1]}
+                  </span>
                 </a>
               </li>
               <li>
