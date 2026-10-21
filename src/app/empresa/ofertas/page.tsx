@@ -45,7 +45,7 @@ export default async function OfertasEmpresaPage({ searchParams }: PageProps<"/e
       }
     >
 
-      <AvisoEmpresaSinVerificar estado={empresa.estado} />
+      <AvisoEmpresaSinVerificar estado={empresa.estado} motivo={empresa.motivo_rechazo} />
 
       {ofertas.length === 0 ? (
         <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-border bg-card px-6 py-12 text-center">

@@ -48,8 +48,9 @@ export const obtenerColas = cache(async (): Promise<Cola[]> => {
   const limite = new Date(Date.now() - DIAS_SIN_POSTULANTES * DIA).toISOString()
 
   const [empresas, ofertas, postulaciones, domicilios, publicadas] = (await Promise.all([
-    // Rule 3: companies waiting for verification
-    supabase.from("empresas").select("created_at").eq("estado", "pendiente"),
+    // Rule 3: companies waiting for verification; updated_at also moves when a
+    // rejected company sends its fixes and goes back to review (D1)
+    supabase.from("empresas").select("updated_at").eq("estado", "pendiente"),
     // Rule 2: offers sent for review; fecha_envio is stamped by the trigger
     supabase.from("ofertas").select("fecha_envio, updated_at, prioridad").eq("estado", "pendiente"),
     // Rule 1: applications the Office has not pre-selected or rejected yet
@@ -84,7 +85,7 @@ export const obtenerColas = cache(async (): Promise<Cola[]> => {
     {
       tipo: "empresas",
       cantidad: empresas.length,
-      desde: masVieja(empresas.map((e) => e.created_at)),
+      desde: masVieja(empresas.map((e) => e.updated_at)),
       detalle: 0,
     },
     {

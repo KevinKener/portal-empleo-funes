@@ -249,6 +249,7 @@ Every number below comes from data the system already records (plus `fecha_contr
 - `/admin/empresas`: Pendientes · Verificadas · Rechazadas; detail with every field, CUIT formatted and checked (`cuitValido`), ARCA certificate (signed URL), the company's offers.
 - **Verificar** or **Rechazar** with a reason.
 - Migration: `empresas.motivo_rechazo text` (required when `rechazado`, cleared when verified), and — **decision D1** — a rejected company that edits its data goes back to `pendiente` (same idea as the proof of address, Rule 4), so it can fix and be reviewed again. `AvisoEmpresaSinVerificar` shows the reason.
+- Built 2026-10-21 (`20261021140000_rechazo_empresa.sql`): the reason stays when the company goes back to review, so the Office sees what it asked for ("Corrigió sus datos"); a logo change does not count as a fix. The reason form is shared with offers (`FormularioRechazo`). The company's email is not shown: it lives in `auth.users`, out of reach without the secret key.
 
 ### D. `feature/admin-preseleccion` — no migration (maybe an index)
 - `/admin/ofertas/[id]/postulantes`: every application of the offer, **Funes residents first, then other towns, each by application date** (Rule 4, decision 2026-10-13), address status as a badge, filter "solo domicilio verificado".

@@ -60,7 +60,7 @@ These rules come from the requirements gathering with the Employment Office. All
 
 1. **The Admin is always in the middle.** Postulante and Empresa never communicate directly inside the system. A company never sees candidates the Admin has not pre-selected.
 2. **Nothing is published without approval.** An offer is visible on the public portal only if its status is `publicada`.
-3. **New companies start as `pendiente`** until the Admin verifies them. A pending company can log in, but **cannot post offers**.
+3. **New companies start as `pendiente`** until the Admin verifies them. A pending company can log in, but **cannot post offers**. A rejection carries a reason (`empresas.motivo_rechazo`) the company reads in its area; if the rejected company fixes its data (legal or trade name, phone, address, ARCA certificate), it goes back to `pendiente` by itself (decision 2026-10-21, D1).
 4. **Job seeker address (priority for Funes):** the portal is open to any town, but Funes residents come first. Only job seekers who live in Funes are asked for a proof of address (optional); the Admin reviews it manually and marks it `verificado` or `rechazado`. Uploading a new proof or changing the address/town sends it back to `pendiente`. There is no integration with official registries (out of MVP scope). An unverified address **does not block** applying. Admin candidate lists show Funes residents first, then other towns, each group by application date; the address status is a badge, and the Admin can choose to sort or filter verified ones first (decision 2026-10-13, `docs/research/postulante-ux.md`).
 5. **Multi-category:** a job seeker can pick several categories/fields. Never model "one category per job seeker".
 6. **Flexible CV:** the job seeker can build the CV on the platform **or** upload a PDF (meant for people less comfortable with digital tools). Both paths are valid.
@@ -78,7 +78,8 @@ Transitions are validated in **a single place** (`src/lib/estados.ts`) and reuse
 **Empresa / Postulante address**
 ```
 pendiente ──(admin)──► verificado
-pendiente ──(admin)──► rechazado
+pendiente ──(admin)──► rechazado   (company: with reason)
+rechazado ──(fixes its data / uploads a new proof)──► pendiente
 ```
 
 **Oferta**
