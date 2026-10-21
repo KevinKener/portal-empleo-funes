@@ -243,6 +243,7 @@ Every number below comes from data the system already records (plus `fecha_contr
 - `/admin/ofertas`: tabs Por revisar · Publicadas · Todas; each row with company, category, age.
 - Offer review page: the offer **exactly as job seekers will see it** (reuses `TextoOferta` and the public layout), company data at the side, and two actions: **Publicar** or **Rechazar** with a required reason (`motivo_rechazo`, already enforced by the trigger). Published offers can be closed by the Admin (state machine allows it).
 - The company already sees the reason and can "Usar como base".
+- Built 2026-10-21: chips Por revisar · Publicadas · Sin postulantes · Rechazadas · Cerradas · Todas with search (drafts are never listed: the company's private work); the review page reuses the public banner and sections (`DetalleOferta.tsx`), shows the history (`LineaTiempo`, moved up from D), applications by stage and the company's contact; rejecting offers frequent reasons as chips; the Admin can also take the urgency off or put it on; after deciding, "Revisar la siguiente" goes on with the queue.
 
 ### C. `feature/admin-empresas` — small migration
 - `/admin/empresas`: Pendientes · Verificadas · Rechazadas; detail with every field, CUIT formatted and checked (`cuitValido`), ARCA certificate (signed URL), the company's offers.

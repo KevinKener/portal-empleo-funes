@@ -130,7 +130,8 @@ Junta en un solo lugar a **vecinos que buscan trabajo**, **empresas de la ciudad
 
 ### 🏛️ Oficina de Empleo
 - ✅ Bandeja: lo que espera revisión (empresas, ofertas, postulaciones, domicilios), con la antigüedad de lo más viejo
-- 🔜 Aprobar empresas y ofertas, y verificar domicilios
+- ✅ Revisar ofertas tal como las verán los postulantes: publicarlas, rechazarlas con el motivo o cerrarlas
+- 🔜 Aprobar empresas y verificar domicilios
 - 🔜 Preseleccionar postulantes (vecinos de Funes primero)
 - 🔜 Buscar perfiles por rubro, nombre o localidad
 - 🔜 Ver indicadores con reporte semanal en PDF y Excel, y recomendar materiales para prepararse
@@ -331,7 +332,8 @@ Las páginas públicas viven en el grupo `src/app/(publico)/`, que comparte enca
 | `/empresa/ofertas/nueva` · `/empresa/ofertas/[id]` · `/empresa/ofertas/[id]/editar` | Cargar una oferta como borrador, ver su estado (enviar a revisión, volver a borrador, cerrar, usar como base) y editarla mientras es borrador |
 | `/empresa/ofertas/[id]/candidatos` | Candidatos preseleccionados por la Oficina: CV, borrador entrevistar/contratar/descartar y "Confirmar selección"; teléfono y email solo desde la entrevista |
 | `/admin` | Bandeja de la Oficina de Empleo: colas de trabajo con su antigüedad (requiere rol admin) |
-| `/admin/empresas`, `/admin/ofertas`, `/admin/postulantes`, `/admin/indicadores` | Secciones de la Oficina (por ahora avisan que están en camino) |
+| `/admin/ofertas`, `/admin/ofertas/[id]` | Ofertas para la Oficina: buscador y filtros, y la revisión de cada oferta (publicar, rechazar con motivo, cerrar) |
+| `/admin/empresas`, `/admin/postulantes`, `/admin/indicadores` | Secciones de la Oficina (por ahora avisan que están en camino) |
 
 </details>
 

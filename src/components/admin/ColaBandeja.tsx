@@ -23,7 +23,7 @@ export const COLAS: Record<TipoCola, DatosCola> = {
   ofertas: {
     Icono: FileSearch,
     titulo: "Ofertas por revisar",
-    href: "/admin/ofertas",
+    href: "/admin/ofertas?estado=pendiente",
     accion: "Revisar ofertas",
     detalle: (n) => (n === 0 ? null : n === 1 ? "1 urgente" : `${n} urgentes`),
     espera: "Se envió",
@@ -41,7 +41,8 @@ export const COLAS: Record<TipoCola, DatosCola> = {
   postulaciones: {
     Icono: UserSearch,
     titulo: "Postulaciones por revisar",
-    href: "/admin/ofertas",
+    // Published offers with applications to review sort first there
+    href: "/admin/ofertas?estado=publicada",
     accion: "Preseleccionar",
     detalle: (n) => (n === 1 ? "En 1 oferta" : `En ${n} ofertas`),
     espera: "Llegó",
@@ -59,7 +60,7 @@ export const COLAS: Record<TipoCola, DatosCola> = {
   "sin-postulantes": {
     Icono: SearchX,
     titulo: "Ofertas sin postulantes",
-    href: "/admin/ofertas",
+    href: "/admin/ofertas?estado=sin-postulantes",
     accion: "Ver ofertas",
     detalle: () => "Publicadas hace más de una semana",
     espera: "Se publicó",
