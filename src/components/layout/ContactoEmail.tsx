@@ -10,11 +10,12 @@ const OPCION =
 
 /**
  * The Office's email as a small menu instead of a bare mailto: link, which
- * does nothing on computers with no mail app set up: write from Gmail on the
- * web, open the person's own mail app, or copy the address.
- * `conCopiar={false}` where a separate copy button already sits next to it.
+ * does nothing on computers with no mail app set up. Computers get Gmail on
+ * the web first; phones (coarse pointer) always have a mail app, and Gmail's
+ * mobile web drops the prefilled message, so they get only the app. Both can
+ * copy the address.
  */
-export function ContactoEmail({ children, className, conCopiar = true }: { children: ReactNode; className?: string; conCopiar?: boolean }) {
+export function ContactoEmail({ children, className }: { children: ReactNode; className?: string }) {
   const [abierto, setAbierto] = useState(false);
   const [copiado, setCopiado] = useState(false);
   const contenedor = useRef<HTMLDivElement>(null);
@@ -31,7 +32,9 @@ export function ContactoEmail({ children, className, conCopiar = true }: { child
     };
     document.addEventListener("pointerdown", alTocarFuera);
     document.addEventListener("keydown", alTeclear);
-    contenedor.current?.querySelector<HTMLElement>("[data-opcion]")?.focus();
+    // First option that is shown on this device (Gmail is hidden on phones)
+    const opciones = contenedor.current?.querySelectorAll<HTMLElement>("[data-opcion]") ?? [];
+    [...opciones].find((opcion) => opcion.offsetParent !== null)?.focus();
     return () => {
       document.removeEventListener("pointerdown", alTocarFuera);
       document.removeEventListener("keydown", alTeclear);
@@ -69,21 +72,19 @@ export function ContactoEmail({ children, className, conCopiar = true }: { child
           id={idMenu}
           className="absolute top-full left-0 z-30 mt-2 w-64 rounded-xl border border-border bg-popover p-1.5 shadow-xl shadow-black/15 motion-safe:animate-in motion-safe:fade-in motion-safe:zoom-in-95"
         >
-          <a data-opcion href={OFICINA.emailGmail} target="_blank" rel="noopener noreferrer" onClick={() => setAbierto(false)} className={OPCION}>
+          <a data-opcion href={OFICINA.emailGmail} target="_blank" rel="noopener noreferrer" onClick={() => setAbierto(false)} className={cn(OPCION, "pointer-coarse:hidden")}>
             <ExternalLink aria-hidden className="size-4 shrink-0 text-primary" />
             Escribir desde Gmail
             <span className="sr-only"> (se abre en otra pestaña)</span>
           </a>
-          <a href={OFICINA.emailEnlace} onClick={() => setAbierto(false)} className={OPCION}>
+          <a data-opcion href={OFICINA.emailEnlace} onClick={() => setAbierto(false)} className={OPCION}>
             <Mail aria-hidden className="size-4 shrink-0 text-primary" />
             Abrir mi app de correo
           </a>
-          {conCopiar && (
-            <button type="button" onClick={copiar} className={OPCION}>
-              {copiado ? <Check aria-hidden className="size-4 shrink-0 text-primary" /> : <Copy aria-hidden className="size-4 shrink-0 text-primary" />}
-              {copiado ? "¡Copiado!" : "Copiar la dirección"}
-            </button>
-          )}
+          <button type="button" onClick={copiar} className={OPCION}>
+            {copiado ? <Check aria-hidden className="size-4 shrink-0 text-primary" /> : <Copy aria-hidden className="size-4 shrink-0 text-primary" />}
+            {copiado ? "¡Copiado!" : "Copiar la dirección"}
+          </button>
           <span aria-live="polite" className="sr-only">
             {copiado ? "Email copiado" : ""}
           </span>
