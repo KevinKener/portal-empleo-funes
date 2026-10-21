@@ -1,6 +1,5 @@
-import { Clock, LifeBuoy, Mail, MapPin, Phone } from "lucide-react";
+import { ChevronDown, Clock, LifeBuoy, Mail, MapPin, Phone } from "lucide-react";
 import { ContactoEmail } from "@/components/layout/ContactoEmail";
-import { CopiarEmail } from "@/components/layout/CopiarEmail";
 import { OFICINA } from "@/lib/oficina";
 import { cn } from "@/lib/utils";
 
@@ -31,18 +30,16 @@ export function AyudaOficina({ className }: { className?: string }) {
             <span className="font-semibold">{OFICINA.telefono}</span>
           </a>
         </li>
-        <li className="flex items-center gap-2">
-          <div className="min-w-0 flex-1">
-            <ContactoEmail conCopiar={false} className={cn(ENLACE, "w-full")}>
-              <Mail aria-hidden className="size-4 shrink-0 text-primary" />
-              {/* If it has to wrap, it wraps after the @, never in the middle of a word */}
-              <span className="min-w-0 break-words">
-                {OFICINA.email.split("@")[0]}@<wbr />
-                {OFICINA.email.split("@")[1]}
-              </span>
-            </ContactoEmail>
-          </div>
-          <CopiarEmail email={OFICINA.email} />
+        <li>
+          {/* One line like the others; the address stays visible, small, for whoever wants to note it down */}
+          <ContactoEmail className={cn(ENLACE, "group w-[calc(100%+1rem)]")}>
+            <Mail aria-hidden className="size-4 shrink-0 text-primary" />
+            <span className="min-w-0 flex-1">
+              <span className="block font-semibold">Escribinos un mail</span>
+              <span className="block truncate text-xs text-muted-foreground">{OFICINA.email}</span>
+            </span>
+            <ChevronDown aria-hidden className="size-4 shrink-0 text-muted-foreground transition-transform group-aria-expanded:rotate-180" />
+          </ContactoEmail>
         </li>
         <li>
           <a href={OFICINA.mapa} target="_blank" rel="noopener noreferrer" className={ENLACE}>
