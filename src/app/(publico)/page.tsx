@@ -8,6 +8,7 @@ import { Revelar } from "@/components/layout/Revelar";
 import { PasosAnimados } from "@/components/portada/PasosAnimados";
 import { RubrosFlotantes } from "@/components/portada/RubrosFlotantes";
 import { inicioDe, obtenerSesion } from "@/lib/auth";
+import { VISTA_PORTAL } from "@/lib/ver-portal";
 import { listarCategorias } from "@/lib/categorias";
 import { CarruselOfertas } from "@/components/ofertas/CarruselOfertas";
 import { TarjetaOferta } from "@/components/ofertas/TarjetaOferta";
@@ -64,10 +65,12 @@ async function nombresDeRubros(): Promise<string[]> {
   }
 }
 
-export default async function HomePage() {
-  // Companies and the Office land on their panel (the session is already read for the header)
+export default async function HomePage({ searchParams }: PageProps<"/">) {
+  // Companies and the Office land on their panel (the session is already read for the header),
+  // unless they asked for the portal with "Ver portal"
+  const { vista } = await searchParams;
   const inicio = inicioDe(await obtenerSesion());
-  if (inicio !== "/") redirect(inicio);
+  if (inicio !== "/" && vista !== VISTA_PORTAL) redirect(inicio);
 
   const [ofertas, rubros] = await Promise.all([ultimasOfertas(), nombresDeRubros()]);
 
