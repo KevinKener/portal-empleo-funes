@@ -65,11 +65,6 @@ export default async function PostulantesAdminPage({ searchParams }: PageProps<"
     <div className="space-y-6">
       <BandaSeccion
         titulo="Postulantes"
-        resumen={
-          resumen.total === 0
-            ? "Todavía no se registró nadie en el portal."
-            : `${resumen.total === 1 ? "1 persona registrada" : `${resumen.total} personas registradas`}, se hayan postulado o no. El ${Math.round((resumen.funes / resumen.total) * 100)} % vive en Funes y aparece primero.`
-        }
         cifras={[
           { valor: resumen.total, texto: "Registrados", href: RUTA },
           { valor: resumen.funes, texto: "De Funes", href: `${RUTA}?localidad=funes` },

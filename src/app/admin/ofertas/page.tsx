@@ -108,20 +108,6 @@ const Accion = ({ fila }: { fila: FilaOfertaAdmin }) => (
   </span>
 );
 
-const plural = (n: number, uno: string, varios: string) => (n === 1 ? `1 ${uno}` : `${n} ${varios}`);
-
-/** Where offers stand, in one sentence: what waits for review and what waits for pre-selection. */
-function resumenOfertas(r: ResumenOfertas): string {
-  const partes: string[] = [];
-  if (r.porRevisar > 0) {
-    partes.push(`${plural(r.porRevisar, "oferta", "ofertas")} por revisar${r.urgentes > 0 ? ` (${plural(r.urgentes, "urgente", "urgentes")})` : ""}`);
-  }
-  if (r.postulaciones.pendientes > 0) {
-    partes.push(`${plural(r.postulaciones.pendientes, "postulación", "postulaciones")} esperando en ${plural(r.postulaciones.ofertas, "oferta", "ofertas")}`);
-  }
-  return partes.length > 0 ? `Hay ${partes.join(" y ")}.` : "No hay ofertas ni postulaciones esperando. ¡Al día!";
-}
-
 function cifrasOfertas(r: ResumenOfertas): CifraSeccion[] {
   return [
     { valor: r.porRevisar, texto: "Ofertas por revisar", href: "/admin/ofertas?estado=pendiente", destacada: r.porRevisar > 0 },
@@ -155,7 +141,7 @@ export default async function OfertasAdminPage({ searchParams }: PageProps<"/adm
 
   return (
     <div className="space-y-6">
-      <BandaSeccion titulo="Ofertas" resumen={resumenOfertas(resumen)} cifras={cifrasOfertas(resumen)} accion={resumen.proxima} />
+      <BandaSeccion titulo="Ofertas" cifras={cifrasOfertas(resumen)} accion={resumen.proxima} />
       <FiltrosLista
         ruta="/admin/ofertas"
         filtros={FILTROS.map((f) => ({ ...f, cantidad: conteo[f.valor] }))}

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { CSSProperties, ReactNode } from "react";
+import type { CSSProperties } from "react";
 import { ArrowRight } from "lucide-react";
 import { FondoMarca } from "@/components/layout/FondoMarca";
 import { cn } from "@/lib/utils";
@@ -15,8 +15,6 @@ export type CifraSeccion = {
 
 type PropsBandaSeccion = {
   titulo: string;
-  /** One line on where the section stands ("2 empresas esperan verificación…"). */
-  resumen: ReactNode;
   cifras: CifraSeccion[];
   /** The next thing to do, e.g. "Verificar la próxima". */
   accion?: { href: string; texto: string } | null;
@@ -24,19 +22,17 @@ type PropsBandaSeccion = {
 
 /**
  * Heading band of an Office section: the Bandeja's dark green and shield,
- * lower, with the section's title, where it stands, figures that open the
- * filtered list and the next action. Every section opens saying what there
+ * lower, with the section's title, figures that open the filtered list and
+ * the next action. No sentence: the figures already say it (team feedback
+ * 2026-10-22). Every section opens saying what there
  * is to do (docs/research/admin.md §4.3).
  */
-export function BandaSeccion({ titulo, resumen, cifras, accion }: PropsBandaSeccion) {
+export function BandaSeccion({ titulo, cifras, accion }: PropsBandaSeccion) {
   return (
     <header className="relative isolate overflow-hidden rounded-2xl bg-primary-deep px-5 py-6 text-primary-foreground sm:px-8 sm:py-7">
       <FondoMarca compacto />
-      <div className="flex flex-col gap-4 motion-safe:animate-entrada sm:flex-row sm:items-end sm:justify-between">
-        <div className="min-w-0 space-y-1.5">
-          <h1 className="font-heading text-3xl font-bold text-balance">{titulo}</h1>
-          <div className="max-w-2xl text-primary-foreground/85">{resumen}</div>
-        </div>
+      <div className="flex flex-col gap-4 motion-safe:animate-entrada sm:flex-row sm:items-center sm:justify-between">
+        <h1 className="min-w-0 font-heading text-3xl font-bold text-balance">{titulo}</h1>
         {accion && (
           <Link
             href={accion.href}

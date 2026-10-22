@@ -93,11 +93,6 @@ export default async function EmpresasAdminPage({ searchParams }: PageProps<"/ad
     <div className="space-y-6">
       <BandaSeccion
         titulo="Empresas"
-        resumen={
-          resumen.proxima
-            ? `${resumen.pendientes === 1 ? "1 empresa espera" : `${resumen.pendientes} empresas esperan`} verificación para poder publicar. La que más espera llegó ${haceCuanto(resumen.proxima.desde, momento)}.`
-            : "Ninguna empresa espera verificación. ¡Al día!"
-        }
         cifras={[
           { valor: resumen.pendientes, texto: "Por verificar", href: "/admin/empresas?estado=pendiente", destacada: resumen.pendientes > 0 },
           { valor: resumen.verificadas, texto: "Verificadas", href: "/admin/empresas?estado=verificado" },
