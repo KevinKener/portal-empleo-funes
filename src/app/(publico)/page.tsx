@@ -7,7 +7,8 @@ import { FondoMarca } from "@/components/layout/FondoMarca";
 import { Revelar } from "@/components/layout/Revelar";
 import { PasosAnimados } from "@/components/portada/PasosAnimados";
 import { RubrosFlotantes } from "@/components/portada/RubrosFlotantes";
-import { inicioDe, obtenerSesion } from "@/lib/auth";
+import { AREA_POR_ROL, inicioDe, obtenerSesion } from "@/lib/auth";
+import { VISTA_PORTAL } from "@/lib/ver-portal";
 import { listarCategorias } from "@/lib/categorias";
 import { CarruselOfertas } from "@/components/ofertas/CarruselOfertas";
 import { TarjetaOferta } from "@/components/ofertas/TarjetaOferta";
@@ -64,10 +65,17 @@ async function nombresDeRubros(): Promise<string[]> {
   }
 }
 
-export default async function HomePage() {
-  // Companies and the Office land on their panel (the session is already read for the header)
-  const inicio = inicioDe(await obtenerSesion());
-  if (inicio !== "/") redirect(inicio);
+export default async function HomePage({ searchParams }: PageProps<"/">) {
+  // Companies and the Office land on their panel (the session is already read for the header),
+  // unless they asked for the portal with "Ver portal"
+  const { vista } = await searchParams;
+  const sesion = await obtenerSesion();
+  const inicio = inicioDe(sesion);
+  if (inicio !== "/" && vista !== VISTA_PORTAL) redirect(inicio);
+  // Signed-in people (job seekers, or companies and the Office from "Ver portal") are not invited to sign up again
+  const cuenta = sesion
+    ? { href: AREA_POR_ROL[sesion.rol], arriba: "Ir a mi panel", abajo: "Ir a mi panel" }
+    : { href: "/registro", arriba: "Crear cuenta", abajo: "Crear mi cuenta" };
 
   const [ofertas, rubros] = await Promise.all([ultimasOfertas(), nombresDeRubros()]);
 
@@ -112,10 +120,10 @@ export default async function HomePage() {
                 <ArrowRight aria-hidden className="size-5 transition-transform duration-150 group-hover:translate-x-1" />
               </Link>
               <Link
-                href="/registro"
+                href={cuenta.href}
                 className="inline-flex h-12 items-center justify-center rounded-lg border border-primary-foreground/30 px-6 text-base font-semibold text-primary-foreground transition-colors duration-150 hover:border-primary-foreground/60 hover:bg-primary-foreground/10 focus-visible:ring-4 focus-visible:ring-primary-foreground/40 focus-visible:outline-none active:scale-[0.98]"
               >
-                Crear cuenta
+                {cuenta.arriba}
               </Link>
             </div>
           </div>
@@ -155,10 +163,10 @@ export default async function HomePage() {
           {/* The step that comes after reading how it works */}
           <div className="flex md:justify-center">
             <Link
-              href="/registro"
+              href={cuenta.href}
               className="group inline-flex h-12 items-center gap-2 rounded-lg bg-primary px-6 text-base font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-[background-color,transform] duration-150 hover:bg-primary-hover focus-visible:ring-4 focus-visible:ring-ring/40 focus-visible:outline-none active:scale-[0.98]"
             >
-              Crear mi cuenta
+              {cuenta.abajo}
               <ArrowRight aria-hidden className="size-5 transition-transform duration-150 group-hover:translate-x-1" />
             </Link>
           </div>

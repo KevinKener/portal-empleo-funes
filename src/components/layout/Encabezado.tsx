@@ -6,6 +6,7 @@ import { Escudo } from "@/components/layout/Escudo";
 import { buttonVariants } from "@/components/ui/button";
 import { AREA_POR_ROL, inicioDe, obtenerSesion } from "@/lib/auth";
 import { cn } from "@/lib/utils";
+import { HREF_VER_PORTAL } from "@/lib/ver-portal";
 
 // On phones the shield already links home, and signed-in people reach the
 // offers from their area, so those links only show from sm to keep the bar on one line.
@@ -72,7 +73,7 @@ export async function Encabezado({ navegacion, conBarra = false }: { navegacion?
             <>
               {/* The Office's tabs have no room for it (five sections): the portal sits by "Salir" from md */}
               {enArea && sesion.rol === "admin" && (
-                <Link href="/ofertas" title="Ver portal" className={cn(ENLACE, "hidden items-center gap-1.5 text-muted-foreground md:inline-flex")}>
+                <Link href={HREF_VER_PORTAL} title="Ver portal" className={cn(ENLACE, "hidden items-center gap-1.5 text-muted-foreground md:inline-flex")}>
                   <Eye aria-hidden className="size-4" />
                   <span className="sr-only xl:not-sr-only">Ver portal</span>
                 </Link>
