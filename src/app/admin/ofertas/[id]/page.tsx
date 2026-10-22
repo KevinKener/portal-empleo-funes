@@ -202,6 +202,15 @@ export default async function RevisarOfertaPage({ params }: PageProps<"/admin/of
                   ))}
                 </ul>
               )}
+              {totalPostulaciones > 0 && (
+                <Link
+                  href={`/admin/ofertas/${oferta.id}/postulantes${oferta.postulaciones.pendiente > 0 ? "" : "?estado=todas"}`}
+                  className="group flex items-center justify-between gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground shadow-md shadow-primary/20 transition-colors hover:bg-primary-hover"
+                >
+                  {oferta.postulaciones.pendiente > 0 ? `Revisar postulantes (${oferta.postulaciones.pendiente})` : "Ver postulantes"}
+                  <ArrowRight aria-hidden className="size-4 transition-transform group-hover:translate-x-1" />
+                </Link>
+              )}
             </section>
           )}
 

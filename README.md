@@ -336,6 +336,7 @@ Las páginas públicas viven en el grupo `src/app/(publico)/`, que comparte enca
 | `/admin` | Bandeja de la Oficina de Empleo: colas de trabajo con su antigüedad (requiere rol admin) |
 | `/admin/ofertas`, `/admin/ofertas/[id]` | Ofertas para la Oficina: buscador y filtros, y la revisión de cada oferta (publicar, rechazar con motivo, cerrar) |
 | `/admin/empresas`, `/admin/empresas/[id]` | Empresas para la Oficina: buscador y filtros, y la verificación de cada una (datos, CUIT, constancia de ARCA, ofertas) |
+| `/admin/ofertas/[id]/postulantes`, `/admin/ofertas/[id]/postulantes/[postulacionId]` | Postulantes de una oferta para la Oficina: primero vecinos de Funes, filtros por etapa y domicilio verificado, preseleccionar o rechazar con motivo (de a uno o varios) y la ficha de cada persona con CV, historial y notas privadas |
 | `/admin/postulantes`, `/admin/indicadores` | Secciones de la Oficina (por ahora avisan que están en camino) |
 
 </details>

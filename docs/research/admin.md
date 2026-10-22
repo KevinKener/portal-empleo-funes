@@ -257,6 +257,7 @@ Every number below comes from data the system already records (plus `fecha_contr
 - Two views over the same filters: table and pipeline by stage (§4.3); split view from `xl`; candidate history as a `LineaTiempo`.
 - Actions per row and in bulk (`BarraSeleccion`): **Preseleccionar** (stamps `fecha_preseleccion`, the company starts seeing the candidate) or **Rechazar** with `cupo_completo` / `no_seleccionado` (Rule 10).
 - `/admin/postulantes`: search by name/DNI, category, town and verified address, using the same candidate panel. (The Admin cannot apply on behalf of a job seeker: the insert policy is the job seeker's own; out of scope.)
+- Split 2026-10-22 into D1 (`feature/admin-preseleccion`, the offer's applicants) and D2 (`feature/admin-postulantes`, the search). D1 built: status chips (Por revisar · Preseleccionados · En entrevista · Contratados · No seleccionados · Todas) stand in for the separate pipeline view; the candidate is its own page at every width (no split view yet); the list shows initials, the photo only on the candidate page. The Office keeps moving only pending applications (decision 2026-10-22: the company owns everything after pre-selection; the button says it cannot be undone). Later idea: a Bandeja queue for pre-selected candidates with no company answer after 7 days.
 
 ### E. `feature/admin-domicilios` — small migration
 - Queue of pending proofs with an inline preview (images shown, PDF opened by signed URL), person's name, town and address side by side.

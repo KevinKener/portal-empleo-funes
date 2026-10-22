@@ -1,7 +1,12 @@
 import { haceCuanto } from "@/lib/formato";
 import { cn } from "@/lib/utils";
 
-export type HitoLinea = { texto: string; fecha: string; tono?: "malo" };
+export type HitoLinea = {
+  texto: string;
+  /** Null when the database keeps no date for that step (shown without one rather than guessed). */
+  fecha: string | null;
+  tono?: "malo";
+};
 
 /**
  * A record's history as a vertical timeline, oldest first (MoJ timeline,
@@ -23,9 +28,11 @@ export function LineaTiempo({ hitos, momento }: { hitos: HitoLinea[]; momento: n
             />
             <p className="min-w-0 text-sm">
               <span className={cn("block", ultimo && "font-semibold")}>{hito.texto}</span>
-              <time dateTime={hito.fecha} className="text-xs text-muted-foreground">
-                {haceCuanto(hito.fecha, momento)}
-              </time>
+              {hito.fecha && (
+                <time dateTime={hito.fecha} className="text-xs text-muted-foreground">
+                  {haceCuanto(hito.fecha, momento)}
+                </time>
+              )}
             </p>
           </li>
         );
