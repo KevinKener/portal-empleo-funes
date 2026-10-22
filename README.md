@@ -312,7 +312,7 @@ Las páginas públicas viven en el grupo `src/app/(publico)/`, que comparte enca
 
 | URL | Descripción |
 |-----|-------------|
-| `/` | Portada: presentación del portal, últimas ofertas en carrusel y cómo funciona |
+| `/` | Portada: presentación del portal, últimas ofertas en carrusel y cómo funciona. Las empresas y la Oficina con sesión iniciada van directo a su panel |
 | `/ofertas` | Listado de ofertas publicadas, con filtro por categoría (`?categoria=`), orden (`?orden=recientes\|urgentes\|solicitadas`) y paginación (`?pagina=`); etiquetas Urgente, Muy solicitada, Pocos postulantes y Nueva |
 | `/ofertas/[id]` | Detalle de una oferta publicada (404 si no existe o no está publicada), con compartir por WhatsApp |
 | `/api/ofertas` · `/api/ofertas/[id]` | API pública de ofertas publicadas (JSON) |
