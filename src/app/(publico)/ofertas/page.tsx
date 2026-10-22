@@ -9,7 +9,7 @@ import { FondoMarca } from "@/components/layout/FondoMarca";
 import { Revelar } from "@/components/layout/Revelar";
 import { listarCategorias } from "@/lib/categorias";
 import { listarOfertasPublicas } from "@/lib/ofertas";
-import { validarFiltrosOfertas, type FiltrosOfertas } from "@/lib/validaciones/ofertas";
+import { hrefOfertas, validarFiltrosOfertas, type FiltrosOfertas } from "@/lib/validaciones/ofertas";
 
 export const metadata: Metadata = { title: "Ofertas de trabajo" };
 
@@ -82,7 +82,7 @@ async function Listado({ categoria, pagina, orden }: FiltrosOfertas) {
         <EstadoVacio titulo={mensajeSinResultados(resultado.total, categoria)} />
       )}
 
-      <Paginacion pagina={pagina} totalPaginas={totalPaginas} categoria={categoria} orden={orden} />
+      <Paginacion pagina={pagina} totalPaginas={totalPaginas} href={(numero) => hrefOfertas({ categoria, orden, pagina: numero })} />
     </>
   );
 }

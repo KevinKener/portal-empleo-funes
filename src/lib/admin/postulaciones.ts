@@ -1,10 +1,14 @@
 import "server-only"
-import type { ExperienciaCandidato, FormacionCandidato } from "@/lib/candidatos-empresa"
-import { ENCUADRE_INICIAL, type Encuadre } from "@/lib/encuadre"
-import type { EstadoOferta, EstadoPostulacion, EstadoVerificacion, MotivoRechazoPostulacion } from "@/lib/estados"
-import { urlFotoPerfil } from "@/lib/foto-perfil"
+import {
+  coincideBusqueda,
+  obtenerPerfilPostulante,
+  resumirPostulantes,
+  type PerfilPostulanteAdmin,
+  type PostulacionDePostulante,
+  type PostulanteResumen,
+} from "@/lib/admin/postulantes"
+import type { EstadoOferta, EstadoPostulacion, MotivoRechazoPostulacion } from "@/lib/estados"
 import { createClient } from "@/lib/supabase/server"
-import type { Enums } from "@/types/database"
 
 /**
  * Applications as the Employment Office sees them (branch D,
@@ -19,20 +23,6 @@ export type FiltroPostulaciones = (typeof FILTROS_POSTULACIONES)[number]
 /** `?estado=` from the URL, defaulting to the applications the Office still has to review. */
 export function filtroPostulaciones(valor: string | string[] | undefined): FiltroPostulaciones {
   return (FILTROS_POSTULACIONES as readonly string[]).includes(String(valor)) ? (valor as FiltroPostulaciones) : "pendiente"
-}
-
-export type PostulanteResumen = {
-  id: string
-  nombre: string
-  apellido: string
-  dni: string
-  localidad: Enums<"localidad">
-  estadoDomicilio: EstadoVerificacion
-  tieneComprobante: boolean
-  tieneCvPdf: boolean
-  categorias: string[]
-  experiencias: ExperienciaCandidato[]
-  formaciones: FormacionCandidato[]
 }
 
 export type FilaPostulacion = {
@@ -51,11 +41,6 @@ export type ListadoPostulaciones = {
 
 const ERROR_LECTURA = "No se pudieron leer las postulaciones"
 
-// Lowercase without accents, so "perez" finds "Pérez"
-function normalizar(texto: string): string {
-  return texto.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase()
-}
-
 /**
  * Rule 4 (decision 2026-10-13): Funes residents first, then other towns,
  * each group oldest application first, so nobody waits at the bottom.
@@ -65,42 +50,6 @@ export function ordenFunesPrimero(a: FilaPostulacion, b: FilaPostulacion): numbe
     Number(b.postulante.localidad === "funes") - Number(a.postulante.localidad === "funes") ||
     new Date(a.creada).getTime() - new Date(b.creada).getTime()
   )
-}
-
-type Supabase = Awaited<ReturnType<typeof createClient>>
-
-/** Profile, categories and CV built on the platform of each job seeker, by id. */
-async function resumirPostulantes(supabase: Supabase, ids: string[]): Promise<Map<string, PostulanteResumen>> {
-  const resumen = new Map<string, PostulanteResumen>()
-  if (ids.length === 0) return resumen
-
-  const [postulantes, categorias, experiencias, formaciones] = await Promise.all([
-    supabase.from("postulantes").select("id, nombre, apellido, dni, localidad, estado_domicilio, comprobante_url, cv_url").in("id", ids),
-    supabase.from("postulante_categorias").select("postulante_id, categorias(nombre)").in("postulante_id", ids),
-    supabase.from("experiencias").select("id, postulante_id, puesto, empresa, desde, hasta, tareas").in("postulante_id", ids).order("desde", { ascending: false }),
-    supabase.from("formaciones").select("id, postulante_id, nivel, titulo, institucion, estado").in("postulante_id", ids).order("created_at"),
-  ])
-  if (postulantes.error || categorias.error || experiencias.error || formaciones.error) throw new Error(ERROR_LECTURA)
-
-  for (const p of postulantes.data) {
-    resumen.set(p.id, {
-      id: p.id,
-      nombre: p.nombre,
-      apellido: p.apellido,
-      dni: p.dni,
-      localidad: p.localidad,
-      estadoDomicilio: p.estado_domicilio,
-      tieneComprobante: p.comprobante_url !== null,
-      tieneCvPdf: p.cv_url !== null,
-      categorias: categorias.data
-        .filter((c) => c.postulante_id === p.id && c.categorias)
-        .map((c) => c.categorias?.nombre ?? "")
-        .sort((a, b) => a.localeCompare(b, "es")),
-      experiencias: experiencias.data.filter((e) => e.postulante_id === p.id),
-      formaciones: formaciones.data.filter((f) => f.postulante_id === p.id),
-    })
-  }
-  return resumen
 }
 
 /**
@@ -128,11 +77,10 @@ export async function listarPostulacionesOferta(
     return [{ id: p.id, estado: p.estado, motivoRechazo: p.motivo_rechazo, creada: p.created_at, postulante }]
   })
 
-  const texto = normalizar(busqueda.trim())
   const buscadas = todas.filter(
     (f) =>
       (!soloVerificados || f.postulante.estadoDomicilio === "verificado") &&
-      (!texto || normalizar(`${f.postulante.nombre} ${f.postulante.apellido} ${f.postulante.dni}`).includes(texto)),
+      coincideBusqueda(busqueda, f.postulante),
   )
 
   const conteo = Object.fromEntries(
@@ -145,15 +93,6 @@ export async function listarPostulacionesOferta(
   }
 }
 
-export type OtraPostulacion = {
-  id: string
-  ofertaId: string
-  titulo: string
-  estado: EstadoPostulacion
-  motivoRechazo: MotivoRechazoPostulacion | null
-  creada: string
-}
-
 export type FichaPostulacion = {
   id: string
   estado: EstadoPostulacion
@@ -161,53 +100,36 @@ export type FichaPostulacion = {
   notas: string
   creada: string
   fechaPreseleccion: string | null
-  actualizada: string
   oferta: { id: string; titulo: string; estado: EstadoOferta; categoria: string | null }
-  postulante: PostulanteResumen & {
-    telefono: string
-    direccion: string
-    descripcion: string | null
-    foto: string | null
-    encuadre: Encuadre
-  }
+  postulante: PerfilPostulanteAdmin
   /** The person's applications to other offers, newest first. */
-  otras: OtraPostulacion[]
+  otras: PostulacionDePostulante[]
 }
 
 /**
  * One application with everything the Office needs to decide: the person's
- * data, photo (Admin may see it), CV, private notes and other applications.
+ * profile (obtenerPerfilPostulante), private notes and other applications.
  * Null when it does not exist or belongs to another offer. Admin only.
  */
 export async function obtenerFichaPostulacion(ofertaId: string, postulacionId: string): Promise<FichaPostulacion | null> {
   const supabase = await createClient()
   const { data: postulacion, error } = await supabase
     .from("postulaciones_admin")
-    .select("id, oferta_id, postulante_id, estado, motivo_rechazo, notas_admin, created_at, fecha_preseleccion, updated_at")
+    .select("id, oferta_id, postulante_id, estado, motivo_rechazo, notas_admin, created_at, fecha_preseleccion")
     .eq("id", postulacionId)
     .eq("oferta_id", ofertaId)
     .maybeSingle()
   if (error) throw new Error(ERROR_LECTURA)
   // View columns come back nullable in the generated types; the table guarantees them
-  if (!postulacion?.id || !postulacion.postulante_id || !postulacion.estado || !postulacion.created_at || !postulacion.updated_at) return null
-  const postulanteId = postulacion.postulante_id
+  if (!postulacion?.id || !postulacion.postulante_id || !postulacion.estado || !postulacion.created_at) return null
 
-  const [oferta, datos, otras, resumen] = await Promise.all([
+  const [oferta, postulante] = await Promise.all([
     supabase.from("ofertas").select("id, titulo, estado, categorias(nombre)").eq("id", ofertaId).maybeSingle(),
-    supabase.from("postulantes").select("telefono, direccion, descripcion, foto_url, foto_x, foto_y, foto_zoom").eq("id", postulanteId).maybeSingle(),
-    supabase
-      .from("postulaciones")
-      .select("id, oferta_id, estado, motivo_rechazo, created_at, ofertas(titulo)")
-      .eq("postulante_id", postulanteId)
-      .neq("id", postulacionId)
-      .order("created_at", { ascending: false }),
-    resumirPostulantes(supabase, [postulanteId]),
+    obtenerPerfilPostulante(postulacion.postulante_id),
   ])
-  if (oferta.error || datos.error || otras.error) throw new Error(ERROR_LECTURA)
-  const postulante = resumen.get(postulanteId)
-  if (!oferta.data || !datos.data || !postulante) return null
+  if (oferta.error) throw new Error(ERROR_LECTURA)
+  if (!oferta.data || !postulante) return null
 
-  const { foto_url, foto_x, foto_y, foto_zoom, ...contacto } = datos.data
   return {
     id: postulacion.id,
     estado: postulacion.estado,
@@ -215,22 +137,9 @@ export async function obtenerFichaPostulacion(ofertaId: string, postulacionId: s
     notas: postulacion.notas_admin ?? "",
     creada: postulacion.created_at,
     fechaPreseleccion: postulacion.fecha_preseleccion,
-    actualizada: postulacion.updated_at,
     oferta: { id: oferta.data.id, titulo: oferta.data.titulo, estado: oferta.data.estado, categoria: oferta.data.categorias?.nombre ?? null },
-    postulante: {
-      ...postulante,
-      ...contacto,
-      foto: await urlFotoPerfil(foto_url),
-      encuadre: foto_url ? { x: foto_x, y: foto_y, zoom: foto_zoom } : ENCUADRE_INICIAL,
-    },
-    otras: otras.data.map((p) => ({
-      id: p.id,
-      ofertaId: p.oferta_id,
-      titulo: p.ofertas?.titulo ?? "Oferta",
-      estado: p.estado,
-      motivoRechazo: p.motivo_rechazo,
-      creada: p.created_at,
-    })),
+    postulante,
+    otras: postulante.postulaciones.filter((p) => p.id !== postulacion.id),
   }
 }
 

@@ -124,7 +124,7 @@ export function TarjetaCandidato({ ofertaId, candidato, textoTomar, rubroOferta 
               <Mail aria-hidden className="size-4 shrink-0" /> <span className="truncate">{candidato.email}</span>
             </a>
           )}
-          {candidato.tieneCvPdf && <BotonCvCandidato postulacionId={candidato.postulacionId} abrir={abrirCvCandidato} />}
+          {candidato.tieneCvPdf && <BotonCvCandidato id={candidato.postulacionId} abrir={abrirCvCandidato} />}
         </div>
       )}
 

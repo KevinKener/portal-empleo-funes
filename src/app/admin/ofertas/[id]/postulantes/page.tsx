@@ -5,7 +5,7 @@ import { cache } from "react";
 import { BadgeCheck, SearchX, UserSearch, Users } from "lucide-react";
 import { FiltrosLista } from "@/components/admin/FiltrosLista";
 import { ListaPostulantes } from "@/components/admin/ListaPostulantes";
-import { NotaLateral, PaginaArea } from "@/components/layout/PaginaArea";
+import { PaginaArea } from "@/components/layout/PaginaArea";
 import { obtenerOfertaAdmin } from "@/lib/admin/ofertas";
 import { filtroPostulaciones, listarPostulacionesOferta, type FiltroPostulaciones } from "@/lib/admin/postulaciones";
 import { requerirRol } from "@/lib/auth";
@@ -72,22 +72,6 @@ export default async function PostulantesOfertaPage({ params, searchParams }: Pa
         <>
           {oferta.titulo} · {oferta.empresa?.nombre_comercial ?? "Empresa"}
           {oferta.categoria && ` · ${oferta.categoria}`}
-        </>
-      }
-      aside={
-        <>
-          <NotaLateral titulo="En qué orden aparecen">
-            <p>Primero los vecinos de Funes y después las otras localidades. En cada grupo, quien se postuló antes va primero.</p>
-            <p>El domicilio verificado es una señal más: no deja a nadie afuera.</p>
-          </NotaLateral>
-          <NotaLateral titulo="Qué pasa al decidir">
-            <p>
-              <strong className="text-foreground">Preseleccionar:</strong> la empresa empieza a ver a la persona y decide si la entrevista.
-            </p>
-            <p>
-              <strong className="text-foreground">Rechazar:</strong> la persona ve el motivo en su panel. “Cupo completo” se lee más suave.
-            </p>
-          </NotaLateral>
         </>
       }
     >

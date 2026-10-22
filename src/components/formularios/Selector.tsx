@@ -21,6 +21,8 @@ type PropsSelector = {
   /** Runs when the list closes, like blur on a native select. */
   onSalir?: () => void;
   deshabilitado?: boolean;
+  /** Open the list below the field instead of over it (Base UI's default, macOS style), e.g. in a filter bar. */
+  debajo?: boolean;
   "aria-label"?: string;
   "aria-invalid"?: boolean;
   className?: string;
@@ -41,6 +43,7 @@ export function Selector({
   onCambiar,
   onSalir,
   deshabilitado,
+  debajo = false,
   className,
   ...aria
 }: PropsSelector) {
@@ -68,9 +71,23 @@ export function Selector({
       >
         <SelectValue placeholder={placeholder} className="truncate" />
       </SelectTrigger>
-      <SelectContent className="max-h-72">
-        {opciones.map((opcion) => (
-          <SelectItem key={opcion.valor} value={opcion.valor} className="min-h-11 px-3 text-base">
+      <SelectContent
+        alignItemWithTrigger={!debajo}
+        align="start"
+        // Below the field it reads as a menu: rounder, deeper shadow, the bar's text size
+        className={cn("max-h-72", debajo && "max-h-80 rounded-xl p-1.5 shadow-xl")}
+      >
+        {opciones.map((opcion, i) => (
+          <SelectItem
+            key={opcion.valor}
+            value={opcion.valor}
+            className={cn(
+              "min-h-11 px-3 text-base",
+              debajo && "min-h-10 rounded-lg sm:text-sm",
+              // The first option of a filter clears it ("Todos los rubros"): a hairline sets it apart
+              debajo && i === 0 && "mb-1 after:absolute after:inset-x-2 after:-bottom-[3px] after:h-px after:bg-border",
+            )}
+          >
             {opcion.texto}
           </SelectItem>
         ))}

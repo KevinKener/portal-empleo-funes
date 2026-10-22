@@ -3,6 +3,7 @@ import { ENCUADRE_INICIAL, estiloEncuadre, type Encuadre } from "@/lib/encuadre"
 import { cn } from "@/lib/utils";
 
 const TAMANIOS = {
+  sm: { clase: "size-9 text-sm", px: 36 },
   md: { clase: "size-12 text-base", px: 48 },
   lg: { clase: "size-24 text-3xl", px: 96 },
 };

@@ -148,3 +148,8 @@ export function textoEstadoPostulacion(
 export function formatearCuit(cuit: string): string {
   return /^\d{11}$/.test(cuit) ? `${cuit.slice(0, 2)}-${cuit.slice(2, 10)}-${cuit.slice(10)}` : cuit
 }
+
+/** "38.150.362" from the stored digits; anything else is returned as is. */
+export function formatearDni(dni: string): string {
+  return /^\d{7,8}$/.test(dni) ? Number(dni).toLocaleString("es-AR") : dni
+}

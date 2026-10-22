@@ -21,3 +21,21 @@ export async function urlFotoPerfil(ruta: string | null): Promise<string | null>
   }
   return data.signedUrl
 }
+
+/**
+ * Signed URLs for many profile photos in one request (the Office's lists),
+ * by path. Missing or failed ones are left out, so those avatars show
+ * initials. Admin only: Storage policies refuse anyone else's photos.
+ */
+export async function urlsFotosPerfil(rutas: string[]): Promise<Map<string, string>> {
+  const urls = new Map<string, string>()
+  if (rutas.length === 0) return urls
+  const supabase = await createClient()
+  const { data, error } = await supabase.storage.from(ARCHIVOS.foto.bucket).createSignedUrls(rutas, DURACION_URL)
+  if (error) {
+    console.error("urlsFotosPerfil failed:", error.message)
+    return urls
+  }
+  for (const { path, signedUrl } of data) if (path && signedUrl) urls.set(path, signedUrl)
+  return urls
+}

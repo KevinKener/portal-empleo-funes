@@ -5,20 +5,21 @@ import { FileText, LoaderCircle } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 
 type PropsBotonCv = {
-  postulacionId: string;
+  /** What the action looks the CV up by: the application (company) or the person (Office). */
+  id: string;
   /** Server Action that signs the link: the company's or the Office's, each checking its own role. */
-  abrir: (postulacionId: string) => Promise<{ url: string | null; error: string | null }>;
+  abrir: (id: string) => Promise<{ url: string | null; error: string | null }>;
 };
 
 /** Opens (or downloads, for Word files) a candidate's uploaded CV through a short-lived signed link. */
-export function BotonCvCandidato({ postulacionId, abrir: abrirCv }: PropsBotonCv) {
+export function BotonCvCandidato({ id, abrir: abrirCv }: PropsBotonCv) {
   const [error, setError] = useState<string | null>(null);
   const [abriendo, iniciar] = useTransition();
 
   function abrir() {
     setError(null);
     iniciar(async () => {
-      const { url, error: errorUrl } = await abrirCv(postulacionId);
+      const { url, error: errorUrl } = await abrirCv(id);
       if (url) window.open(url, "_blank", "noopener");
       else setError(errorUrl);
     });

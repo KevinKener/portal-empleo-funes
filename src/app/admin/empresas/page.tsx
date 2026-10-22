@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Building2, FileCheck2, SearchX } from "lucide-react";
+import { BandaSeccion } from "@/components/admin/BandaSeccion";
 import { EtiquetaEmpresaAdmin } from "@/components/admin/EtiquetaEmpresaAdmin";
 import { FiltrosLista } from "@/components/admin/FiltrosLista";
 import { TablaAdmin, type ColumnaAdmin } from "@/components/admin/TablaAdmin";
 import { LogoEmpresa } from "@/components/empresa/LogoEmpresa";
-import { PaginaArea } from "@/components/layout/PaginaArea";
 import { filtroEmpresasAdmin, listarEmpresasAdmin, type FiltroEmpresasAdmin, type FilaEmpresaAdmin } from "@/lib/admin/empresas";
+import { resumirEmpresas } from "@/lib/admin/resumenes";
 import { ahora, formatearCuit, haceCuanto } from "@/lib/formato";
 import { urlLogo } from "@/lib/logo-empresa";
 
@@ -76,7 +77,7 @@ export default async function EmpresasAdminPage({ searchParams }: PageProps<"/ad
   const filtro = filtroEmpresasAdmin(estado);
   const busqueda = typeof q === "string" ? q.slice(0, 100) : "";
   const momento = ahora();
-  const { filas, conteo } = await listarEmpresasAdmin(filtro, busqueda);
+  const [{ filas, conteo }, resumen] = await Promise.all([listarEmpresasAdmin(filtro, busqueda), resumirEmpresas()]);
 
   const columnas: ColumnaAdmin<FilaEmpresaAdmin>[] = [
     { titulo: "Empresa", celda: (fila) => <Nombre fila={fila} />, className: "w-[32%] max-w-0" },
@@ -89,7 +90,16 @@ export default async function EmpresasAdminPage({ searchParams }: PageProps<"/ad
   ];
 
   return (
-    <PaginaArea titulo="Empresas" descripcion="Verificá a las empresas nuevas antes de que puedan publicar ofertas.">
+    <div className="space-y-6">
+      <BandaSeccion
+        titulo="Empresas"
+        cifras={[
+          { valor: resumen.pendientes, texto: "Por verificar", href: "/admin/empresas?estado=pendiente", destacada: resumen.pendientes > 0 },
+          { valor: resumen.verificadas, texto: "Verificadas", href: "/admin/empresas?estado=verificado" },
+          { valor: resumen.rechazadas, texto: "Rechazadas", href: "/admin/empresas?estado=rechazado" },
+        ]}
+        accion={resumen.proxima && { href: `/admin/empresas/${resumen.proxima.id}`, texto: "Verificar la próxima" }}
+      />
       <FiltrosLista
         ruta="/admin/empresas"
         filtros={FILTROS.map((f) => ({ ...f, cantidad: conteo[f.valor] }))}
@@ -130,6 +140,6 @@ export default async function EmpresasAdminPage({ searchParams }: PageProps<"/ad
           )}
         />
       )}
-    </PaginaArea>
+    </div>
   );
 }
