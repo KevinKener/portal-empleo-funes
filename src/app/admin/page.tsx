@@ -42,8 +42,8 @@ export default async function AdminPage() {
             {total === 0
               ? "No hay nada esperando revisión. La Oficina de Empleo está al día."
               : total === 1
-                ? "Hay 1 cosa esperando tu revisión."
-                : `Hay ${total} cosas esperando tu revisión. Arriba, la que más espera.`}
+                ? "Hay 1 tarea esperando tu revisión."
+                : `Hay ${total} tareas esperando tu revisión. Arriba, la que más espera.`}
           </p>
         }
       />
