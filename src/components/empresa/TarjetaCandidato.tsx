@@ -1,17 +1,11 @@
-import type { ReactNode } from "react";
 import { BadgeCheck, Briefcase, CalendarDays, Check, ChevronDown, GraduationCap, Mail, MapPin, Phone, Target, type LucideIcon } from "lucide-react";
+import { abrirCvCandidato } from "@/app/empresa/ofertas/[id]/candidatos/actions";
 import { BotonCvCandidato } from "@/components/empresa/BotonCvCandidato";
+import { CvCandidato } from "@/components/empresa/CvCandidato";
 import { DecisionCandidato } from "@/components/empresa/DecisionCandidato";
 import type { Candidato } from "@/lib/candidatos-empresa";
 import { datosClave, iniciales } from "@/lib/datos-candidato";
-import {
-  ahora,
-  ETIQUETAS_ESTADO_FORMACION,
-  ETIQUETAS_LOCALIDAD,
-  ETIQUETAS_NIVEL_FORMACION,
-  formatearMesAnio,
-  haceCuanto,
-} from "@/lib/formato";
+import { ahora, ETIQUETAS_LOCALIDAD, haceCuanto } from "@/lib/formato";
 import { cn } from "@/lib/utils";
 
 type PropsTarjetaCandidato = {
@@ -130,7 +124,7 @@ export function TarjetaCandidato({ ofertaId, candidato, textoTomar, rubroOferta 
               <Mail aria-hidden className="size-4 shrink-0" /> <span className="truncate">{candidato.email}</span>
             </a>
           )}
-          {candidato.tieneCvPdf && <BotonCvCandidato postulacionId={candidato.postulacionId} />}
+          {candidato.tieneCvPdf && <BotonCvCandidato postulacionId={candidato.postulacionId} abrir={abrirCvCandidato} />}
         </div>
       )}
 
@@ -141,37 +135,7 @@ export function TarjetaCandidato({ ofertaId, candidato, textoTomar, rubroOferta 
             <ChevronDown aria-hidden className="size-4 transition-transform duration-200 group-open/cv:rotate-180" />
           </summary>
           <div className="space-y-5 border-t border-border px-4 py-4 text-sm">
-            {experiencias.length > 0 && (
-              <Linea titulo="Experiencia">
-                {experiencias.map((item) => (
-                  <li key={item.id} className="relative pl-5">
-                    <span aria-hidden className="absolute top-1.5 left-0 size-2.5 rounded-full border-2 border-primary bg-card" />
-                    <p className="font-medium">
-                      {item.puesto}
-                      {item.empresa && <span className="font-normal text-muted-foreground"> · {item.empresa}</span>}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {formatearMesAnio(item.desde)} – {item.hasta ? formatearMesAnio(item.hasta) : "actualidad"}
-                    </p>
-                    {item.tareas && <p className="mt-1 whitespace-pre-line text-foreground/85">{item.tareas}</p>}
-                  </li>
-                ))}
-              </Linea>
-            )}
-            {formaciones.length > 0 && (
-              <Linea titulo="Formación">
-                {formaciones.map((item) => (
-                  <li key={item.id} className="relative pl-5">
-                    <span aria-hidden className="absolute top-1.5 left-0 size-2.5 rounded-full border-2 border-primary bg-card" />
-                    <p className="font-medium">{item.titulo}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {ETIQUETAS_NIVEL_FORMACION[item.nivel]} · {ETIQUETAS_ESTADO_FORMACION[item.estado]}
-                      {item.institucion && ` · ${item.institucion}`}
-                    </p>
-                  </li>
-                ))}
-              </Linea>
-            )}
+            <CvCandidato experiencias={experiencias} formaciones={formaciones} />
           </div>
         </details>
       )}
@@ -205,15 +169,5 @@ function Dato({ Icono, etiqueta, valor, apagado = false, ancho = false }: { Icon
         <dd className={cn("font-medium leading-snug", apagado && "text-muted-foreground")}>{valor}</dd>
       </div>
     </div>
-  );
-}
-
-function Linea({ titulo, children }: { titulo: string; children: ReactNode }) {
-  return (
-    <section className="space-y-2">
-      <h4 className="font-semibold">{titulo}</h4>
-      {/* A thin line joins the dots: a small timeline, newest first */}
-      <ul className="relative space-y-3 before:absolute before:top-2 before:bottom-2 before:left-[0.3rem] before:w-px before:bg-border">{children}</ul>
-    </section>
   );
 }

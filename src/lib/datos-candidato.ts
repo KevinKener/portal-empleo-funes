@@ -3,8 +3,8 @@ import { ETIQUETAS_ESTADO_FORMACION, ETIQUETAS_NIVEL_FORMACION } from "@/lib/for
 import type { Enums } from "@/types/database"
 
 /**
- * Key facts of a pre-selected candidate, computed from the CV built on the
- * platform, so the company can scan before reading (ATS cards lead with
+ * Key facts of a candidate, computed from the CV built on the platform, so
+ * the company (and the Office, pre-selecting) can scan before reading (ATS cards lead with
  * years of experience, last job, education and fit with the offer). Never
  * a score: the Office decides who is pre-selected (docs/research/mejoras.md).
  */
@@ -43,7 +43,7 @@ function textoExperiencia(total: number): string {
 }
 
 /** The key facts of `candidato` for an offer in `rubroOferta`; `ahora` keeps components pure. */
-export function datosClave(candidato: Candidato, rubroOferta: string | null, ahora: number): DatosClave {
+export function datosClave(candidato: Pick<Candidato, "experiencias" | "formaciones" | "categorias">, rubroOferta: string | null, ahora: number): DatosClave {
   const { experiencias, formaciones } = candidato
   // Overlapping jobs are added up: good enough for a hint, the detail is one tap away
   const total = experiencias.reduce((suma, item) => suma + meses(item.desde, item.hasta, ahora), 0)

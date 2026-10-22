@@ -16,10 +16,12 @@ type PropsFiltrosLista = {
   busqueda: string;
   /** Placeholder of the search box: what can be searched. */
   buscarPor: string;
+  /** Other URL params the page keeps while searching and filtering (e.g. `verificado`). */
+  extra?: Record<string, string>;
 };
 
-function href(ruta: string, estado: string, q: string) {
-  const params = new URLSearchParams({ estado });
+function href(ruta: string, estado: string, q: string, extra: Record<string, string> = {}) {
+  const params = new URLSearchParams({ ...extra, estado });
   if (q) params.set("q", q);
   return `${ruta}?${params}`;
 }
@@ -30,7 +32,7 @@ function href(ruta: string, estado: string, q: string) {
  * `?q=`), so a filtered list can be shared or reloaded. Without JavaScript
  * the search box still works as a plain GET form.
  */
-export function FiltrosLista({ ruta, filtros, actual, busqueda, buscarPor }: PropsFiltrosLista) {
+export function FiltrosLista({ ruta, filtros, actual, busqueda, buscarPor, extra }: PropsFiltrosLista) {
   const router = useRouter();
   const [texto, setTexto] = useState(busqueda);
   const [buscando, iniciar] = useTransition();
@@ -43,7 +45,7 @@ export function FiltrosLista({ ruta, filtros, actual, busqueda, buscarPor }: Pro
       return;
     }
     const reloj = window.setTimeout(() => {
-      iniciar(() => router.replace(href(ruta, actual, texto.trim()), { scroll: false }));
+      iniciar(() => router.replace(href(ruta, actual, texto.trim(), extra), { scroll: false }));
     }, 300);
     return () => window.clearTimeout(reloj);
     // Only typing triggers it; changing chips is a link
@@ -54,6 +56,9 @@ export function FiltrosLista({ ruta, filtros, actual, busqueda, buscarPor }: Pro
     <div className="space-y-3">
       <form action={ruta} role="search" className="relative max-w-xl">
         <input type="hidden" name="estado" value={actual} />
+        {Object.entries(extra ?? {}).map(([nombre, valor]) => (
+          <input key={nombre} type="hidden" name={nombre} value={valor} />
+        ))}
         <label htmlFor="buscar-lista" className="sr-only">
           Buscar
         </label>
@@ -95,7 +100,7 @@ export function FiltrosLista({ ruta, filtros, actual, busqueda, buscarPor }: Pro
             return (
               <li key={valor}>
                 <Link
-                  href={href(ruta, valor, busqueda)}
+                  href={href(ruta, valor, busqueda, extra)}
                   aria-current={activo ? "page" : undefined}
                   className={cn(
                     "inline-flex h-10 items-center gap-2 rounded-full border px-4 text-sm font-medium whitespace-nowrap transition-[background-color,border-color,color,translate] duration-200 motion-safe:hover:-translate-y-0.5",

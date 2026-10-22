@@ -62,10 +62,14 @@ function Postulaciones({ fila }: { fila: FilaOfertaAdmin }) {
         <span className="lg:sr-only"> {total === 1 ? "postulación" : "postulaciones"}</span>
       </span>
       {pendientes > 0 && (
-        <span className="inline-flex items-center gap-1 rounded-full bg-secondary px-2 py-0.5 text-xs font-semibold text-secondary-foreground">
+        // Above the row's link: goes straight to pre-selection (branch D)
+        <Link
+          href={`/admin/ofertas/${fila.id}/postulantes`}
+          className="relative z-20 inline-flex items-center gap-1 rounded-full bg-secondary px-2 py-0.5 text-xs font-semibold text-secondary-foreground transition-colors hover:bg-primary hover:text-primary-foreground"
+        >
           <UserSearch aria-hidden className="size-3.5" />
           {pendientes} por revisar
-        </span>
+        </Link>
       )}
     </span>
   );

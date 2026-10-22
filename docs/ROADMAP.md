@@ -8,9 +8,9 @@ Legend: `[x]` done · `[ ]` pending · `[~]` in progress
 
 ## Current status
 
-- **Current phase:** Phase 6 (Admin). Branches J (PR #35), A (Bandeja, PRs #36–#37), B (offers review, PR #38) and C (companies, PR #39) merged 2026-10-21; offer closing date on `feature/fecha-cierre-ofertas` (migration `20261021150000_fecha_cierre_ofertas.sql`, applied). Phase 5 and the tutor review of 2026-10-20 are done (PRs #23–#34).
+- **Current phase:** Phase 6 (Admin). Branches J (PR #35), A (Bandeja, PRs #36–#37), B (offers review, PR #38), C (companies, PR #39) and the offer closing date (PR #40) merged; branch D1 (pre-selection per offer) on `feature/admin-preseleccion` (2026-10-22, no migration). Phase 5 and the tutor review of 2026-10-20 are done (PRs #23–#34).
 - **Latest progress:** 2026-10-20, offer CRUD for companies on `feature/crud-ofertas` (no migrations): list, new draft, edit while `borrador`, send to review / take back / close / delete draft, "Usar como base" for rejected and closed offers, company area navigation. Test company: the seed's "Empresa Demo" (CUIT 30000000007, `verificado`), password set by hand in the SQL Editor. Before that, "Mi panel" redesign and profile photo merged (PRs #16, #17) and phone fixes (#18). Earlier: public portal live on Vercel (https://portal-empleo-funes.vercel.app). Phase 2 merged in PR #7: `GET /api/ofertas` and `/api/ofertas/[id]`, landing, `/ofertas` listing with category filter and pagination, offer detail, public layout with the municipal identity from funes.gob.ar. Before that, flow corrections from the tutor review (2026-10-08) on `feature/correcciones-flujo`: offers start as `borrador` (company edits only drafts, sends and takes back), rejected applications carry `motivo_rechazo`, company selection draft (`decision_empresa` + `confirmar_seleccion()`), ARCA certificate optional. Migrations applied in Supabase, types regenerated, `estados.ts` and `AGENTS.md` §2 updated.
-- **Next step:** test and merge `feature/fecha-cierre-ofertas`, then branch D `feature/admin-preseleccion` (pre-selection and job seeker search). Order: J → A → B → C → D → I → E → F → G → H (`docs/research/admin.md` §7). Further ideas, ranked: [`docs/research/mejoras.md`](research/mejoras.md). The tutor's corrections arrive once everything is done.
+- **Next step:** test and merge `feature/admin-preseleccion`, then D2 `feature/admin-postulantes` (job seeker search in `/admin/postulantes`, reusing the candidate page). Order: J → A → B → C → D → I → E → F → G → H (`docs/research/admin.md` §7). Further ideas, ranked: [`docs/research/mejoras.md`](research/mejoras.md). The tutor's corrections arrive once everything is done.
 
 > Update this section at the end of every work session.
 
@@ -192,10 +192,10 @@ Plan approved 2026-10-21: [`docs/research/admin.md`](research/admin.md) — desi
 
 - [x] Admin base: navigation with pending badges and the Bandeja home with the work queues — `feature/admin-base` (branch A, no migration)
 - [x] Approve/reject company sign-ups, with a reason; a rejected company that fixes its data goes back to review (D1) — `/admin/empresas`, `feature/admin-empresas` (branch C)
-- [~] Offer closing date (decision 2026-10-21): optional for the company (up to 60 days), 30 days by default, expired offers leave the portal and take no applications, only the Office extends them ("Vencidas" filter, "Cierra pronto" badge) — `feature/fecha-cierre-ofertas`
+- [x] Offer closing date (decision 2026-10-21): optional for the company (up to 60 days), 30 days by default, expired offers leave the portal and take no applications, only the Office extends them ("Vencidas" filter, "Cierra pronto" badge) — `feature/fecha-cierre-ofertas` (PR #40)
 - [ ] Verify job seeker addresses (view proof)
 - [x] Approve/reject offers (with reason), close them, take the urgency off — `/admin/ofertas`, `feature/admin-ofertas` (branch B, no migration)
-- [ ] Pre-select job seekers per offer
+- [x] Pre-select job seekers per offer — `/admin/ofertas/[id]/postulantes`, `feature/admin-preseleccion` (branch D1, no migration): Funes first, verified-address filter, bulk pre-select / reject with reason, candidate page with private notes
 - [ ] Job seeker search by category, name or city ("verified address" filter)
 - [ ] Metrics dashboard: job seekers, hires, employability rate, rejections by reason, supply vs. demand per category, review and fill times, online now; weekly report in PDF and Excel
 - ~~Follow-up of hires (reminder every 2 months)~~ — dropped 2026-10-21: too many people for the Office to call (D9)
