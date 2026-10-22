@@ -1,12 +1,13 @@
 import type { CSSProperties } from "react";
 import Link from "next/link";
-import { unstable_rethrow } from "next/navigation";
+import { redirect, unstable_rethrow } from "next/navigation";
 import { ArrowRight, Building2, ClipboardCheck, UserRound } from "lucide-react";
 import { Escudo } from "@/components/layout/Escudo";
 import { FondoMarca } from "@/components/layout/FondoMarca";
 import { Revelar } from "@/components/layout/Revelar";
 import { PasosAnimados } from "@/components/portada/PasosAnimados";
 import { RubrosFlotantes } from "@/components/portada/RubrosFlotantes";
+import { inicioDe, obtenerSesion } from "@/lib/auth";
 import { listarCategorias } from "@/lib/categorias";
 import { CarruselOfertas } from "@/components/ofertas/CarruselOfertas";
 import { TarjetaOferta } from "@/components/ofertas/TarjetaOferta";
@@ -64,6 +65,10 @@ async function nombresDeRubros(): Promise<string[]> {
 }
 
 export default async function HomePage() {
+  // Companies and the Office land on their panel (the session is already read for the header)
+  const inicio = inicioDe(await obtenerSesion());
+  if (inicio !== "/") redirect(inicio);
+
   const [ofertas, rubros] = await Promise.all([ultimasOfertas(), nombresDeRubros()]);
 
   return (

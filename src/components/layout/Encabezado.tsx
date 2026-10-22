@@ -1,10 +1,10 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { LogOut } from "lucide-react";
+import { Eye, LogOut } from "lucide-react";
 import { salir } from "@/app/(publico)/ingresar/actions";
 import { Escudo } from "@/components/layout/Escudo";
 import { buttonVariants } from "@/components/ui/button";
-import { AREA_POR_ROL, obtenerSesion } from "@/lib/auth";
+import { AREA_POR_ROL, inicioDe, obtenerSesion } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 
 // On phones the shield already links home, and signed-in people reach the
@@ -26,11 +26,13 @@ const ENLACE = "rounded-md px-2 py-1.5 text-sm font-medium whitespace-nowrap tex
 export async function Encabezado({ navegacion, conBarra = false }: { navegacion?: ReactNode; conBarra?: boolean }) {
   const sesion = await obtenerSesion();
   const enArea = Boolean(navegacion);
+  // For companies and the Office the landing redirects to their panel: link there directly
+  const inicio = inicioDe(sesion);
 
   return (
     <header className="sticky top-0 z-20 border-b border-border bg-card/95 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-2 px-4 sm:gap-4 sm:px-6 lg:px-8">
-        <Link href="/" className="flex shrink-0 items-center gap-2 sm:gap-2.5">
+        <Link href={inicio} className="flex shrink-0 items-center gap-2 sm:gap-2.5">
           <Escudo className="size-8 text-primary" />
           {/* With tabs, md has no room for the name: the shield alone links home until lg.
               Below 400px only "Portal de Empleo" shows, so it is never cut. */}
@@ -49,7 +51,10 @@ export async function Encabezado({ navegacion, conBarra = false }: { navegacion?
         )}
 
         <nav aria-label="Principal" className="flex min-w-0 items-center gap-0.5 sm:gap-2">
+          {/* Companies and the Office browse the portal already and go back with "Mi panel":
+              "Inicio" would repeat it and "Ofertas" is the page they are on (or their own tab) */}
           {!enArea &&
+            inicio === "/" &&
             ENLACES.map((enlace) => (
               <Link
                 key={enlace.href}
@@ -65,6 +70,13 @@ export async function Encabezado({ navegacion, conBarra = false }: { navegacion?
             ))}
           {sesion ? (
             <>
+              {/* The Office's tabs have no room for it (five sections): the portal sits by "Salir" from md */}
+              {enArea && sesion.rol === "admin" && (
+                <Link href="/ofertas" title="Ver portal" className={cn(ENLACE, "hidden items-center gap-1.5 text-muted-foreground md:inline-flex")}>
+                  <Eye aria-hidden className="size-4" />
+                  <span className="sr-only xl:not-sr-only">Ver portal</span>
+                </Link>
+              )}
               {!enArea && (
                 <Link href={AREA_POR_ROL[sesion.rol]} className={cn(ENLACE, conBarra && "hidden md:inline-flex")}>
                   Mi panel
