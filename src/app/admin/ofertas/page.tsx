@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, FileSearch, SearchX, UserSearch } from "lucide-react";
-import { BandaSeccion, type CifraSeccion } from "@/components/admin/BandaSeccion";
+import { BandaSeccion, type CifraSeccion } from "@/components/layout/BandaSeccion";
 import { EtiquetaOfertaAdmin } from "@/components/admin/EtiquetaOfertaAdmin";
 import { FiltrosLista } from "@/components/admin/FiltrosLista";
 import { TablaAdmin, type ColumnaAdmin } from "@/components/admin/TablaAdmin";

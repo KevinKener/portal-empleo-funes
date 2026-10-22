@@ -21,6 +21,7 @@ export default async function RubrosPage() {
   return (
     <PaginaArea
       volver={VOLVER_A_MI_PERFIL}
+      banda={{}}
       titulo="¿En qué te gustaría trabajar?"
       descripcion="Elegí todos los rubros que te interesen. La Oficina de Empleo los usa para encontrarte cuando aparece una oferta."
       aside={

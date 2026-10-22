@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SearchX, Users, X } from "lucide-react";
-import { BandaSeccion } from "@/components/admin/BandaSeccion";
+import { BandaSeccion } from "@/components/layout/BandaSeccion";
 import { BarraFiltrosPostulantes } from "@/components/admin/BarraFiltrosPostulantes";
 import { TablaPostulantes } from "@/components/admin/TablaPostulantes";
 import { filtroLocalidad, listarPostulantesAdmin, ordenPostulantes } from "@/lib/admin/postulantes";

@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { BandaSeccion, type CifraSeccion } from "@/components/layout/BandaSeccion";
 import { EnlaceVolver } from "@/components/layout/EnlaceVolver";
 
 export type Volver = { href: string; texto: string };
@@ -12,6 +13,8 @@ type PropsPaginaArea = {
   acciones?: ReactNode;
   /** Side column from lg: context, an index or the next steps. */
   aside?: ReactNode;
+  /** The title as the green band (BandaSeccion), with optional figures and next action, instead of plain text. */
+  banda?: { cifras?: CifraSeccion[]; accion?: { href: string; texto: string } | null };
   children: ReactNode;
 };
 
@@ -20,17 +23,26 @@ type PropsPaginaArea = {
  * optional side column so wide screens are used (tutor review 2026-10-20)
  * while forms keep a comfortable reading width.
  */
-export function PaginaArea({ titulo, descripcion, volver, acciones, aside, children }: PropsPaginaArea) {
+export function PaginaArea({ titulo, descripcion, volver, acciones, aside, banda, children }: PropsPaginaArea) {
+  const encabezado = banda ? (
+    <div className="space-y-3">
+      {volver && <EnlaceVolver href={volver.href} texto={volver.texto} />}
+      <BandaSeccion titulo={titulo} descripcion={descripcion} cifras={banda.cifras} accion={banda.accion} />
+    </div>
+  ) : (
+    <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+      <div className="min-w-0 space-y-2">
+        {volver && <EnlaceVolver href={volver.href} texto={volver.texto} className="mb-1" />}
+        <h1 className="font-heading text-3xl font-bold text-balance">{titulo}</h1>
+        {descripcion && <div className="max-w-2xl text-muted-foreground">{descripcion}</div>}
+      </div>
+      {acciones && <div className="shrink-0">{acciones}</div>}
+    </header>
+  );
+
   return (
-    <div className="space-y-8">
-      <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div className="min-w-0 space-y-2">
-          {volver && <EnlaceVolver href={volver.href} texto={volver.texto} className="mb-1" />}
-          <h1 className="font-heading text-3xl font-bold text-balance">{titulo}</h1>
-          {descripcion && <div className="max-w-2xl text-muted-foreground">{descripcion}</div>}
-        </div>
-        {acciones && <div className="shrink-0">{acciones}</div>}
-      </header>
+    <div className={banda ? "space-y-6" : "space-y-8"}>
+      {encabezado}
 
       {aside ? (
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start xl:grid-cols-[minmax(0,1fr)_22rem]">

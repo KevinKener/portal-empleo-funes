@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import type { CSSProperties } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Archive, Inbox, Search, Send } from "lucide-react";
+import { Archive, Inbox, Send } from "lucide-react";
 import { PaginaArea } from "@/components/layout/PaginaArea";
-import { ContadoresPostulaciones } from "@/components/postulante/ContadoresPostulaciones";
+import { textoGrupo } from "@/components/postulante/ContadoresPostulaciones";
 import { TarjetaPostulacion } from "@/components/postulante/TarjetaPostulacion";
 import { buttonVariants } from "@/components/ui/button";
 import { requerirRol } from "@/lib/auth";
-import { empresasDeOfertas, separarPostulaciones, type EmpresaDeOferta } from "@/lib/panel-postulante";
+import { contarPorGrupo, empresasDeOfertas, separarPostulaciones, type EmpresaDeOferta } from "@/lib/panel-postulante";
 import { obtenerResumenPerfil } from "@/lib/perfil-postulante";
 import { listarMisPostulaciones, type MiPostulacion } from "@/lib/postulaciones";
 
@@ -30,13 +30,15 @@ export default async function PostulacionesPage() {
     <PaginaArea
       titulo="Mis postulaciones"
       descripcion="Seguí en qué etapa está cada postulación. La Oficina de Empleo revisa tu perfil antes de enviarlo a la empresa."
-      acciones={
-        postulaciones.length > 0 && (
-          <Link href="/ofertas" className={buttonVariants({ variant: "outline", className: "h-11 px-5 text-base" })}>
-            <Search aria-hidden /> Buscar más ofertas
-          </Link>
-        )
-      }
+      banda={{
+        // What is with the company stands out: it is the stage that moves next
+        cifras: contarPorGrupo(postulaciones).map(({ grupo, cantidad }) => ({
+          valor: cantidad,
+          texto: textoGrupo(grupo, cantidad),
+          destacada: grupo === "con_la_empresa" || grupo === "contratado",
+        })),
+        accion: postulaciones.length > 0 ? { href: "/ofertas", texto: "Buscar más ofertas" } : null,
+      }}
     >
       {postulaciones.length === 0 ? (
         <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-border bg-card px-4 py-12 text-center">
@@ -51,7 +53,6 @@ export default async function PostulacionesPage() {
         </div>
       ) : (
         <div className="space-y-8">
-          <ContadoresPostulaciones postulaciones={postulaciones} />
           <Grupo titulo="En curso" Icono={Send} postulaciones={activas} empresas={empresas} vacio="No tenés postulaciones en curso. ¡Buscá una oferta nueva!" />
           {finalizadas.length > 0 && <Grupo titulo="Finalizadas" Icono={Archive} postulaciones={finalizadas} empresas={empresas} desde={activas.length} />}
         </div>
