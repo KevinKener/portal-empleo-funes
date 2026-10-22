@@ -268,6 +268,26 @@ npx supabase gen types typescript --linked --schema public > src/types/database.
 </details>
 
 <details>
+<summary><b>🎭 Datos de demostración</b></summary>
+
+<br>
+
+Para mostrar el portal hay datos de ejemplo: empresas que llegan a Funes (McDonald's, Starbucks, La Gallega, Shell y otras, **sin sus logos oficiales**), 15 ofertas en todas las etapas, 9 postulantes y 22 postulaciones. Cada oferta aclara al final de los requisitos que es un ejemplo.
+
+```bash
+node supabase/demo/datos-demo.mjs listar       # qué hay en la base (solo lectura)
+node supabase/demo/datos-demo.mjs crear        # crea la demo e imprime los 3 ingresos
+node supabase/demo/datos-demo.mjs borrar-demo  # borra solo lo que creó la demo
+node supabase/demo/datos-demo.mjs limpiar      # ⚠️ borra TODAS las cuentas que no son Admin
+```
+
+- Usa `SUPABASE_SECRET_KEY` del `.env` (nunca se sube).
+- `crear` genera contraseñas nuevas para la postulante (María Fernández, DNI 40123456), la empresa (Starbucks) y un Admin demo, y **solo las muestra en la terminal**. Guardalas aparte; si se pierden, `borrar-demo` y `crear` de nuevo.
+- **Antes del lanzamiento real:** `borrar-demo`.
+
+</details>
+
+<details>
 <summary><b>🧱 Stack</b></summary>
 
 <br>
