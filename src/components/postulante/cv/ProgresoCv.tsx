@@ -13,7 +13,7 @@ type PropsProgresoCv = {
 };
 
 /**
- * Green banner on top of "Tu CV": a ring with how many sections have
+ * Green banner on top of "Experiencia y formación": a ring with how many sections have
  * something, what is still missing in plain words, and the way back to the
  * offer when the person came from one. Same look as the area homes.
  */

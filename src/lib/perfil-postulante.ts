@@ -106,7 +106,7 @@ export function tareasDelPerfil(resumen: ResumenPerfil): Tarea[] {
     },
     {
       clave: "cv",
-      titulo: "Armar tu CV",
+      titulo: "Experiencia y formación",
       descripcion: "Completalo acá o subí el que ya tenés.",
       href: "/postulante/cv",
       estado: tieneCv(resumen) ? "completo" : "pendiente",

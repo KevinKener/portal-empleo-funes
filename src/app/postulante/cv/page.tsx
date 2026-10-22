@@ -17,7 +17,7 @@ import { obtenerResumenPerfil, tieneCv } from "@/lib/perfil-postulante";
 import { createClient } from "@/lib/supabase/server";
 import { rutaDeOferta } from "@/lib/validaciones/ofertas";
 
-export const metadata: Metadata = { title: "Tu CV" };
+export const metadata: Metadata = { title: "Experiencia y formación" };
 
 /**
  * CV built on the platform or uploaded as a file (PDF, Word or photo); either one is enough (Rule 6).
@@ -55,7 +55,7 @@ export default async function CvPage({ searchParams }: PageProps<"/postulante/cv
   return (
     <PaginaArea
       volver={VOLVER_A_MI_PERFIL}
-      titulo="Tu CV"
+      titulo="Experiencia y formación"
       descripcion="Armalo acá completando las secciones, o subí el CV que ya tenés. Con cualquiera de los dos ya podés postularte."
       aside={
         <>
