@@ -26,6 +26,7 @@ export default async function DatosPage() {
   return (
     <PaginaArea
       volver={VOLVER_A_MI_PERFIL}
+      banda={{}}
       titulo="Tus datos"
       descripcion="Mantené tus datos al día para que la Oficina de Empleo pueda contactarte."
       aside={<QuienVeTusDatos />}

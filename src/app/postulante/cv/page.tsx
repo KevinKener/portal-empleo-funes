@@ -6,7 +6,6 @@ import { SobreMi } from "@/components/postulante/cv/SobreMi";
 import { AyudaOficina } from "@/components/layout/AyudaOficina";
 import { PaginaArea } from "@/components/layout/PaginaArea";
 import { Revelar } from "@/components/layout/Revelar";
-import { ProgresoCv } from "@/components/postulante/cv/ProgresoCv";
 import { IndiceCv } from "@/components/postulante/cv/IndiceCv";
 import { VOLVER_A_MI_PERFIL } from "@/components/postulante/volver";
 import { abrirArchivo, eliminarArchivo, registrarArchivo } from "@/app/postulante/archivos";
@@ -51,12 +50,29 @@ export default async function CvPage({ searchParams }: PageProps<"/postulante/cv
     { id: "estudios", titulo: "Estudios y cursos", hecho: (formaciones ?? []).length > 0 },
   ];
   const hecho = (seccion: string) => secciones.find((s) => s.id === seccion)?.hecho ?? false;
+  const faltan = secciones.filter((s) => !s.hecho).map((s) => s.titulo.toLowerCase());
+  // What is missing in plain words, and the way back once the person came from an offer
+  const estado = completo
+    ? faltan.length > 0
+      ? `Tu CV ya sirve para postularte. Podés sumar ${faltan.join(" y ")} cuando quieras: cuanto más completo, mejor.`
+      : "Tu CV está completo. ¡Muy bien!"
+    : `Escribí unas líneas sobre vos y cargá al menos una experiencia o un estudio, o subí el CV que ya tenés.${oferta ? " Cuando esté listo, te aparece el botón para volver a la oferta." : ""}`;
 
   return (
     <PaginaArea
       volver={VOLVER_A_MI_PERFIL}
       titulo="Experiencia y formación"
-      descripcion="Armalo acá completando las secciones, o subí el CV que ya tenés. Con cualquiera de los dos ya podés postularte."
+      descripcion={estado}
+      banda={{
+        // Each figure jumps to its section; what is missing stands out until the CV counts
+        cifras: [
+          { valor: hecho("sobre-vos") ? "Lista" : "Falta", texto: "Sobre vos", href: "#sobre-vos", destacada: !completo && !hecho("sobre-vos") },
+          { valor: (experiencias ?? []).length, texto: "Experiencias", href: "#experiencia", destacada: !completo && !hecho("experiencia") },
+          { valor: (formaciones ?? []).length, texto: "Estudios y cursos", href: "#estudios", destacada: !completo && !hecho("estudios") },
+          { valor: cv_url ? "Subido" : "No", texto: "CV adjunto", href: "#archivo" },
+        ],
+        accion: oferta && completo ? { href: oferta, texto: "Volver a la oferta y postularme" } : null,
+      }}
       aside={
         <>
           <IndiceCv secciones={[...secciones, { id: "archivo", titulo: "CV adjunto", hecho: Boolean(cv_url) }]} />
@@ -64,8 +80,6 @@ export default async function CvPage({ searchParams }: PageProps<"/postulante/cv
         </>
       }
     >
-      <ProgresoCv secciones={secciones} completo={completo} oferta={oferta} />
-
       <Revelar>
         <TarjetaSeccion
           id="sobre-vos"

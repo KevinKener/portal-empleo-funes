@@ -42,7 +42,7 @@ export default async function DomicilioPage() {
 
   if (localidad !== "funes") {
     return (
-      <PaginaArea volver={VOLVER_A_MI_PERFIL} titulo="Comprobante de domicilio" descripcion="Solo se pide a quienes viven en Funes.">
+      <PaginaArea volver={VOLVER_A_MI_PERFIL} banda={{}} titulo="Comprobante de domicilio" descripcion="Solo se pide a quienes viven en Funes.">
         <p className="max-w-2xl rounded-xl border border-border bg-muted p-4 text-sm">
           Según tus datos no vivís en Funes, así que no necesitás subir nada. Si te mudaste,{" "}
           <Link href="/postulante/datos" className="font-medium text-primary underline underline-offset-4">
@@ -58,6 +58,7 @@ export default async function DomicilioPage() {
   return (
     <PaginaArea
       volver={VOLVER_A_MI_PERFIL}
+      banda={{}}
       titulo="Comprobante de domicilio"
       descripcion="Es opcional y no te impide postularte."
       aside={

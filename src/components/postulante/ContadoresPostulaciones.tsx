@@ -36,9 +36,14 @@ const GRUPOS: Record<GrupoEstado, { texto: (n: number) => string; Icono: LucideI
   },
 };
 
+/** Label of a status group for `cantidad` applications ("En revisión", "Contrataciones"…), shared with the page bands. */
+export function textoGrupo(grupo: GrupoEstado, cantidad: number): string {
+  return GRUPOS[grupo].texto(cantidad);
+}
+
 /**
  * A count per status group: the number counts up and a bar shows its share
- * of all applications. Used on Mi panel and on "Mis postulaciones".
+ * of all applications. Used on Mi panel ("Mis postulaciones" shows them in its band).
  */
 export function ContadoresPostulaciones({ postulaciones }: { postulaciones: MiPostulacion[] }) {
   const total = postulaciones.length;
