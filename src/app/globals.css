@@ -73,6 +73,15 @@
     to { transform: translateY(calc(var(--distancia, 12px) * -1)) rotate(1deg); }
   }
 
+  /* A slow side-to-side sway on a wrapper, so it adds to flotar like a balloon on a string
+     (individual `translate`/`rotate` properties do not clash with the inner transform) */
+  --animate-vaiven: vaiven var(--duracion-x, 11s) ease-in-out var(--retraso, 0s) infinite alternate;
+
+  @keyframes vaiven {
+    from { translate: calc(var(--deriva-x, 10px) * -1) 0; rotate: -2deg; }
+    to { translate: var(--deriva-x, 10px) 0; rotate: 2deg; }
+  }
+
   @keyframes giro {
     to { transform: rotate(1turn); }
   }
