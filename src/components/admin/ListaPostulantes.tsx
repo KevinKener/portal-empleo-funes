@@ -2,16 +2,16 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Briefcase, GraduationCap, Target } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { AccionesPreseleccion } from "@/components/admin/AccionesPreseleccion";
 import { EtiquetaPostulacionAdmin } from "@/components/admin/EtiquetaPostulacionAdmin";
 import { InsigniaDomicilio } from "@/components/admin/InsigniaDomicilio";
+import { PerfilBreve } from "@/components/admin/PerfilBreve";
 import { TablaAdmin, type ColumnaAdmin } from "@/components/admin/TablaAdmin";
 import { AvisoFormulario } from "@/components/formularios/AvisoFormulario";
 import { Avatar } from "@/components/postulante/Avatar";
 import { usePreseleccion } from "@/hooks/usePreseleccion";
 import type { FilaPostulacion } from "@/lib/admin/postulaciones";
-import { datosClave } from "@/lib/datos-candidato";
 import { haceCuanto } from "@/lib/formato";
 import { cn } from "@/lib/utils";
 
@@ -56,6 +56,10 @@ export function ListaPostulantes({ ofertaId, filas, rubroOferta, momento }: Prop
   return (
     <div className="space-y-8">
       <AvisoFormulario error={acciones.error} aviso={acciones.aviso} />
+      <p className="-mt-2 text-sm text-muted-foreground">
+        Primero los vecinos de Funes y después las otras localidades; en cada grupo, quien se postuló antes. Al preseleccionar, la empresa empieza a ver a la persona; al
+        rechazar, la persona ve el motivo (“cupo completo” se lee más suave).
+      </p>
 
       {grupos.map((grupo) => {
         const pendientes = grupo.filas.filter((f) => f.estado === "pendiente").map((f) => f.id);
@@ -91,7 +95,7 @@ export function ListaPostulantes({ ofertaId, filas, rubroOferta, momento }: Prop
                     <Persona fila={fila} ofertaId={ofertaId} />
                     <EtiquetaPostulacionAdmin estado={fila.estado} motivo={fila.motivoRechazo} />
                   </div>
-                  <Perfil fila={fila} rubroOferta={rubroOferta} momento={momento} />
+                  <PerfilBreve postulante={fila.postulante} rubroOferta={rubroOferta} momento={momento} />
                   <div className="flex items-center justify-between gap-2 border-t border-border pt-3 text-sm">
                     <span className="text-muted-foreground">Se postuló {haceCuanto(fila.creada, momento)}</span>
                     <Ver />
@@ -127,8 +131,8 @@ type Alternar = (lista: string[], elegir: boolean) => void;
 function columnas(ofertaId: string, rubroOferta: string | null, momento: number, elegidos: Set<string>, alternar: Alternar): ColumnaAdmin<FilaPostulacion>[] {
   return [
     { titulo: "Elegir", celda: (fila) => <Casilla fila={fila} elegidos={elegidos} alternar={alternar} />, className: "w-12" },
-    { titulo: "Postulante", celda: (fila) => <Persona fila={fila} ofertaId={ofertaId} />, className: "w-[28%]" },
-    { titulo: "Perfil", celda: (fila) => <Perfil fila={fila} rubroOferta={rubroOferta} momento={momento} /> },
+    { titulo: "Postulante", celda: (fila) => <Persona fila={fila} ofertaId={ofertaId} />, className: "w-[30%] max-w-0" },
+    { titulo: "Perfil", celda: (fila) => <PerfilBreve postulante={fila.postulante} rubroOferta={rubroOferta} momento={momento} />, className: "max-w-0 w-[34%]" },
     { titulo: "Se postuló", celda: (fila) => <span className="whitespace-nowrap text-muted-foreground">{haceCuanto(fila.creada, momento)}</span>, secundaria: true },
     { titulo: "Estado", celda: (fila) => <EtiquetaPostulacionAdmin estado={fila.estado} motivo={fila.motivoRechazo} /> },
     { titulo: "Acción", celda: () => <Ver />, className: "text-right" },
@@ -154,8 +158,7 @@ function Persona({ fila, ofertaId }: { fila: FilaPostulacion; ofertaId: string }
   const { postulante } = fila;
   return (
     <span className="flex min-w-0 flex-1 items-center gap-3">
-      {/* Initials only in the list: signing every photo would slow it down */}
-      <Avatar nombre={postulante.nombre} apellido={postulante.apellido} />
+      <Avatar nombre={postulante.nombre} apellido={postulante.apellido} foto={postulante.foto} encuadre={postulante.encuadre} />
       <span className="min-w-0 space-y-0.5">
         {/* The name link covers the whole row or card */}
         <Link
@@ -166,30 +169,6 @@ function Persona({ fila, ofertaId }: { fila: FilaPostulacion; ofertaId: string }
         </Link>
         <InsigniaDomicilio localidad={postulante.localidad} estado={postulante.estadoDomicilio} tieneComprobante={postulante.tieneComprobante} />
       </span>
-    </span>
-  );
-}
-
-function Perfil({ fila, rubroOferta, momento }: { fila: FilaPostulacion; rubroOferta: string | null; momento: number }) {
-  const datos = datosClave(fila.postulante, rubroOferta, momento);
-  const pdf = fila.postulante.tieneCvPdf ? "En su CV adjunto" : "Sin datos";
-  return (
-    <span className="flex flex-col gap-1 text-sm">
-      <span className="inline-flex items-center gap-1.5">
-        <Briefcase aria-hidden className="size-3.5 shrink-0 text-primary" />
-        <span className={cn(!datos.experiencia && "text-muted-foreground")}>
-          {datos.ultimoPuesto ? `${datos.experiencia} · ${datos.ultimoPuesto}` : (datos.experiencia ?? pdf)}
-        </span>
-      </span>
-      <span className="inline-flex items-center gap-1.5">
-        <GraduationCap aria-hidden className="size-3.5 shrink-0 text-primary" />
-        <span className={cn(!datos.formacion && "text-muted-foreground")}>{datos.formacion ?? pdf}</span>
-      </span>
-      {datos.coincideRubro && (
-        <span className="inline-flex w-fit items-center gap-1 rounded-full bg-secondary px-2 py-0.5 text-xs font-semibold text-secondary-foreground">
-          <Target aria-hidden className="size-3" /> Eligió el rubro de la oferta
-        </span>
-      )}
     </span>
   );
 }

@@ -16,7 +16,6 @@ import { esUuid, NOTAS_ADMIN_MAXIMO } from "@/lib/validaciones/ofertas";
 
 export type ResultadoPreseleccion = { error: string | null; cambiados: number };
 export type ResultadoNotas = { error: string | null };
-export type ResultadoCv = { url: string | null; error: string | null };
 
 const ERROR_CAMBIO = "No pudimos hacer el cambio. Recargá la página y probá de nuevo.";
 // Enough for any real offer; a cap keeps a single request small
@@ -102,26 +101,4 @@ export async function guardarNotas(ofertaId: string, postulacionId: string, nota
 
   revalidatePath(`/admin/ofertas/${ofertaId}/postulantes/${postulacionId}`);
   return { error: null };
-}
-
-/**
- * Short-lived link (60 s) to the job seeker's uploaded CV. The Storage policy
- * "admin lee documentos" lets the Office sign it.
- */
-export async function abrirCvPostulacion(postulacionId: string): Promise<ResultadoCv> {
-  const noEncontrado = { url: null, error: "No encontramos el CV." };
-  if (!esUuid(postulacionId)) return noEncontrado;
-  await requerirRol("admin");
-  const supabase = await createClient();
-
-  const { data: postulacion } = await supabase.from("postulaciones").select("postulantes(cv_url)").eq("id", postulacionId).maybeSingle();
-  const ruta = postulacion?.postulantes?.cv_url;
-  if (!ruta) return noEncontrado;
-
-  const { data, error } = await supabase.storage.from("cvs").createSignedUrl(ruta, 60);
-  if (error) {
-    console.error("abrirCvPostulacion failed:", error.message);
-    return { url: null, error: "No pudimos abrir el CV. Probá de nuevo." };
-  }
-  return { url: data.signedUrl, error: null };
 }
