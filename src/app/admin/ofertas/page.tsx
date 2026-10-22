@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, FileSearch, SearchX, UserSearch } from "lucide-react";
+import { BandaSeccion, type CifraSeccion } from "@/components/admin/BandaSeccion";
 import { EtiquetaOfertaAdmin } from "@/components/admin/EtiquetaOfertaAdmin";
 import { FiltrosLista } from "@/components/admin/FiltrosLista";
 import { TablaAdmin, type ColumnaAdmin } from "@/components/admin/TablaAdmin";
 import { LogoEmpresa } from "@/components/empresa/LogoEmpresa";
-import { PaginaArea } from "@/components/layout/PaginaArea";
 import { InsigniasOferta } from "@/components/ofertas/InsigniasOferta";
+import { resumirOfertas, type ResumenOfertas } from "@/lib/admin/resumenes";
 import { filtroOfertasAdmin, listarOfertasAdmin, type FiltroOfertasAdmin, type FilaOfertaAdmin } from "@/lib/admin/ofertas";
 import { ofertaVencida, textoCierre } from "@/lib/cierre-oferta";
 import { ahora, haceCuanto } from "@/lib/formato";
@@ -107,6 +108,30 @@ const Accion = ({ fila }: { fila: FilaOfertaAdmin }) => (
   </span>
 );
 
+const plural = (n: number, uno: string, varios: string) => (n === 1 ? `1 ${uno}` : `${n} ${varios}`);
+
+/** Where offers stand, in one sentence: what waits for review and what waits for pre-selection. */
+function resumenOfertas(r: ResumenOfertas): string {
+  const partes: string[] = [];
+  if (r.porRevisar > 0) {
+    partes.push(`${plural(r.porRevisar, "oferta", "ofertas")} por revisar${r.urgentes > 0 ? ` (${plural(r.urgentes, "urgente", "urgentes")})` : ""}`);
+  }
+  if (r.postulaciones.pendientes > 0) {
+    partes.push(`${plural(r.postulaciones.pendientes, "postulación", "postulaciones")} esperando en ${plural(r.postulaciones.ofertas, "oferta", "ofertas")}`);
+  }
+  return partes.length > 0 ? `Hay ${partes.join(" y ")}.` : "No hay ofertas ni postulaciones esperando. ¡Al día!";
+}
+
+function cifrasOfertas(r: ResumenOfertas): CifraSeccion[] {
+  return [
+    { valor: r.porRevisar, texto: "Ofertas por revisar", href: "/admin/ofertas?estado=pendiente", destacada: r.porRevisar > 0 },
+    // Published offers with applications to review sort first in that list
+    { valor: r.postulaciones.pendientes, texto: "Postulaciones por revisar", href: "/admin/ofertas?estado=publicada", destacada: r.postulaciones.pendientes > 0 },
+    { valor: r.publicadas, texto: "Publicadas", href: "/admin/ofertas?estado=publicada" },
+    { valor: r.vencidas, texto: "Vencidas", href: "/admin/ofertas?estado=vencida" },
+  ];
+}
+
 /**
  * "Ofertas" of the Office: the review queue first (urgent, then oldest),
  * published offers with applications to review, and the rest (branch B).
@@ -116,7 +141,7 @@ export default async function OfertasAdminPage({ searchParams }: PageProps<"/adm
   const filtro = filtroOfertasAdmin(estado);
   const busqueda = typeof q === "string" ? q.slice(0, 100) : "";
   const momento = ahora();
-  const { filas, conteo } = await listarOfertasAdmin(filtro, busqueda, momento);
+  const [{ filas, conteo }, resumen] = await Promise.all([listarOfertasAdmin(filtro, busqueda, momento), resumirOfertas(momento)]);
 
   const columnas: ColumnaAdmin<FilaOfertaAdmin>[] = [
     { titulo: "Oferta", celda: (fila) => <Titulo fila={fila} />, className: "w-[30%]" },
@@ -129,7 +154,8 @@ export default async function OfertasAdminPage({ searchParams }: PageProps<"/adm
   ];
 
   return (
-    <PaginaArea titulo="Ofertas" descripcion="Revisá las ofertas que envían las empresas antes de que se vean en el portal.">
+    <div className="space-y-6">
+      <BandaSeccion titulo="Ofertas" resumen={resumenOfertas(resumen)} cifras={cifrasOfertas(resumen)} accion={resumen.proxima} />
       <FiltrosLista
         ruta="/admin/ofertas"
         filtros={FILTROS.map((f) => ({ ...f, cantidad: conteo[f.valor] }))}
@@ -180,6 +206,6 @@ export default async function OfertasAdminPage({ searchParams }: PageProps<"/adm
           )}
         />
       )}
-    </PaginaArea>
+    </div>
   );
 }

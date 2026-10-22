@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SearchX, Users, X } from "lucide-react";
+import { BandaSeccion } from "@/components/admin/BandaSeccion";
 import { BarraFiltrosPostulantes } from "@/components/admin/BarraFiltrosPostulantes";
 import { TablaPostulantes } from "@/components/admin/TablaPostulantes";
-import { PaginaArea } from "@/components/layout/PaginaArea";
 import { filtroLocalidad, listarPostulantesAdmin, ordenPostulantes } from "@/lib/admin/postulantes";
+import { resumirPostulantes } from "@/lib/admin/resumenes";
 import { requerirRol } from "@/lib/auth";
 import { listarCategorias } from "@/lib/categorias";
 import { ahora, ETIQUETAS_LOCALIDAD } from "@/lib/formato";
@@ -31,7 +32,7 @@ export default async function PostulantesAdminPage({ searchParams }: PageProps<"
   const ordenActual = ordenPostulantes(orden);
   const momento = ahora();
 
-  const categorias = await listarCategorias();
+  const [categorias, resumen] = await Promise.all([listarCategorias(), resumirPostulantes(momento)]);
   const rubroActual = typeof rubro === "string" && esUuid(rubro) && categorias.some((c) => c.id === rubro) ? rubro : null;
   const listado = await listarPostulantesAdmin({
     localidad: filtro,
@@ -61,7 +62,21 @@ export default async function PostulantesAdminPage({ searchParams }: PageProps<"
 
 
   return (
-    <PaginaArea titulo="Postulantes" descripcion="Todas las personas registradas, se hayan postulado o no. Por defecto, primero los vecinos de Funes.">
+    <div className="space-y-6">
+      <BandaSeccion
+        titulo="Postulantes"
+        resumen={
+          resumen.total === 0
+            ? "Todavía no se registró nadie en el portal."
+            : `${resumen.total === 1 ? "1 persona registrada" : `${resumen.total} personas registradas`}, se hayan postulado o no. El ${Math.round((resumen.funes / resumen.total) * 100)} % vive en Funes y aparece primero.`
+        }
+        cifras={[
+          { valor: resumen.total, texto: "Registrados", href: RUTA },
+          { valor: resumen.funes, texto: "De Funes", href: `${RUTA}?localidad=funes` },
+          { valor: resumen.verificados, texto: "Domicilio verificado", href: `${RUTA}?verificado=1` },
+          { valor: resumen.nuevos, texto: "Nuevos esta semana", href: `${RUTA}?orden=recientes` },
+        ]}
+      />
       <div className="space-y-3">
         <BarraFiltrosPostulantes
           localidades={LOCALIDADES.map((l) => ({ valor: l, texto: `${ETIQUETAS_LOCALIDAD[l]} (${listado.conteo[l]})` }))}
@@ -96,6 +111,6 @@ export default async function PostulantesAdminPage({ searchParams }: PageProps<"
       ) : (
         <TablaPostulantes listado={listado} ordenActual={ordenActual} momento={momento} href={href} />
       )}
-    </PaginaArea>
+    </div>
   );
 }
