@@ -20,6 +20,15 @@ export const AREA_POR_ROL: Record<Rol, string> = {
 }
 
 /**
+ * Where "home" is for each person: companies and the Office open the site on
+ * their own panel (they reach the portal through "Ver portal"); job seekers
+ * and visitors stay on the landing, since finding offers is their job there.
+ */
+export function inicioDe(sesion: Sesion | null): string {
+  return sesion && sesion.rol !== "postulante" ? AREA_POR_ROL[sesion.rol] : "/"
+}
+
+/**
  * Current user and role, or null without a session or without a profile
  * (e.g. the seed Admin before it is promoted). Cached per request, so the
  * header and the layout share one lookup.

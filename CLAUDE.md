@@ -39,7 +39,7 @@ All code lives in `src/`. The `@/*` alias points to `src/*`.
 
 | Route | File | Status |
 |-------|------|--------|
-| `/` | `src/app/(publico)/page.tsx` | Landing + latest offers |
+| `/` | `src/app/(publico)/page.tsx` | Landing + latest offers; signed-in companies and Admins are sent to their panel (`inicioDe()` in `src/lib/auth.ts`, also the header shield's link; the Admin gets a "Ver portal" link by "Salir" from md) |
 | `/ofertas` | `src/app/(publico)/ofertas/page.tsx` | Published offers, category filter, sort (`?orden=`), pagination (+ `loading`, `error`) |
 | `/ofertas/[id]` | `src/app/(publico)/ofertas/[id]/page.tsx` | Published offer detail (+ `not-found`) |
 | `/api/ofertas` | `src/app/api/ofertas/route.ts` | Public listing API (`?categoria`, `?pagina`, `?orden`) |
