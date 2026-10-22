@@ -116,7 +116,7 @@ const TEXTO_DOMICILIO: Partial<Record<Tarea["estado"], string>> = {
   rechazado: "Tu comprobante no se pudo verificar. Podés subir otro.",
 };
 
-/** Once the profile is ready the checklist shrinks to this card (it stays complete in "Mi perfil"). */
+/** Once the profile is ready the checklist shrinks to this card (it stays complete in "Mi CV"). */
 function PerfilCompleto({ domicilio }: { domicilio?: Tarea }) {
   const aviso = domicilio && TEXTO_DOMICILIO[domicilio.estado];
   return (
@@ -167,7 +167,7 @@ function AccesosPanel({ enCurso, conEmpresa }: { enCurso: number; conEmpresa: nu
           Buscar ofertas
         </Link>
         <Link
-          href="/postulante/cv"
+          href="/postulante/perfil"
           className="inline-flex h-10 items-center gap-2 rounded-xl border border-primary-foreground/30 px-4 text-sm font-semibold transition-colors hover:bg-primary-foreground/10"
         >
           <FileText aria-hidden className="size-4" />

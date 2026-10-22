@@ -7,7 +7,7 @@ import { obtenerSesion } from "@/lib/auth";
 /**
  * Shared shell for the public portal; private areas get their own layouts.
  * Signed in on a phone, the person keeps their area's bottom bar here too
- * ("Buscar" / "Ver portal" lit), so the way back to their panel is always in
+ * ("Ver ofertas" / "Ver portal" lit), so the way back to their panel is always in
  * sight instead of a small "Mi panel" link.
  */
 export default async function PublicoLayout({ children }: LayoutProps<"/">) {

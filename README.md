@@ -343,7 +343,7 @@ Las páginas públicas viven en el grupo `src/app/(publico)/`, que comparte enca
 | `/recuperar` · `/recuperar/codigo` | Recuperar la contraseña con un código por email |
 | `/terminos` · `/privacidad` | Términos y condiciones y política de privacidad (Ley 25.326), versión preliminar a revisar por la Municipalidad |
 | `/postulante` | "Mi panel": próximo paso, mis postulaciones y ofertas de mis rubros (requiere rol postulante) |
-| `/postulante/perfil` | "Mi perfil": foto (con encuadre) y lista de tareas con datos, rubros, CV y domicilio |
+| `/postulante/perfil` | "Mi CV": foto (con encuadre) y lista de tareas con datos, rubros, experiencia y formación, y domicilio |
 | `/postulante/datos` · `/postulante/rubros` | Editar datos personales y elegir rubros |
 | `/postulante/cv` | Armar el CV (sobre vos, experiencia, estudios) o subirlo en PDF, Word o foto |
 | `/postulante/domicilio` | Subir el comprobante de domicilio (solo vecinos de Funes) |

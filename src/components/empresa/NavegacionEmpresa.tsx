@@ -1,11 +1,11 @@
 "use client";
 
-import { Building2, Eye, FileText, LayoutDashboard } from "lucide-react";
+import { Building2, Eye, FileText, House } from "lucide-react";
 import { NavegacionArea, type EnlaceArea, type VarianteNavegacion } from "@/components/layout/NavegacionArea";
 import { HREF_VER_PORTAL } from "@/lib/ver-portal";
 
 const ENLACES: readonly EnlaceArea[] = [
-  { href: "/empresa", texto: "Mi panel", Icono: LayoutDashboard, activo: (ruta) => ruta === "/empresa" },
+  { href: "/empresa", texto: "Mi panel", Icono: House, activo: (ruta) => ruta === "/empresa" },
   { href: "/empresa/ofertas", texto: "Mis ofertas", Icono: FileText, activo: (ruta) => ruta.startsWith("/empresa/ofertas") },
   { href: "/empresa/datos", texto: "Mi empresa", Icono: Building2, activo: (ruta) => ruta.startsWith("/empresa/datos") },
   // The public portal, to see published offers the way job seekers do.
